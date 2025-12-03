@@ -47,10 +47,23 @@
         (into [:map {:closed (false? additionalProperties)}] props)
         [:map-of 'any? 'any?]))))
 
+(defn- optimize-or [schemas]
+  (let [grouped (group-by (fn [s] (if (vector? s) (first s) :other)) schemas)
+        consts (get grouped :=)
+        enums (get grouped :enum)
+        others (apply concat (vals (dissoc grouped := :enum)))
+        all-values (mapcat (fn [s]
+                             (if (= := (first s))
+                               [(second s)]
+                               (rest s)))
+                           (concat consts enums))]
+    (cond-> (vec others)
+      (seq all-values) (conj (into [:enum] (distinct all-values))))))
+
 (defn- parse-composition [{:keys [anyOf allOf oneOf]}]
   (cond
-    anyOf (into [:or] (map json-schema->malli anyOf))
-    oneOf (into [:or] (map json-schema->malli oneOf))
+    anyOf (into [:or] (optimize-or (map json-schema->malli anyOf)))
+    oneOf (into [:or] (optimize-or (map json-schema->malli oneOf)))
     allOf (into [:and] (map json-schema->malli allOf))
     :else nil))
 

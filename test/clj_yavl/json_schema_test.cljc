@@ -28,8 +28,21 @@
           res (sut/transform json)
           schema (:schema res)]
       ;; The parser adds {:closed false} by default for objects with properties unless additionalProperties is false
-      ;; The parser returns symbols (e.g. 'string?) which Malli accepts
+      ;; Expanded optional keys.
       (is (= [:map {:closed false} [:a {:optional true} 'string?]] schema))))
+
+  (testing "Optimization of anyOf enums"
+    (let [json {:anyOf [{:const "a"} {:const "b"} {:type "string"}]}
+          res (sut/transform json)
+          schema (:schema res)]
+      (is (= [:or 'string? [:enum "a" "b"]] schema))))
+
+  (testing "Optimization of allOf to :and"
+    (let [json {:allOf [{:type "object"} {:type "object"}]}
+          res (sut/transform json)
+          schema (:schema res)]
+      ;; Empty objects are [:map-of 'any? 'any?]
+      (is (= [:and [:map-of 'any? 'any?] [:map-of 'any? 'any?]] schema))))
 
   (testing "Can parse Vega-Lite v6 schema"
     (let [json-data (read-json "resources/vega-lite-v6.json")
