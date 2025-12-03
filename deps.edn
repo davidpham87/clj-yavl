@@ -2,6 +2,7 @@
 
  :deps    {http-kit/http-kit    {:mvn/version "2.9.0-beta1"}
            org.babashka/json    {:mvn/version "0.1.6"}
+           cheshire/cheshire    {:mvn/version "5.11.0"}
            metosin/malli        {:mvn/version "0.20.0-alpha3"}
            djblue/portal        {:mvn/version "0.62.0"}
            com.github.seancorfield/honeysql {:mvn/version "2.7.1350"}
