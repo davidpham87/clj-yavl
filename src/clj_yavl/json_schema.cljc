@@ -38,13 +38,10 @@
 (defn- parse-object [{:keys [type properties required additionalProperties]}]
   (when (= type "object")
     (let [req-set (set (map keyword required))
-          props (for [[k v] properties]
-                  (let [schema (json-schema->malli v)]
-                    (if (contains? req-set k)
-                      [k schema]
-                      [k {:optional true} schema])))]
-      (if (or (seq props) (false? additionalProperties))
-        (into [:map {:closed (false? additionalProperties)}] props)
+          prop-entries (for [[k v] properties]
+                         [(keyword k) (json-schema->malli v)])]
+      (if (or (seq prop-entries) (false? additionalProperties))
+        (into [:map {:json-schema/required req-set}] prop-entries)
         [:map-of 'any? 'any?]))))
 
 (defn- optimize-or [schemas]
