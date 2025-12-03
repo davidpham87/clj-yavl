@@ -1,7 +1,8 @@
-(ns example.json-schema-test
+(ns clj-yavl.json-schema-test
   (:require #?(:clj [clojure.test :refer [deftest is testing]]
                :cljs [cljs.test :refer [deftest is testing]])
-            [example.json-schema :as sut]
+            [clj-yavl.json-schema :as sut]
+            [clj-yavl.schema.vega-lite :as generated]
             [malli.core :as m]
             [malli.json-schema :as json-schema]
             #?(:clj [cheshire.core :as json])))
@@ -12,13 +13,23 @@
                  content (.readFileSync fs path "utf8")]
              (js->clj (js/JSON.parse content) :keywordize-keys true))))
 
+(deftest generated-schema-test
+  (testing "Generated schema file is valid"
+    (is (map? generated/schema))
+    (let [{:keys [schema registry]} generated/schema]
+       (is (some? schema))
+       (is (not-empty registry))
+       (testing "Malli validation of generated schema"
+         (is (some? (m/schema [:schema {:registry registry} schema])))))))
+
 (deftest vega-lite-roundtrip-test
   (testing "Optional property structure"
     (let [json {:definitions {} :type "object" :properties {:a {:type "string"}}}
           res (sut/transform json)
           schema (:schema res)]
       ;; The parser adds {:closed false} by default for objects with properties unless additionalProperties is false
-      (is (= [:map {:closed false} [:a {:optional true} string?]] schema))))
+      ;; The parser returns symbols (e.g. 'string?) which Malli accepts
+      (is (= [:map {:closed false} [:a {:optional true} 'string?]] schema))))
 
   (testing "Can parse Vega-Lite v6 schema"
     (let [json-data (read-json "resources/vega-lite-v6.json")

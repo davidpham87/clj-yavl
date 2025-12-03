@@ -1,4 +1,4 @@
-(ns example.json-schema
+(ns clj-yavl.json-schema
   (:require [clojure.string :as str]))
 
 (declare json-schema->malli)
@@ -21,11 +21,11 @@
 
 (defn- parse-primitive-type [{:keys [type]}]
   (cond
-    (= type "string") string?
-    (= type "integer") int?
-    (= type "number") number?
-    (= type "boolean") boolean?
-    (= type "null") nil?
+    (= type "string") 'string?
+    (= type "integer") 'int?
+    (= type "number") 'number?
+    (= type "boolean") 'boolean?
+    (= type "null") 'nil?
     :else nil))
 
 (defn- parse-array [{:keys [type items]}]
@@ -33,7 +33,7 @@
     (cond
       (map? items) [:vector (json-schema->malli items)]
       (vector? items) (into [:tuple] (map json-schema->malli items))
-      :else [:vector any?])))
+      :else [:vector 'any?])))
 
 (defn- parse-object [{:keys [type properties required additionalProperties]}]
   (when (= type "object")
@@ -45,7 +45,7 @@
                       [k {:optional true} schema])))]
       (if (or (seq props) (false? additionalProperties))
         (into [:map {:closed (false? additionalProperties)}] props)
-        [:map-of any? any?]))))
+        [:map-of 'any? 'any?]))))
 
 (defn- parse-composition [{:keys [anyOf allOf oneOf]}]
   (cond
@@ -67,7 +67,7 @@
       (parse-object node)
       (parse-type-list node)
       (parse-primitive-type node)
-      any?))
+      'any?))
 
 (defn transform [json-schema]
   (let [definitions (:definitions json-schema)
