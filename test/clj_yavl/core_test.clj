@@ -1,6 +1,9 @@
 (ns clj-yavl.core-test
   (:require [clojure.test :refer [deftest is testing]]
-            [clj-yavl.core :as core]))
+            [clj-yavl.core :as core]
+            [clojure.test.check.clojure-test :refer [defspec]]
+            [clojure.test.check.properties :as prop]
+            [clojure.test.check.generators :as gen]))
 
 (def cars-schema
   [:vector
@@ -50,3 +53,65 @@
           charts-opts {:data-schema cars-schema}
           result (core/base-plot encodings common-specs charts-opts)]
       (is (= "temporal" (get-in result [:encoding :x :type]))))))
+
+;; Generative Testing Helpers
+
+(def field-name-gen
+  (gen/fmap (fn [s] (str "f_" s)) (gen/not-empty gen/string-alphanumeric)))
+
+(def simple-type-gen
+  (gen/elements ['int? 'integer? 'number? 'double? 'float? 'string? 'boolean? 'inst?]))
+
+(def enum-type-gen
+  (gen/fmap (fn [vals] [:enum (vec vals)])
+            (gen/not-empty (gen/vector gen/string-alphanumeric 1 3))))
+
+(def field-type-gen
+  (gen/one-of [simple-type-gen enum-type-gen]))
+
+(def dataset-schema-gen
+  (gen/fmap (fn [fields]
+              [:vector (into [:map] fields)])
+            (gen/map field-name-gen field-type-gen {:min-elements 1 :max-elements 5})))
+
+(def encoding-channel-gen
+  (gen/elements [:x :y :color :size :shape :text]))
+
+(defn encodings-gen [schema]
+  (let [map-schema (second schema)
+        fields (map first (rest map-schema)) ;; keys
+        field-names (map name fields)]
+    (gen/map encoding-channel-gen (gen/elements field-names))))
+
+(def schema-and-encodings-gen
+  (gen/bind dataset-schema-gen
+            (fn [schema]
+              (gen/fmap (fn [encs] [schema encs])
+                        (encodings-gen schema)))))
+
+(defn expected-vl-type [malli-type]
+  (let [t (if (vector? malli-type) (first malli-type) malli-type)]
+    (cond
+      (#{'int? 'integer? 'number? 'double? 'float? :int :double :number :float} t) "quantitative"
+      (#{'string? :string} t) "nominal"
+      (#{'boolean? :boolean} t) "nominal"
+      (#{'inst? 'time? :inst :time} t) "temporal"
+      (= :enum t) "nominal"
+      :else nil)))
+
+(defspec base-plot-generative-test 100
+  (prop/for-all [[schema encodings] schema-and-encodings-gen]
+    (let [common-specs {:mark "point"}
+          charts-opts {:data-schema schema}
+          result (core/base-plot encodings common-specs charts-opts)
+          res-encoding (:encoding result)]
+      (and
+        (map? result)
+        (every? (fn [[k v]]
+                  (let [field (:field v)
+                        type (:type v)
+                        ;; Extract field type from schema
+                        map-items (rest (second schema))
+                        field-schema (some (fn [[fk fv]] (when (= (name fk) field) fv)) map-items)]
+                    (= type (expected-vl-type field-schema))))
+                res-encoding)))))
