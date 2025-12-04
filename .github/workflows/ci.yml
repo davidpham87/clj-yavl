@@ -30,9 +30,14 @@ jobs:
           ~/.deps.clj
           .cpcache
           node_modules
+          resources
         key: ${{ runner.os }}-shadow-cljs-${{ hashFiles('deps.edn', 'package.json')}}
         restore-keys: |
           ${{ runner.os }}-shadow-cljs-
+    - name: Download Vega-Lite schema
+      run: |
+        mkdir -p resources
+        curl -o resources/vega-lite-v6.json https://vega.github.io/schema/vega-lite/v6.json
     - name: Run tests
       run: clojure -X:test
 
