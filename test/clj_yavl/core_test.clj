@@ -1,4 +1,4 @@
-(ns example.core-test
+(ns clj-yavl.core-test
   (:require [clojure.test :refer [deftest is testing]]))
 
 (deftest simple-test
