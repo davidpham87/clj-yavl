@@ -3,4 +3,7 @@
  {:app {:target :browser
         :output-dir "public/js"
         :asset-path "/js"
-        :modules {:main {:entries [example.core]}}}}}
+        :modules {:main {:entries [clj-yavl.core]}}}
+  :test {:target :node-test
+         :output-to "out/node-tests.js"
+         :autorun true}}}
