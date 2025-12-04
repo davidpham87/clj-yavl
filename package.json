@@ -3,9 +3,15 @@
   "version": "0.0.1",
   "description": "Template for clojure projects",
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
+    "create-react-class": "^15.7.0",
+    "monaco-editor": "^0.55.1",
+    "papaparse": "^5.5.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "create-react-class": "^15.7.0"
+    "vega": "^6.2.0",
+    "vega-embed": "^7.1.0",
+    "vega-lite": "^6.4.1"
   },
   "devDependencies": {
     "shadow-cljs": "^2.28.0"
