@@ -11,7 +11,8 @@
             [clj-yavl.schema.vega-lite.encoding :as encoding]
             [clj-yavl.schema.vega-lite.scale :as scale]
             [clj-yavl.schema.vega-lite.legend :as legend]
-            [clj-yavl.schema.vega-lite.axis :as axis]))
+            [clj-yavl.schema.vega-lite.axis :as axis]
+            [clj-yavl.schema.vega-lite.toplevel :as toplevel]))
 
 (declare LayerSpec)
 
@@ -887,25 +888,11 @@
    [:width {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]])
 
 (def TopLevelLayerSpec
-  [:map {:closed true}
-   [:$schema {:optional true} string?]
-   [:autosize {:optional true}
-    [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
-   [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
-   [:config {:optional true} [:ref #'Config]]
-   [:data {:optional true} [:or [:ref #'Data] nil?]]
-   [:datasets {:optional true} [:ref #'Datasets]]
-   [:description {:optional true} string?]
-   [:encoding {:optional true} [:ref #'SharedEncoding]]
-   [:height {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]
-   [:layer [:vector [:or [:ref #'LayerSpec] [:ref #'UnitSpec]]]]
-   [:name {:optional true} string?]
-   [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
-   [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
-   [:projection {:optional true} [:ref #'Projection]]
-   [:resolve {:optional true} [:ref #'Resolve]]
-   [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
-   [:transform {:optional true} [:vector [:ref #'Transform]]]
-   [:usermeta {:optional true} [:ref #'primitives/Dict]]
-   [:view {:optional true} [:ref #'ViewBackground]]
-   [:width {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]])
+  [:merge toplevel/TopLevelProps
+   [:map {:closed true}
+    [:encoding {:optional true} [:ref #'SharedEncoding]]
+    [:height {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]
+    [:layer [:vector [:or [:ref #'LayerSpec] [:ref #'UnitSpec]]]]
+    [:projection {:optional true} [:ref #'Projection]]
+    [:view {:optional true} [:ref #'ViewBackground]]
+    [:width {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]]])

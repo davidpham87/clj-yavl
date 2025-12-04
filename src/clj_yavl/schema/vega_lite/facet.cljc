@@ -10,7 +10,8 @@
             [clj-yavl.schema.vega-lite.data :as data]
             [clj-yavl.schema.vega-lite.selection :as selection]
             [clj-yavl.schema.vega-lite.mark :as mark]
-            [clj-yavl.schema.vega-lite.projection :as projection]))
+            [clj-yavl.schema.vega-lite.projection :as projection]
+            [clj-yavl.schema.vega-lite.toplevel :as toplevel]))
 
 (def Field encoding/Field)
 (def StandardType primitives/StandardType)
@@ -165,33 +166,20 @@
    [:transform {:optional true} [:vector [:ref #'Transform]]]])
 
 (def TopLevelFacetSpec
-  [:map {:closed true}
-   [:$schema {:optional true} string?]
-   [:align {:optional true}
-    [:or [:ref #'LayoutAlign]
-     [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
-      #'RowCol_LayoutAlign_]]]
-   [:autosize {:optional true}
-    [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
-   [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
-   [:bounds {:optional true} [:enum "full" "flush"]]
-   [:center {:optional true}
-    [:or boolean?
-     [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
-   [:columns {:optional true} number?]
-   [:config {:optional true} [:ref #'Config]]
-   [:data [:or [:ref #'Data] nil?]]
-   [:datasets {:optional true} [:ref #'Datasets]]
-   [:description {:optional true} string?]
-   [:facet [:or [:ref #'FacetFieldDef] [:ref #'FacetMapping]]]
-   [:name {:optional true} string?]
-   [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
-   [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
-   [:resolve {:optional true} [:ref #'Resolve]]
-   [:spacing {:optional true}
-    [:or number?
-     [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
-   [:spec [:or [:ref #'LayerSpec] [:ref #'unit/UnitSpecWithFrame]]]
-   [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
-   [:transform {:optional true} [:vector [:ref #'Transform]]]
-   [:usermeta {:optional true} [:ref #'Dict]]])
+  [:merge toplevel/TopLevelProps
+   [:map {:closed true}
+    [:align {:optional true}
+     [:or [:ref #'LayoutAlign]
+      [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
+       #'RowCol_LayoutAlign_]]]
+    [:bounds {:optional true} [:enum "full" "flush"]]
+    [:center {:optional true}
+     [:or boolean?
+      [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
+    [:columns {:optional true} number?]
+    [:data [:or [:ref #'Data] nil?]]
+    [:facet [:or [:ref #'FacetFieldDef] [:ref #'FacetMapping]]]
+    [:spacing {:optional true}
+     [:or number?
+      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
+    [:spec [:or [:ref #'LayerSpec] [:ref #'unit/UnitSpecWithFrame]]]]])

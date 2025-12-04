@@ -15,7 +15,8 @@
             [clj-yavl.schema.vega-lite.config :as config]
             [clj-yavl.schema.vega-lite.unit :as unit]
             [clj-yavl.schema.vega-lite.layer :as layer]
-            [clj-yavl.schema.vega-lite.facet :as facet]))
+            [clj-yavl.schema.vega-lite.facet :as facet]
+            [clj-yavl.schema.vega-lite.toplevel :as toplevel]))
 
 (declare Spec)
 
@@ -150,126 +151,71 @@
 
 (def TopLevelRepeatSpec
   [:or
-   [:map {:closed true} [:description {:optional true} string?]
-    [:autosize {:optional true}
-     [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
-    [:align {:optional true}
-     [:or [:ref #'LayoutAlign]
-      [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
-       #'RowCol_LayoutAlign_]]] [:datasets {:optional true} [:ref #'Datasets]]
-    [:transform {:optional true} [:vector [:ref #'Transform]]]
-    [:usermeta {:optional true} [:ref #'Dict]]
-    [:config {:optional true} [:ref #'Config]]
-    [:columns {:optional true} number?] [:name {:optional true} string?]
-    [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
-    [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
-    [:bounds {:optional true} [:enum "full" "flush"]]
-    [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
-    [:center {:optional true}
-     [:or boolean?
-      [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
-    [:spec [:ref #'NonNormalizedSpec]]
-    [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
-    [:resolve {:optional true} [:ref #'Resolve]]
-    [:repeat [:or [:vector string?] [:ref #'RepeatMapping]]]
-    [:$schema {:optional true} string?]
-    [:spacing {:optional true}
-     [:or number?
-      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
-    [:data {:optional true} [:or [:ref #'Data] nil?]]]
-   [:map {:closed true} [:description {:optional true} string?]
-    [:autosize {:optional true}
-     [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
-    [:align {:optional true}
-     [:or [:ref #'LayoutAlign]
-      [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
-       #'RowCol_LayoutAlign_]]] [:datasets {:optional true} [:ref #'Datasets]]
-    [:transform {:optional true} [:vector [:ref #'Transform]]]
-    [:usermeta {:optional true} [:ref #'Dict]]
-    [:config {:optional true} [:ref #'Config]]
-    [:columns {:optional true} number?] [:name {:optional true} string?]
-    [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
-    [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
-    [:bounds {:optional true} [:enum "full" "flush"]]
-    [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
-    [:center {:optional true}
-     [:or boolean?
-      [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
-    [:spec [:or [:ref #'LayerSpec] [:ref #'UnitSpecWithFrame]]]
-    [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
-    [:resolve {:optional true} [:ref #'Resolve]]
-    [:repeat [:ref #'LayerRepeatMapping]] [:$schema {:optional true} string?]
-    [:spacing {:optional true}
-     [:or number?
-      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
-    [:data {:optional true} [:or [:ref #'Data] nil?]]]])
+   [:merge toplevel/TopLevelProps
+    [:map {:closed true}
+     [:align {:optional true}
+      [:or [:ref #'LayoutAlign]
+       [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
+        #'RowCol_LayoutAlign_]]]
+     [:bounds {:optional true} [:enum "full" "flush"]]
+     [:center {:optional true}
+      [:or boolean?
+       [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
+     [:columns {:optional true} number?]
+     [:repeat [:or [:vector string?] [:ref #'RepeatMapping]]]
+     [:spacing {:optional true}
+      [:or number?
+       [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
+     [:spec [:ref #'NonNormalizedSpec]]]]
+   [:merge toplevel/TopLevelProps
+    [:map {:closed true}
+     [:align {:optional true}
+      [:or [:ref #'LayoutAlign]
+       [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
+        #'RowCol_LayoutAlign_]]]
+     [:bounds {:optional true} [:enum "full" "flush"]]
+     [:center {:optional true}
+      [:or boolean?
+       [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
+     [:columns {:optional true} number?]
+     [:repeat [:ref #'LayerRepeatMapping]]
+     [:spacing {:optional true}
+      [:or number?
+       [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
+     [:spec [:or [:ref #'LayerSpec] [:ref #'UnitSpecWithFrame]]]]]])
 
 (def TopLevelConcatSpec
-  [:map {:closed true} [:description {:optional true} string?]
-   [:autosize {:optional true}
-    [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
-   [:align {:optional true}
-    [:or [:ref #'LayoutAlign]
-     [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
-      #'RowCol_LayoutAlign_]]] [:datasets {:optional true} [:ref #'Datasets]]
-   [:transform {:optional true} [:vector [:ref #'Transform]]]
-   [:usermeta {:optional true} [:ref #'Dict]]
-   [:config {:optional true} [:ref #'Config]]
-   [:concat [:vector [:ref #'NonNormalizedSpec]]]
-   [:columns {:optional true} number?] [:name {:optional true} string?]
-   [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
-   [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
-   [:bounds {:optional true} [:enum "full" "flush"]]
-   [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
-   [:center {:optional true}
-    [:or boolean?
-     [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
-   [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
-   [:resolve {:optional true} [:ref #'Resolve]]
-   [:$schema {:optional true} string?]
-   [:spacing {:optional true}
-    [:or number?
-     [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
-   [:data {:optional true} [:or [:ref #'Data] nil?]]])
+  [:merge toplevel/TopLevelProps
+   [:map {:closed true}
+    [:align {:optional true}
+     [:or [:ref #'LayoutAlign]
+      [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
+       #'RowCol_LayoutAlign_]]]
+    [:bounds {:optional true} [:enum "full" "flush"]]
+    [:center {:optional true}
+     [:or boolean?
+      [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
+    [:columns {:optional true} number?]
+    [:concat [:vector [:ref #'NonNormalizedSpec]]]
+    [:spacing {:optional true}
+     [:or number?
+      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]]])
 
 (def TopLevelHConcatSpec
-  [:map {:closed true} [:description {:optional true} string?]
-   [:autosize {:optional true}
-    [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
-   [:datasets {:optional true} [:ref #'Datasets]]
-   [:transform {:optional true} [:vector [:ref #'Transform]]]
-   [:hconcat [:vector [:ref #'NonNormalizedSpec]]]
-   [:usermeta {:optional true} [:ref #'Dict]]
-   [:config {:optional true} [:ref #'Config]] [:name {:optional true} string?]
-   [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
-   [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
-   [:bounds {:optional true} [:enum "full" "flush"]]
-   [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
-   [:center {:optional true} boolean?]
-   [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
-   [:resolve {:optional true} [:ref #'Resolve]]
-   [:$schema {:optional true} string?] [:spacing {:optional true} number?]
-   [:data {:optional true} [:or [:ref #'Data] nil?]]])
+  [:merge toplevel/TopLevelProps
+   [:map {:closed true}
+    [:bounds {:optional true} [:enum "full" "flush"]]
+    [:center {:optional true} boolean?]
+    [:hconcat [:vector [:ref #'NonNormalizedSpec]]]
+    [:spacing {:optional true} number?]]])
 
 (def TopLevelVConcatSpec
-  [:map {:closed true} [:description {:optional true} string?]
-   [:autosize {:optional true}
-    [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
-   [:datasets {:optional true} [:ref #'Datasets]]
-   [:transform {:optional true} [:vector [:ref #'Transform]]]
-   [:usermeta {:optional true} [:ref #'Dict]]
-   [:config {:optional true} [:ref #'Config]] [:name {:optional true} string?]
-   [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
-   [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
-   [:bounds {:optional true} [:enum "full" "flush"]]
-   [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
-   [:center {:optional true} boolean?]
-   [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
-   [:resolve {:optional true} [:ref #'Resolve]]
-   [:$schema {:optional true} string?]
-   [:vconcat [:vector [:ref #'NonNormalizedSpec]]]
-   [:spacing {:optional true} number?]
-   [:data {:optional true} [:or [:ref #'Data] nil?]]])
+  [:merge toplevel/TopLevelProps
+   [:map {:closed true}
+    [:bounds {:optional true} [:enum "full" "flush"]]
+    [:center {:optional true} boolean?]
+    [:spacing {:optional true} number?]
+    [:vconcat [:vector [:ref #'NonNormalizedSpec]]]]])
 
 (def TopLevelSpec
   [:or [:ref #'TopLevelUnitSpec] [:ref #'TopLevelFacetSpec]

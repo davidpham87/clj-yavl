@@ -8,7 +8,8 @@
             [clj-yavl.schema.vega-lite.projection :as projection]
             [clj-yavl.schema.vega-lite.selection :as selection]
             [clj-yavl.schema.vega-lite.config :as config]
-            [clj-yavl.schema.vega-lite.data :as data]))
+            [clj-yavl.schema.vega-lite.data :as data]
+            [clj-yavl.schema.vega-lite.toplevel :as toplevel]))
 
 (def Text common/Text)
 (def StepFor primitives/StepFor)
@@ -64,54 +65,7 @@
 (def Datasets data/Datasets)
 (def TopLevelParameter selection/TopLevelParameter)
 
-(def ResolveMode primitives/ResolveMode)
-
-(def AxisResolveMap
-  [:map {:closed true}
-   [:x {:optional true} [:ref #'ResolveMode]]
-   [:y {:optional true} [:ref #'ResolveMode]]])
-
-(def LegendResolveMap
-  [:map {:closed true}
-   [:angle {:optional true} [:ref #'ResolveMode]]
-   [:color {:optional true} [:ref #'ResolveMode]]
-   [:fill {:optional true} [:ref #'ResolveMode]]
-   [:fillOpacity {:optional true} [:ref #'ResolveMode]]
-   [:opacity {:optional true} [:ref #'ResolveMode]]
-   [:shape {:optional true} [:ref #'ResolveMode]]
-   [:size {:optional true} [:ref #'ResolveMode]]
-   [:stroke {:optional true} [:ref #'ResolveMode]]
-   [:strokeDash {:optional true} [:ref #'ResolveMode]]
-   [:strokeOpacity {:optional true} [:ref #'ResolveMode]]
-   [:strokeWidth {:optional true} [:ref #'ResolveMode]]
-   [:time {:optional true} [:ref #'ResolveMode]]])
-
-(def ScaleResolveMap
-  [:map {:closed true}
-   [:angle {:optional true} [:ref #'ResolveMode]]
-   [:color {:optional true} [:ref #'ResolveMode]]
-   [:fill {:optional true} [:ref #'ResolveMode]]
-   [:fillOpacity {:optional true} [:ref #'ResolveMode]]
-   [:opacity {:optional true} [:ref #'ResolveMode]]
-   [:radius {:optional true} [:ref #'ResolveMode]]
-   [:shape {:optional true} [:ref #'ResolveMode]]
-   [:size {:optional true} [:ref #'ResolveMode]]
-   [:stroke {:optional true} [:ref #'ResolveMode]]
-   [:strokeDash {:optional true} [:ref #'ResolveMode]]
-   [:strokeOpacity {:optional true} [:ref #'ResolveMode]]
-   [:strokeWidth {:optional true} [:ref #'ResolveMode]]
-   [:theta {:optional true} [:ref #'ResolveMode]]
-   [:time {:optional true} [:ref #'ResolveMode]]
-   [:x {:optional true} [:ref #'ResolveMode]]
-   [:xOffset {:optional true} [:ref #'ResolveMode]]
-   [:y {:optional true} [:ref #'ResolveMode]]
-   [:yOffset {:optional true} [:ref #'ResolveMode]]])
-
-(def Resolve
-  [:map {:closed true}
-   [:axis {:optional true} [:ref #'AxisResolveMap]]
-   [:legend {:optional true} [:ref #'LegendResolveMap]]
-   [:scale {:optional true} [:ref #'ScaleResolveMap]]])
+(def Resolve common/Resolve)
 
 (def UnitSpecWithFrame
   [:map {:closed true}
@@ -278,36 +232,23 @@
    [:yOffset {:optional true} [:ref #'OffsetDef]]])
 
 (def TopLevelUnitSpec
-  [:map {:closed true}
-   [:$schema {:optional true} string?]
-   [:align {:optional true}
-    [:or [:ref #'LayoutAlign]
-     [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
-      #'RowCol_LayoutAlign_]]]
-   [:autosize {:optional true}
-    [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
-   [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
-   [:bounds {:optional true} [:enum "full" "flush"]]
-   [:center {:optional true}
-    [:or boolean?
-     [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
-   [:config {:optional true} [:ref #'Config]]
-   [:data [:or [:ref #'Data] nil?]]
-   [:datasets {:optional true} [:ref #'Datasets]]
-   [:description {:optional true} string?]
-   [:encoding {:optional true} [:ref #'FacetedEncoding]]
-   [:height {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]
-   [:mark [:ref #'AnyMark]]
-   [:name {:optional true} string?]
-   [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
-   [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
-   [:projection {:optional true} [:ref #'Projection]]
-   [:resolve {:optional true} [:ref #'Resolve]]
-   [:spacing {:optional true}
-    [:or number?
-     [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
-   [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
-   [:transform {:optional true} [:vector [:ref #'Transform]]]
-   [:usermeta {:optional true} [:ref #'Dict]]
-   [:view {:optional true} [:ref #'ViewBackground]]
-   [:width {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]])
+  [:merge toplevel/TopLevelProps
+   [:map {:closed true}
+    [:align {:optional true}
+     [:or [:ref #'LayoutAlign]
+      [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
+       #'RowCol_LayoutAlign_]]]
+    [:bounds {:optional true} [:enum "full" "flush"]]
+    [:center {:optional true}
+     [:or boolean?
+      [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
+    [:data [:or [:ref #'Data] nil?]]
+    [:encoding {:optional true} [:ref #'FacetedEncoding]]
+    [:height {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]
+    [:mark [:ref #'AnyMark]]
+    [:projection {:optional true} [:ref #'Projection]]
+    [:spacing {:optional true}
+     [:or number?
+      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
+    [:view {:optional true} [:ref #'ViewBackground]]
+    [:width {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]]])
