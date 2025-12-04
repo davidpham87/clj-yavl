@@ -3,3 +3,4 @@ out/
 .shadow-cljs/
 .cpcache/
 target/
+resources/vega-lite-v6.json

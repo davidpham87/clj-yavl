@@ -13,9 +13,18 @@
   (when (and (string? ref-val) (str/starts-with? ref-val "#/definitions/"))
     (subs ref-val (count "#/definitions/"))))
 
+(defn- add-prop [schema k v]
+  (if (vector? schema)
+    (let [type (first schema)
+          has-props (map? (second schema))
+          props (if has-props (second schema) {})
+          children (if has-props (drop 2 schema) (rest schema))]
+      (into [type (assoc props k v)] children))
+    [:and {k v} schema]))
+
 (defn- parse-ref [{:keys [$ref]}]
   (when-let [r (normalize-ref $ref)]
-    [:ref (list 'var (sanitize-name r))]))
+    [:ref {:json-schema/original-name r} (list 'var (sanitize-name r))]))
 
 (defn- parse-enum [{:keys [enum]}]
   (when enum
@@ -45,10 +54,11 @@
   (when (= type "object")
     (let [req-set (set (map keyword required))
           props (for [[k v] properties]
-                  (let [schema (json-schema->malli v)]
+                  (let [schema (json-schema->malli v)
+                        p-props {:json-schema/original-name (name k)}]
                     (if (contains? req-set k)
-                      [k schema]
-                      [k {:optional true} schema])))]
+                      [(keyword k) p-props schema]
+                      [(keyword k) (assoc p-props :optional true) schema])))]
       (if (or (seq props) (false? additionalProperties))
         (into [:map {:closed (false? additionalProperties)}] props)
         [:map-of 'any? 'any?]))))
@@ -58,11 +68,13 @@
         consts (get grouped :=)
         enums (get grouped :enum)
         others (apply concat (vals (dissoc grouped := :enum)))
-        all-values (mapcat (fn [s]
-                             (if (= := (first s))
-                               [(second s)]
-                               (rest s)))
-                           (concat consts enums))]
+
+        extract (fn [s]
+                  (let [has-opts (map? (second s))
+                        args (if has-opts (drop 2 s) (rest s))]
+                    args))
+
+        all-values (mapcat extract (concat consts enums))]
     (cond-> (vec others)
       (seq all-values) (conj (into [:enum] (distinct all-values))))))
 
@@ -91,7 +103,9 @@
 (defn transform [json-schema]
   (let [definitions (:definitions json-schema)
         registry (reduce-kv (fn [acc k v]
-                              (assoc acc (sanitize-name k) (json-schema->malli v)))
+                              (let [s (json-schema->malli v)
+                                    s (add-prop s :json-schema/original-name (name k))]
+                                (assoc acc (sanitize-name k) s)))
                             {}
                             definitions)
         schema (json-schema->malli json-schema)]
