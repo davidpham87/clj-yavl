@@ -3,13 +3,19 @@
 
 (declare json-schema->malli)
 
+(defn- sanitize-name [n]
+  (-> (name n)
+      (str/replace #"[^a-zA-Z0-9_]" "_")
+      (as-> s (if (re-matches #"\d.*" s) (str "_" s) s))
+      (symbol)))
+
 (defn- normalize-ref [ref-val]
   (when (and (string? ref-val) (str/starts-with? ref-val "#/definitions/"))
     (subs ref-val (count "#/definitions/"))))
 
 (defn- parse-ref [{:keys [$ref]}]
   (when-let [r (normalize-ref $ref)]
-    [:ref r]))
+    [:ref (list 'var (sanitize-name r))]))
 
 (defn- parse-enum [{:keys [enum]}]
   (when enum
@@ -38,10 +44,13 @@
 (defn- parse-object [{:keys [type properties required additionalProperties]}]
   (when (= type "object")
     (let [req-set (set (map keyword required))
-          prop-entries (for [[k v] properties]
-                         [(keyword k) (json-schema->malli v)])]
-      (if (or (seq prop-entries) (false? additionalProperties))
-        (into [:map {:json-schema/required req-set}] prop-entries)
+          props (for [[k v] properties]
+                  (let [schema (json-schema->malli v)]
+                    (if (contains? req-set k)
+                      [k schema]
+                      [k {:optional true} schema])))]
+      (if (or (seq props) (false? additionalProperties))
+        (into [:map {:closed (false? additionalProperties)}] props)
         [:map-of 'any? 'any?]))))
 
 (defn- optimize-or [schemas]
@@ -82,7 +91,7 @@
 (defn transform [json-schema]
   (let [definitions (:definitions json-schema)
         registry (reduce-kv (fn [acc k v]
-                              (assoc acc (name k) (json-schema->malli v)))
+                              (assoc acc (sanitize-name k) (json-schema->malli v)))
                             {}
                             definitions)
         schema (json-schema->malli json-schema)]
