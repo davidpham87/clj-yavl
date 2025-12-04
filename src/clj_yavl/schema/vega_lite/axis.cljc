@@ -358,235 +358,237 @@
 
 (def Axis
   [:map {:closed true}
-   [:titleOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
+   [:bandPosition {:optional true} [:or number? [:ref #'ExprRef]]]
    [:description {:optional true} [:or string? [:ref #'ExprRef]]]
-   [:gridDash {:optional true}
-    [:or [:vector number?] [:ref #'ExprRef]
-     [:ref #'ConditionalAxisNumberArray]]]
-   [:domainOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:labelLimit {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:labels {:optional true} boolean?]
-   [:titleFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:format {:optional true} [:ref #'Format]]
-   [:labelFlushOffset {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:labelSeparation {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:labelBaseline {:optional true}
-    [:or [:ref #'TextBaseline] [:ref #'ExprRef]
-     [:ref #'ConditionalAxisLabelBaseline]]]
-   [:titleFontStyle {:optional true} [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
-   [:tickBand {:optional true} [:or [:ref #'ExprRef] [:enum "center" "extent"]]]
-   [:titleLimit {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:gridOpacity {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:titleAlign {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
-   [:labelOverlap {:optional true} [:or [:ref #'LabelOverlap] [:ref #'ExprRef]]]
-   [:offset {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:domainDash {:optional true} [:or [:vector number?] [:ref #'ExprRef]]]
-   [:tickWidth {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:labelOpacity {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:domain {:optional true} boolean?]
+   [:domainCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
    [:domainColor {:optional true}
     [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+   [:domainDash {:optional true} [:or [:vector number?] [:ref #'ExprRef]]]
+   [:domainDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:domainOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:domainWidth {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:format {:optional true} [:ref #'Format]]
+   [:formatType {:optional true} string?]
    [:grid {:optional true} boolean?]
-   [:labelPadding {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:labelLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:titleBaseline {:optional true}
-    [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
-   [:tickExtra {:optional true} boolean?]
-   [:titleX {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:tickOpacity {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:tickDashOffset {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:tickCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
-   [:labelFlush {:optional true} [:or boolean? number?]]
-   [:titleAngle {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:labelOffset {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:tickRound {:optional true} boolean?]
-   [:titleLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:orient {:optional true} [:or [:ref #'AxisOrient] [:ref #'ExprRef]]]
-   [:tickMinStep {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:tickDash {:optional true}
-    [:or [:vector number?] [:ref #'ExprRef]
-     [:ref #'ConditionalAxisNumberArray]]]
-   [:titleAnchor {:optional true} [:or [:ref #'TitleAnchor] [:ref #'ExprRef]]]
-   [:labelColor {:optional true}
-    [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]
-     [:ref #'ConditionalAxisColor]]]
-   [:domainCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
-   [:title {:optional true} [:or [:ref #'Text] nil?]]
-   [:style {:optional true} [:or string? [:vector string?]]]
-   [:labelAngle {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:titleY {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:titleFont {:optional true} [:or string? [:ref #'ExprRef]]]
-   [:labelExpr {:optional true} string?]
-   [:minExtent {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:tickCount {:optional true}
-    [:or number? [:ref #'TimeInterval] [:ref #'TimeIntervalStep]
-     [:ref #'ExprRef]]] [:formatType {:optional true} string?]
-   [:titleColor {:optional true}
-    [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
-   [:tickSize {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
-   [:gridDashOffset {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:gridWidth {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:titlePadding {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:values {:optional true}
-    [:or [:vector number?] [:vector string?] [:vector boolean?]
-     [:vector [:ref #'DateTime]] [:ref #'ExprRef]]]
-   [:labelFont {:optional true}
-    [:or string? [:ref #'ExprRef] [:ref #'ConditionalAxisString]]]
-   [:maxExtent {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:bandPosition {:optional true} [:or number? [:ref #'ExprRef]]]
    [:gridCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
-   [:translate {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:ticks {:optional true} boolean?]
-   [:position {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:tickOffset {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:labelAlign {:optional true}
-    [:or [:ref #'Align] [:ref #'ExprRef] [:ref #'ConditionalAxisLabelAlign]]]
-   [:domain {:optional true} boolean?]
-   [:labelFontWeight {:optional true}
-    [:or [:ref #'FontWeight] [:ref #'ExprRef]
-     [:ref #'ConditionalAxisLabelFontWeight]]]
-   [:labelBound {:optional true} [:or [:or number? boolean?] [:ref #'ExprRef]]]
-   [:labelFontStyle {:optional true}
-    [:or [:ref #'FontStyle] [:ref #'ExprRef]
-     [:ref #'ConditionalAxisLabelFontStyle]]]
-   [:labelFontSize {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:zindex {:optional true} number?]
    [:gridColor {:optional true}
     [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]
      [:ref #'ConditionalAxisColor]]]
-   [:titleFontWeight {:optional true}
-    [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
-   [:domainDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:gridDash {:optional true}
+    [:or [:vector number?] [:ref #'ExprRef]
+     [:ref #'ConditionalAxisNumberArray]]]
+   [:gridDashOffset {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:gridOpacity {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:gridWidth {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:labelAlign {:optional true}
+    [:or [:ref #'Align] [:ref #'ExprRef] [:ref #'ConditionalAxisLabelAlign]]]
+   [:labelAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:labelBaseline {:optional true}
+    [:or [:ref #'TextBaseline] [:ref #'ExprRef]
+     [:ref #'ConditionalAxisLabelBaseline]]]
+   [:labelBound {:optional true} [:or [:or number? boolean?] [:ref #'ExprRef]]]
+   [:labelColor {:optional true}
+    [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]
+     [:ref #'ConditionalAxisColor]]]
+   [:labelExpr {:optional true} string?]
+   [:labelFlush {:optional true} [:or boolean? number?]]
+   [:labelFlushOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:labelFont {:optional true}
+    [:or string? [:ref #'ExprRef] [:ref #'ConditionalAxisString]]]
+   [:labelFontSize {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:labelFontStyle {:optional true}
+    [:or [:ref #'FontStyle] [:ref #'ExprRef]
+     [:ref #'ConditionalAxisLabelFontStyle]]]
+   [:labelFontWeight {:optional true}
+    [:or [:ref #'FontWeight] [:ref #'ExprRef]
+     [:ref #'ConditionalAxisLabelFontWeight]]]
+   [:labelLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:labelLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:labelOffset {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:labelOpacity {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:labelOverlap {:optional true} [:or [:ref #'LabelOverlap] [:ref #'ExprRef]]]
+   [:labelPadding {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:labelSeparation {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:labels {:optional true} boolean?]
+   [:maxExtent {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:minExtent {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:offset {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:orient {:optional true} [:or [:ref #'AxisOrient] [:ref #'ExprRef]]]
+   [:position {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:style {:optional true} [:or string? [:vector string?]]]
+   [:tickBand {:optional true} [:or [:ref #'ExprRef] [:enum "center" "extent"]]]
+   [:tickCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
    [:tickColor {:optional true}
     [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]
      [:ref #'ConditionalAxisColor]]]
-   [:domainWidth {:optional true} [:or number? [:ref #'ExprRef]]]])
+   [:tickCount {:optional true}
+    [:or number? [:ref #'TimeInterval] [:ref #'TimeIntervalStep]
+     [:ref #'ExprRef]]]
+   [:tickDash {:optional true}
+    [:or [:vector number?] [:ref #'ExprRef]
+     [:ref #'ConditionalAxisNumberArray]]]
+   [:tickDashOffset {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:tickExtra {:optional true} boolean?]
+   [:tickMinStep {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:tickOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:tickOpacity {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:tickRound {:optional true} boolean?]
+   [:tickSize {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:tickWidth {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:ticks {:optional true} boolean?]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:titleAlign {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
+   [:titleAnchor {:optional true} [:or [:ref #'TitleAnchor] [:ref #'ExprRef]]]
+   [:titleAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:titleBaseline {:optional true}
+    [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
+   [:titleColor {:optional true}
+    [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+   [:titleFont {:optional true} [:or string? [:ref #'ExprRef]]]
+   [:titleFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:titleFontStyle {:optional true} [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
+   [:titleFontWeight {:optional true}
+    [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
+   [:titleLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:titleLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:titleOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:titlePadding {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:titleX {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:titleY {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:translate {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:values {:optional true}
+    [:or [:vector number?] [:vector string?] [:vector boolean?]
+     [:vector [:ref #'DateTime]] [:ref #'ExprRef]]]
+   [:zindex {:optional true} number?]])
 
 (def AxisConfig
   [:map {:closed true}
-   [:titleOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
+   [:bandPosition {:optional true} [:or number? [:ref #'ExprRef]]]
    [:description {:optional true} [:or string? [:ref #'ExprRef]]]
    [:disable {:optional true} boolean?]
-   [:gridDash {:optional true}
-    [:or [:vector number?] [:ref #'ExprRef]
-     [:ref #'ConditionalAxisNumberArray]]]
-   [:domainOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:labelLimit {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:labels {:optional true} boolean?]
-   [:titleFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:format {:optional true} [:ref #'Format]]
-   [:labelFlushOffset {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:labelSeparation {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:labelBaseline {:optional true}
-    [:or [:ref #'TextBaseline] [:ref #'ExprRef]
-     [:ref #'ConditionalAxisLabelBaseline]]]
-   [:titleFontStyle {:optional true} [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
-   [:tickBand {:optional true} [:or [:ref #'ExprRef] [:enum "center" "extent"]]]
-   [:titleLimit {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:gridOpacity {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:titleAlign {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
-   [:labelOverlap {:optional true} [:or [:ref #'LabelOverlap] [:ref #'ExprRef]]]
-   [:offset {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:domainDash {:optional true} [:or [:vector number?] [:ref #'ExprRef]]]
-   [:tickWidth {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:labelOpacity {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:domain {:optional true} boolean?]
+   [:domainCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
    [:domainColor {:optional true}
     [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+   [:domainDash {:optional true} [:or [:vector number?] [:ref #'ExprRef]]]
+   [:domainDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:domainOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:domainWidth {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:format {:optional true} [:ref #'Format]]
+   [:formatType {:optional true} string?]
    [:grid {:optional true} boolean?]
-   [:labelPadding {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:labelLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:titleBaseline {:optional true}
-    [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
-   [:tickExtra {:optional true} boolean?]
-   [:titleX {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:tickOpacity {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:tickDashOffset {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:tickCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
-   [:labelFlush {:optional true} [:or boolean? number?]]
-   [:titleAngle {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:labelOffset {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:tickRound {:optional true} boolean?]
-   [:titleLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:orient {:optional true} [:or [:ref #'AxisOrient] [:ref #'ExprRef]]]
-   [:tickMinStep {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:tickDash {:optional true}
-    [:or [:vector number?] [:ref #'ExprRef]
-     [:ref #'ConditionalAxisNumberArray]]]
-   [:titleAnchor {:optional true} [:or [:ref #'TitleAnchor] [:ref #'ExprRef]]]
-   [:labelColor {:optional true}
-    [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]
-     [:ref #'ConditionalAxisColor]]]
-   [:domainCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
-   [:title {:optional true} [:or [:ref #'Text] nil?]]
-   [:style {:optional true} [:or string? [:vector string?]]]
-   [:labelAngle {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:titleY {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:titleFont {:optional true} [:or string? [:ref #'ExprRef]]]
-   [:labelExpr {:optional true} string?]
-   [:minExtent {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:tickCount {:optional true}
-    [:or number? [:ref #'TimeInterval] [:ref #'TimeIntervalStep]
-     [:ref #'ExprRef]]] [:formatType {:optional true} string?]
-   [:titleColor {:optional true}
-    [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
-   [:tickSize {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
-   [:gridDashOffset {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:gridWidth {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:titlePadding {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:values {:optional true}
-    [:or [:vector number?] [:vector string?] [:vector boolean?]
-     [:vector [:ref #'DateTime]] [:ref #'ExprRef]]]
-   [:labelFont {:optional true}
-    [:or string? [:ref #'ExprRef] [:ref #'ConditionalAxisString]]]
-   [:maxExtent {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:bandPosition {:optional true} [:or number? [:ref #'ExprRef]]]
    [:gridCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
-   [:translate {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:ticks {:optional true} boolean?]
-   [:position {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:tickOffset {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:labelAlign {:optional true}
-    [:or [:ref #'Align] [:ref #'ExprRef] [:ref #'ConditionalAxisLabelAlign]]]
-   [:domain {:optional true} boolean?]
-   [:labelFontWeight {:optional true}
-    [:or [:ref #'FontWeight] [:ref #'ExprRef]
-     [:ref #'ConditionalAxisLabelFontWeight]]]
-   [:labelBound {:optional true} [:or [:or number? boolean?] [:ref #'ExprRef]]]
-   [:labelFontStyle {:optional true}
-    [:or [:ref #'FontStyle] [:ref #'ExprRef]
-     [:ref #'ConditionalAxisLabelFontStyle]]]
-   [:labelFontSize {:optional true}
-    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
-   [:zindex {:optional true} number?]
    [:gridColor {:optional true}
     [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]
      [:ref #'ConditionalAxisColor]]]
-   [:titleFontWeight {:optional true}
-    [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
-   [:domainDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:gridDash {:optional true}
+    [:or [:vector number?] [:ref #'ExprRef]
+     [:ref #'ConditionalAxisNumberArray]]]
+   [:gridDashOffset {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:gridOpacity {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:gridWidth {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:labelAlign {:optional true}
+    [:or [:ref #'Align] [:ref #'ExprRef] [:ref #'ConditionalAxisLabelAlign]]]
+   [:labelAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:labelBaseline {:optional true}
+    [:or [:ref #'TextBaseline] [:ref #'ExprRef]
+     [:ref #'ConditionalAxisLabelBaseline]]]
+   [:labelBound {:optional true} [:or [:or number? boolean?] [:ref #'ExprRef]]]
+   [:labelColor {:optional true}
+    [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]
+     [:ref #'ConditionalAxisColor]]]
+   [:labelExpr {:optional true} string?]
+   [:labelFlush {:optional true} [:or boolean? number?]]
+   [:labelFlushOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:labelFont {:optional true}
+    [:or string? [:ref #'ExprRef] [:ref #'ConditionalAxisString]]]
+   [:labelFontSize {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:labelFontStyle {:optional true}
+    [:or [:ref #'FontStyle] [:ref #'ExprRef]
+     [:ref #'ConditionalAxisLabelFontStyle]]]
+   [:labelFontWeight {:optional true}
+    [:or [:ref #'FontWeight] [:ref #'ExprRef]
+     [:ref #'ConditionalAxisLabelFontWeight]]]
+   [:labelLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:labelLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:labelOffset {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:labelOpacity {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:labelOverlap {:optional true} [:or [:ref #'LabelOverlap] [:ref #'ExprRef]]]
+   [:labelPadding {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:labelSeparation {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:labels {:optional true} boolean?]
+   [:maxExtent {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:minExtent {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:offset {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:orient {:optional true} [:or [:ref #'AxisOrient] [:ref #'ExprRef]]]
+   [:position {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:style {:optional true} [:or string? [:vector string?]]]
+   [:tickBand {:optional true} [:or [:ref #'ExprRef] [:enum "center" "extent"]]]
+   [:tickCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
    [:tickColor {:optional true}
     [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]
      [:ref #'ConditionalAxisColor]]]
-   [:domainWidth {:optional true} [:or number? [:ref #'ExprRef]]]])
+   [:tickCount {:optional true}
+    [:or number? [:ref #'TimeInterval] [:ref #'TimeIntervalStep]
+     [:ref #'ExprRef]]]
+   [:tickDash {:optional true}
+    [:or [:vector number?] [:ref #'ExprRef]
+     [:ref #'ConditionalAxisNumberArray]]]
+   [:tickDashOffset {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:tickExtra {:optional true} boolean?]
+   [:tickMinStep {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:tickOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:tickOpacity {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:tickRound {:optional true} boolean?]
+   [:tickSize {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:tickWidth {:optional true}
+    [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+   [:ticks {:optional true} boolean?]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:titleAlign {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
+   [:titleAnchor {:optional true} [:or [:ref #'TitleAnchor] [:ref #'ExprRef]]]
+   [:titleAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:titleBaseline {:optional true}
+    [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
+   [:titleColor {:optional true}
+    [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+   [:titleFont {:optional true} [:or string? [:ref #'ExprRef]]]
+   [:titleFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:titleFontStyle {:optional true} [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
+   [:titleFontWeight {:optional true}
+    [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
+   [:titleLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:titleLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:titleOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:titlePadding {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:titleX {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:titleY {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:translate {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:values {:optional true}
+    [:or [:vector number?] [:vector string?] [:vector boolean?]
+     [:vector [:ref #'DateTime]] [:ref #'ExprRef]]]
+   [:zindex {:optional true} number?]])

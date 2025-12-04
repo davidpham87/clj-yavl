@@ -42,52 +42,55 @@
    [:ref #'SequentialMultiHue] [:ref #'Diverging] [:ref #'Cyclical]])
 
 (def SchemeParams
-  [:map {:closed true} [:count {:optional true} number?]
-   [:extent {:optional true} [:vector number?]] [:name [:ref #'ColorScheme]]])
+  [:map {:closed true}
+   [:count {:optional true} number?]
+   [:extent {:optional true} [:vector number?]]
+   [:name [:ref #'ColorScheme]]])
 
 (def DomainUnionWith
   [:map {:closed true}
    [:unionWith [:vector [:or number? string? boolean? [:ref #'DateTime]]]]])
 
 (def Scale
-  [:map {:closed true} [:zero {:optional true} [:or boolean? [:ref #'ExprRef]]]
-   [:exponent {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:paddingInner {:optional true} [:or number? [:ref #'ExprRef]]]
+  [:map {:closed true}
    [:align {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:domainRaw {:optional true} [:ref #'ExprRef]]
-   [:constant {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:base {:optional true} [:or number? [:ref #'ExprRef]]]
    [:bins {:optional true} [:ref #'ScaleBins]]
-   [:paddingOuter {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:type {:optional true} [:ref #'ScaleType]]
-   [:interpolate {:optional true}
-    [:or [:ref #'ScaleInterpolateEnum] [:ref #'ExprRef]
-     [:ref #'ScaleInterpolateParams]]]
-   [:domainMax {:optional true}
-    [:or number? [:ref #'DateTime] [:ref #'ExprRef]]]
-   [:round {:optional true} [:or boolean? [:ref #'ExprRef]]]
-   [:rangeMax {:optional true} [:or number? string? [:ref #'ExprRef]]]
-   [:rangeMin {:optional true} [:or number? string? [:ref #'ExprRef]]]
-   [:padding {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:nice {:optional true}
-    [:or boolean? number? [:ref #'TimeInterval] [:ref #'TimeIntervalStep]
-     [:ref #'ExprRef]]]
-   [:domainMin {:optional true}
-    [:or number? [:ref #'DateTime] [:ref #'ExprRef]]]
+   [:clamp {:optional true} [:or boolean? [:ref #'ExprRef]]]
+   [:constant {:optional true} [:or number? [:ref #'ExprRef]]]
    [:domain {:optional true}
     [:or
      [:vector
       [:or nil? string? number? boolean? [:ref #'DateTime] [:ref #'ExprRef]]]
      [:ref #'ParameterExtent] [:ref #'DomainUnionWith] [:ref #'ExprRef]
      [:enum "unaggregated"]]]
-   [:base {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:clamp {:optional true} [:or boolean? [:ref #'ExprRef]]]
-   [:scheme {:optional true}
-    [:or [:ref #'ColorScheme] [:ref #'SchemeParams] [:ref #'ExprRef]]]
-   [:reverse {:optional true} [:or boolean? [:ref #'ExprRef]]]
+   [:domainMax {:optional true}
+    [:or number? [:ref #'DateTime] [:ref #'ExprRef]]]
+   [:domainMid {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:domainMin {:optional true}
+    [:or number? [:ref #'DateTime] [:ref #'ExprRef]]]
+   [:domainRaw {:optional true} [:ref #'ExprRef]]
+   [:exponent {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:interpolate {:optional true}
+    [:or [:ref #'ScaleInterpolateEnum] [:ref #'ExprRef]
+     [:ref #'ScaleInterpolateParams]]]
+   [:nice {:optional true}
+    [:or boolean? number? [:ref #'TimeInterval] [:ref #'TimeIntervalStep]
+     [:ref #'ExprRef]]]
+   [:padding {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:paddingInner {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:paddingOuter {:optional true} [:or number? [:ref #'ExprRef]]]
    [:range {:optional true}
     [:or [:ref #'RangeEnum] [:ref #'FieldRange]
      [:vector [:or number? string? [:vector number?] [:ref #'ExprRef]]]]]
-   [:domainMid {:optional true} [:or number? [:ref #'ExprRef]]]])
+   [:rangeMax {:optional true} [:or number? string? [:ref #'ExprRef]]]
+   [:rangeMin {:optional true} [:or number? string? [:ref #'ExprRef]]]
+   [:reverse {:optional true} [:or boolean? [:ref #'ExprRef]]]
+   [:round {:optional true} [:or boolean? [:ref #'ExprRef]]]
+   [:scheme {:optional true}
+    [:or [:ref #'ColorScheme] [:ref #'SchemeParams] [:ref #'ExprRef]]]
+   [:type {:optional true} [:ref #'ScaleType]]
+   [:zero {:optional true} [:or boolean? [:ref #'ExprRef]]]])
 
 (def ScaleInvalidDataShowAsValue__strokeWidth__
   primitives/ScaleInvalidDataShowAsValue__strokeWidth__)
@@ -252,91 +255,94 @@
 
 (def ScaleInvalidDataConfig
   [:map {:closed true}
-   [:y {:optional true}
-    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"y\">"}
-     #'ScaleInvalidDataShowAs__y__]]
-   [:strokeOpacity {:optional true}
-    [:ref
-     {:json-schema/original-name "ScaleInvalidDataShowAs<\"strokeOpacity\">"}
-     #'ScaleInvalidDataShowAs__strokeOpacity__]]
-   [:stroke {:optional true}
-    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"stroke\">"}
-     #'ScaleInvalidDataShowAs__stroke__]]
+   [:angle {:optional true}
+    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"angle\">"}
+     #'ScaleInvalidDataShowAs__angle__]]
    [:color {:optional true}
     [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"color\">"}
      #'ScaleInvalidDataShowAs__color__]]
    [:fill {:optional true}
     [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"fill\">"}
      #'ScaleInvalidDataShowAs__fill__]]
-   [:strokeDash {:optional true}
-    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"strokeDash\">"}
-     #'ScaleInvalidDataShowAs__strokeDash__]]
-   [:time {:optional true}
-    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"time\">"}
-     #'ScaleInvalidDataShowAs__time__]]
    [:fillOpacity {:optional true}
     [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"fillOpacity\">"}
      #'ScaleInvalidDataShowAs__fillOpacity__]]
-   [:angle {:optional true}
-    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"angle\">"}
-     #'ScaleInvalidDataShowAs__angle__]]
-   [:theta {:optional true}
-    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"theta\">"}
-     #'ScaleInvalidDataShowAs__theta__]]
-   [:radius {:optional true}
-    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"radius\">"}
-     #'ScaleInvalidDataShowAs__radius__]]
-   [:size {:optional true}
-    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"size\">"}
-     #'ScaleInvalidDataShowAs__size__]]
-   [:strokeWidth {:optional true}
-    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"strokeWidth\">"}
-     #'ScaleInvalidDataShowAs__strokeWidth__]]
    [:opacity {:optional true}
     [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"opacity\">"}
      #'ScaleInvalidDataShowAs__opacity__]]
+   [:radius {:optional true}
+    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"radius\">"}
+     #'ScaleInvalidDataShowAs__radius__]]
    [:shape {:optional true}
     [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"shape\">"}
      #'ScaleInvalidDataShowAs__shape__]]
-   [:yOffset {:optional true}
-    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"yOffset\">"}
-     #'ScaleInvalidDataShowAs__yOffset__]]
+   [:size {:optional true}
+    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"size\">"}
+     #'ScaleInvalidDataShowAs__size__]]
+   [:stroke {:optional true}
+    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"stroke\">"}
+     #'ScaleInvalidDataShowAs__stroke__]]
+   [:strokeDash {:optional true}
+    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"strokeDash\">"}
+     #'ScaleInvalidDataShowAs__strokeDash__]]
+   [:strokeOpacity {:optional true}
+    [:ref
+     {:json-schema/original-name "ScaleInvalidDataShowAs<\"strokeOpacity\">"}
+     #'ScaleInvalidDataShowAs__strokeOpacity__]]
+   [:strokeWidth {:optional true}
+    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"strokeWidth\">"}
+     #'ScaleInvalidDataShowAs__strokeWidth__]]
+   [:theta {:optional true}
+    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"theta\">"}
+     #'ScaleInvalidDataShowAs__theta__]]
+   [:time {:optional true}
+    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"time\">"}
+     #'ScaleInvalidDataShowAs__time__]]
    [:x {:optional true}
     [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"x\">"}
      #'ScaleInvalidDataShowAs__x__]]
    [:xOffset {:optional true}
     [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"xOffset\">"}
-     #'ScaleInvalidDataShowAs__xOffset__]]])
+     #'ScaleInvalidDataShowAs__xOffset__]]
+   [:y {:optional true}
+    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"y\">"}
+     #'ScaleInvalidDataShowAs__y__]]
+   [:yOffset {:optional true}
+    [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"yOffset\">"}
+     #'ScaleInvalidDataShowAs__yOffset__]]])
 
 (def ScaleConfig
-  [:map {:closed true} [:zero {:optional true} boolean?]
-   [:bandPaddingInner {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:barBandPaddingInner {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:xReverse {:optional true} [:or boolean? [:ref #'ExprRef]]]
-   [:maxOpacity {:optional true} number?]
-   [:quantizeCount {:optional true} number?]
-   [:rectBandPaddingInner {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:continuousPadding {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:bandWithNestedOffsetPaddingOuter {:optional true}
-    [:or number? [:ref #'ExprRef]]] [:quantileCount {:optional true} number?]
-   [:useUnaggregatedDomain {:optional true} boolean?]
-   [:invalid {:optional true} [:ref #'ScaleInvalidDataConfig]]
-   [:maxBandSize {:optional true} number?]
-   [:bandPaddingOuter {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:minSize {:optional true} number?]
+  [:map {:closed true}
    [:animationDuration {:optional true} number?]
-   [:round {:optional true} [:or boolean? [:ref #'ExprRef]]]
-   [:offsetBandPaddingInner {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:tickBandPaddingInner {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:minFontSize {:optional true} number?]
-   [:offsetBandPaddingOuter {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:minBandSize {:optional true} number?]
-   [:maxStrokeWidth {:optional true} number?]
-   [:maxFontSize {:optional true} number?]
-   [:minOpacity {:optional true} number?] [:maxSize {:optional true} number?]
+   [:bandPaddingInner {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:bandPaddingOuter {:optional true} [:or number? [:ref #'ExprRef]]]
    [:bandWithNestedOffsetPaddingInner {:optional true}
     [:or number? [:ref #'ExprRef]]]
+   [:bandWithNestedOffsetPaddingOuter {:optional true}
+    [:or number? [:ref #'ExprRef]]]
+   [:barBandPaddingInner {:optional true} [:or number? [:ref #'ExprRef]]]
    [:clamp {:optional true} [:or boolean? [:ref #'ExprRef]]]
+   [:continuousPadding {:optional true} [:or number? [:ref #'ExprRef]]]
    [:framesPerSecond {:optional true} number?]
+   [:invalid {:optional true} [:ref #'ScaleInvalidDataConfig]]
+   [:maxBandSize {:optional true} number?]
+   [:maxFontSize {:optional true} number?]
+   [:maxOpacity {:optional true} number?]
+   [:maxSize {:optional true} number?]
+   [:maxStrokeWidth {:optional true} number?]
+   [:minBandSize {:optional true} number?]
+   [:minFontSize {:optional true} number?]
+   [:minOpacity {:optional true} number?]
+   [:minSize {:optional true} number?]
    [:minStrokeWidth {:optional true} number?]
-   [:pointPadding {:optional true} [:or number? [:ref #'ExprRef]]]])
+   [:offsetBandPaddingInner {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:offsetBandPaddingOuter {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:pointPadding {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:quantileCount {:optional true} number?]
+   [:quantizeCount {:optional true} number?]
+   [:rectBandPaddingInner {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:round {:optional true} [:or boolean? [:ref #'ExprRef]]]
+   [:tickBandPaddingInner {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:useUnaggregatedDomain {:optional true} boolean?]
+   [:xReverse {:optional true} [:or boolean? [:ref #'ExprRef]]]
+   [:zero {:optional true} boolean?]])

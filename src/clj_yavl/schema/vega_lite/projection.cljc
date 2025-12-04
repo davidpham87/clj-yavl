@@ -16,34 +16,46 @@
 (declare Geometry)
 
 (def Polygon
-  [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
-   [:coordinates [:vector [:vector [:ref #'Position]]]] [:type [:= "Polygon"]]])
+  [:map {:closed true}
+   [:bbox {:optional true} [:ref #'BBox]]
+   [:coordinates [:vector [:vector [:ref #'Position]]]]
+   [:type [:= "Polygon"]]])
 
 (def LineString
-  [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
-   [:coordinates [:vector [:ref #'Position]]] [:type [:= "LineString"]]])
+  [:map {:closed true}
+   [:bbox {:optional true} [:ref #'BBox]]
+   [:coordinates [:vector [:ref #'Position]]]
+   [:type [:= "LineString"]]])
 
 (def GeometryCollection
-  [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
-   [:geometries [:vector [:ref #'Geometry]]] [:type [:= "GeometryCollection"]]])
+  [:map {:closed true}
+   [:bbox {:optional true} [:ref #'BBox]]
+   [:geometries [:vector [:ref #'Geometry]]]
+   [:type [:= "GeometryCollection"]]])
 
 (def Point
-  [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
-   [:coordinates [:ref #'Position]] [:type [:= "Point"]]])
+  [:map {:closed true}
+   [:bbox {:optional true} [:ref #'BBox]]
+   [:coordinates [:ref #'Position]]
+   [:type [:= "Point"]]])
 
 (def MultiPolygon
-  [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
+  [:map {:closed true}
+   [:bbox {:optional true} [:ref #'BBox]]
    [:coordinates [:vector [:vector [:vector [:ref #'Position]]]]]
    [:type [:= "MultiPolygon"]]])
 
 (def MultiLineString
-  [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
+  [:map {:closed true}
+   [:bbox {:optional true} [:ref #'BBox]]
    [:coordinates [:vector [:vector [:ref #'Position]]]]
    [:type [:= "MultiLineString"]]])
 
 (def MultiPoint
-  [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
-   [:coordinates [:vector [:ref #'Position]]] [:type [:= "MultiPoint"]]])
+  [:map {:closed true}
+   [:bbox {:optional true} [:ref #'BBox]]
+   [:coordinates [:vector [:ref #'Position]]]
+   [:type [:= "MultiPoint"]]])
 
 (def Geometry
   [:or [:ref #'Point] [:ref #'MultiPoint] [:ref #'LineString]
@@ -51,9 +63,12 @@
    [:ref #'GeometryCollection]])
 
 (def Feature
-  [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
-   [:geometry [:ref #'Geometry]] [:id {:optional true} [:or string? number?]]
-   [:properties [:ref #'GeoJsonProperties]] [:type [:= "Feature"]]])
+  [:map {:closed true}
+   [:bbox {:optional true} [:ref #'BBox]]
+   [:geometry [:ref #'Geometry]]
+   [:id {:optional true} [:or string? number?]]
+   [:properties [:ref #'GeoJsonProperties]]
+   [:type [:= "Feature"]]])
 
 (def GeoJsonFeature [:ref #'Feature])
 
@@ -61,12 +76,15 @@
   [:map
    {:closed true,
     :json-schema/original-name "Feature<Geometry,GeoJsonProperties>"}
-   [:bbox {:optional true} [:ref #'BBox]] [:geometry [:ref #'Geometry]]
+   [:bbox {:optional true} [:ref #'BBox]]
+   [:geometry [:ref #'Geometry]]
    [:id {:optional true} [:or string? number?]]
-   [:properties [:ref #'GeoJsonProperties]] [:type [:= "Feature"]]])
+   [:properties [:ref #'GeoJsonProperties]]
+   [:type [:= "Feature"]]])
 
 (def FeatureCollection
-  [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
+  [:map {:closed true}
+   [:bbox {:optional true} [:ref #'BBox]]
    [:features
     [:vector
      [:ref {:json-schema/original-name "Feature<Geometry,GeoJsonProperties>"}
@@ -81,45 +99,45 @@
 
 (def Projection
   [:map {:closed true}
+   [:center {:optional true}
+    [:or [:ref {:json-schema/original-name "Vector2<number>"} #'Vector2_number_]
+     [:ref #'ExprRef]]]
+   [:clipAngle {:optional true} [:or number? [:ref #'ExprRef]]]
    [:clipExtent {:optional true}
     [:or
      [:ref {:json-schema/original-name "Vector2<Vector2<number>>"}
       #'Vector2_Vector2_number__] [:ref #'ExprRef]]]
-   [:reflectY {:optional true} [:or boolean? [:ref #'ExprRef]]]
-   [:fit {:optional true}
-    [:or [:ref #'Fit] [:ref #'ExprRef] [:vector [:ref #'Fit]]]]
-   [:scale {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:parallel {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:fraction {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:precision {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:type {:optional true} [:or [:ref #'ProjectionType] [:ref #'ExprRef]]]
-   [:tilt {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:radius {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:size {:optional true}
-    [:or [:ref {:json-schema/original-name "Vector2<number>"} #'Vector2_number_]
-     [:ref #'ExprRef]]]
-   [:clipAngle {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:center {:optional true}
-    [:or [:ref {:json-schema/original-name "Vector2<number>"} #'Vector2_number_]
-     [:ref #'ExprRef]]]
-   [:pointRadius {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:lobes {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:ratio {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:coefficient {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:distance {:optional true} [:or number? [:ref #'ExprRef]]]
    [:extent {:optional true}
     [:or
      [:ref {:json-schema/original-name "Vector2<Vector2<number>>"}
       #'Vector2_Vector2_number__] [:ref #'ExprRef]]]
-   [:coefficient {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:translate {:optional true}
-    [:or [:ref {:json-schema/original-name "Vector2<number>"} #'Vector2_number_]
-     [:ref #'ExprRef]]]
+   [:fit {:optional true}
+    [:or [:ref #'Fit] [:ref #'ExprRef] [:vector [:ref #'Fit]]]]
+   [:fraction {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:lobes {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:parallel {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:parallels {:optional true} [:or [:vector number?] [:ref #'ExprRef]]]
+   [:pointRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:precision {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:radius {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:ratio {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:reflectX {:optional true} [:or boolean? [:ref #'ExprRef]]]
+   [:reflectY {:optional true} [:or boolean? [:ref #'ExprRef]]]
    [:rotate {:optional true}
     [:or
      [:or
       [:ref {:json-schema/original-name "Vector2<number>"} #'Vector2_number_]
       [:ref {:json-schema/original-name "Vector3<number>"} #'Vector3_number_]]
      [:ref #'ExprRef]]]
-   [:distance {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:parallels {:optional true} [:or [:vector number?] [:ref #'ExprRef]]]
-   [:reflectX {:optional true} [:or boolean? [:ref #'ExprRef]]]
-   [:spacing {:optional true} [:or number? [:ref #'ExprRef]]]])
+   [:scale {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:size {:optional true}
+    [:or [:ref {:json-schema/original-name "Vector2<number>"} #'Vector2_number_]
+     [:ref #'ExprRef]]]
+   [:spacing {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:tilt {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:translate {:optional true}
+    [:or [:ref {:json-schema/original-name "Vector2<number>"} #'Vector2_number_]
+     [:ref #'ExprRef]]]
+   [:type {:optional true} [:or [:ref #'ProjectionType] [:ref #'ExprRef]]]])

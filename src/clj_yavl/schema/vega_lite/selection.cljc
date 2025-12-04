@@ -25,41 +25,53 @@
 (def Stream stream/Stream)
 
 (def BindCheckbox
-  [:map {:closed true} [:debounce {:optional true} number?]
-   [:element {:optional true} [:ref #'Element]] [:input [:= "checkbox"]]
+  [:map {:closed true}
+   [:debounce {:optional true} number?]
+   [:element {:optional true} [:ref #'Element]]
+   [:input [:= "checkbox"]]
    [:name {:optional true} string?]])
 
 (def BindDirect
-  [:map {:closed true} [:debounce {:optional true} number?]
+  [:map {:closed true}
+   [:debounce {:optional true} number?]
    [:element [:or [:ref #'Element] [:map {:closed true}]]]
    [:event {:optional true} string?]])
 
 (def BindInput
-  [:map {:closed true} [:autocomplete {:optional true} string?]
+  [:map {:closed true}
+   [:autocomplete {:optional true} string?]
    [:debounce {:optional true} number?]
    [:element {:optional true} [:ref #'Element]]
-   [:input {:optional true} string?] [:name {:optional true} string?]
+   [:input {:optional true} string?]
+   [:name {:optional true} string?]
    [:placeholder {:optional true} string?]])
 
 (def BindRadioSelect
-  [:map {:closed true} [:debounce {:optional true} number?]
+  [:map {:closed true}
+   [:debounce {:optional true} number?]
    [:element {:optional true} [:ref #'Element]]
    [:input [:enum "radio" "select"]]
-   [:labels {:optional true} [:vector string?]] [:name {:optional true} string?]
+   [:labels {:optional true} [:vector string?]]
+   [:name {:optional true} string?]
    [:options [:vector any?]]])
 
 (def BindRange
-  [:map {:closed true} [:debounce {:optional true} number?]
-   [:element {:optional true} [:ref #'Element]] [:input [:= "range"]]
-   [:max {:optional true} number?] [:min {:optional true} number?]
-   [:name {:optional true} string?] [:step {:optional true} number?]])
+  [:map {:closed true}
+   [:debounce {:optional true} number?]
+   [:element {:optional true} [:ref #'Element]]
+   [:input [:= "range"]]
+   [:max {:optional true} number?]
+   [:min {:optional true} number?]
+   [:name {:optional true} string?]
+   [:step {:optional true} number?]])
 
 (def Binding
   [:or [:ref #'BindCheckbox] [:ref #'BindRadioSelect] [:ref #'BindRange]
    [:ref #'BindInput] [:ref #'BindDirect]])
 
 (def BrushConfig
-  [:map {:closed true} [:cursor {:optional true} [:ref #'Cursor]]
+  [:map {:closed true}
+   [:cursor {:optional true} [:ref #'Cursor]]
    [:fill {:optional true} [:ref #'Color]]
    [:fillOpacity {:optional true} number?]
    [:stroke {:optional true} [:ref #'Color]]
@@ -69,20 +81,22 @@
    [:strokeWidth {:optional true} number?]])
 
 (def LegendStreamBinding
-  [:map {:closed true} [:legend [:or string? [:ref #'Stream]]]])
+  [:map {:closed true}
+   [:legend [:or string? [:ref #'Stream]]]])
 
 (def LegendBinding [:or [:ref #'LegendStreamBinding] [:enum "legend"]])
 
 (def IntervalSelectionConfig
-  [:map {:closed true} [:zoom {:optional true} [:or string? boolean?]]
-   [:mark {:optional true} [:ref #'BrushConfig]]
-   [:fields {:optional true} [:vector [:ref #'FieldName]]]
-   [:type [:= "interval"]]
+  [:map {:closed true}
+   [:clear {:optional true} [:or [:ref #'Stream] string? boolean?]]
    [:encodings {:optional true} [:vector [:ref #'SingleDefUnitChannel]]]
+   [:fields {:optional true} [:vector [:ref #'FieldName]]]
+   [:mark {:optional true} [:ref #'BrushConfig]]
+   [:on {:optional true} [:or [:ref #'Stream] string?]]
    [:resolve {:optional true} [:ref #'SelectionResolution]]
    [:translate {:optional true} [:or string? boolean?]]
-   [:on {:optional true} [:or [:ref #'Stream] string?]]
-   [:clear {:optional true} [:or [:ref #'Stream] string? boolean?]]])
+   [:type [:= "interval"]]
+   [:zoom {:optional true} [:or string? boolean?]]])
 
 (def PointSelectionConfig
   [:map {:closed true}
@@ -92,7 +106,8 @@
    [:nearest {:optional true} boolean?]
    [:on {:optional true} [:or [:ref #'Stream] string?]]
    [:resolve {:optional true} [:ref #'SelectionResolution]]
-   [:toggle {:optional true} [:or string? boolean?]] [:type [:= "point"]]])
+   [:toggle {:optional true} [:or string? boolean?]]
+   [:type [:= "point"]]])
 
 (def SelectionInit [:or [:ref #'PrimitiveValue] [:ref #'DateTime]])
 
@@ -108,7 +123,8 @@
   [:map {:closed true}
    [:bind {:optional true}
     [:or [:ref #'Binding] [:ref #'LegendBinding] [:map-of any? any?]
-     [:enum "scales"]]] [:name [:ref #'ParameterName]]
+     [:enum "scales"]]]
+   [:name [:ref #'ParameterName]]
    [:select
     [:or [:ref #'SelectionType] [:ref #'PointSelectionConfig]
      [:ref #'IntervalSelectionConfig]]]
@@ -155,7 +171,8 @@
   [:map {:closed true}
    [:bind {:optional true}
     [:or [:ref #'Binding] [:ref #'LegendBinding] [:map-of any? any?]
-     [:enum "scales"]]] [:name [:ref #'ParameterName]]
+     [:enum "scales"]]]
+   [:name [:ref #'ParameterName]]
    [:select
     [:or [:ref #'SelectionType] [:ref #'PointSelectionConfig]
      [:ref #'IntervalSelectionConfig]]]
@@ -165,9 +182,12 @@
    [:views {:optional true} [:vector string?]]])
 
 (def VariableParameter
-  [:map {:closed true} [:bind {:optional true} [:ref #'Binding]]
-   [:expr {:optional true} [:ref #'primitives/Expr]] [:name [:ref #'ParameterName]]
-   [:react {:optional true} boolean?] [:value {:optional true} any?]])
+  [:map {:closed true}
+   [:bind {:optional true} [:ref #'Binding]]
+   [:expr {:optional true} [:ref #'primitives/Expr]]
+   [:name [:ref #'ParameterName]]
+   [:react {:optional true} boolean?]
+   [:value {:optional true} any?]])
 
 (def TopLevelParameter
   [:or [:ref #'VariableParameter] [:ref #'TopLevelSelectionParameter]])
