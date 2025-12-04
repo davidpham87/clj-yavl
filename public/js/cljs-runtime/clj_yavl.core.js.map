@@ -1,0 +1,1 @@
+{"version":3,"sources":["clj_yavl/core.cljc"],"mappings":";AAEA,oBAAA,pBAAMA,gDAAKC,EAAEC;AAAb,AACE,QAAGD,IAAEC","names":["clj-yavl.core/add","a","b"],"sourcesContent":["(ns clj-yavl.core)\n\n(defn add [a b]\n  (+ a b))\n"]}
