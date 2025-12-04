@@ -20,6 +20,19 @@ jobs:
       uses: DeLaGuardo/setup-clojure@12.5
       with:
         cli: 'latest'
+    - name: Cache deps.edn, .shadow-cljs and node modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          .shadow-cljs
+          ~/.m2/repository
+          ~/.gitlibs
+          ~/.deps.clj
+          .cpcache
+          node_modules
+        key: ${{ runner.os }}-shadow-cljs-${{ hashFiles('deps.edn', 'package.json')}}
+        restore-keys: |
+          ${{ runner.os }}-shadow-cljs-
     - name: Run tests
       run: clojure -X:test
 
@@ -41,6 +54,19 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
+    - name: Cache deps.edn, .shadow-cljs and node modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          .shadow-cljs
+          ~/.m2/repository
+          ~/.gitlibs
+          ~/.deps.clj
+          .cpcache
+          node_modules
+        key: ${{ runner.os }}-shadow-cljs-${{ hashFiles('deps.edn', 'package.json')}}
+        restore-keys: |
+          ${{ runner.os }}-shadow-cljs-
     - name: Install npm dependencies
       run: npm install
     - name: Compile shadow-cljs app
