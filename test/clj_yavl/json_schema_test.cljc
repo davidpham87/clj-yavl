@@ -28,8 +28,7 @@
           res (sut/transform json)
           schema (:schema res)]
       ;; Expanded optional keys (no mu/optional-keys in raw output)
-      ;; Also contains original name metadata
-      (is (= [:map {:closed false} [:a {:json-schema/original-name "a" :optional true} 'string?]] schema))))
+      (is (= [:map {:closed false} [:a {:optional true} 'string?]] schema))))
 
   (testing "Optimization of anyOf enums"
     (let [json {:anyOf [{:const "a"} {:const "b"} {:type "string"}]}

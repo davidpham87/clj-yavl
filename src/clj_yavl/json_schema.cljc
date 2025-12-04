@@ -24,7 +24,11 @@
 
 (defn- parse-ref [{:keys [$ref]}]
   (when-let [r (normalize-ref $ref)]
-    [:ref {:json-schema/original-name r} (list 'var (sanitize-name r))]))
+    (let [sanitized (sanitize-name r)
+          s-str (str sanitized)]
+      (if (not= r s-str)
+        [:ref {:json-schema/original-name r} (list 'var sanitized)]
+        [:ref (list 'var sanitized)]))))
 
 (defn- parse-enum [{:keys [enum]}]
   (when enum
@@ -54,11 +58,10 @@
   (when (= type "object")
     (let [req-set (set (map keyword required))
           props (for [[k v] properties]
-                  (let [schema (json-schema->malli v)
-                        p-props {:json-schema/original-name (name k)}]
+                  (let [schema (json-schema->malli v)]
                     (if (contains? req-set k)
-                      [(keyword k) p-props schema]
-                      [(keyword k) (assoc p-props :optional true) schema])))]
+                      [(keyword k) schema]
+                      [(keyword k) {:optional true} schema])))]
       (if (or (seq props) (false? additionalProperties))
         (into [:map {:closed (false? additionalProperties)}] props)
         [:map-of 'any? 'any?]))))
@@ -68,12 +71,10 @@
         consts (get grouped :=)
         enums (get grouped :enum)
         others (apply concat (vals (dissoc grouped := :enum)))
-
         extract (fn [s]
                   (let [has-opts (map? (second s))
                         args (if has-opts (drop 2 s) (rest s))]
                     args))
-
         all-values (mapcat extract (concat consts enums))]
     (cond-> (vec others)
       (seq all-values) (conj (into [:enum] (distinct all-values))))))
@@ -104,8 +105,13 @@
   (let [definitions (:definitions json-schema)
         registry (reduce-kv (fn [acc k v]
                               (let [s (json-schema->malli v)
-                                    s (add-prop s :json-schema/original-name (name k))]
-                                (assoc acc (sanitize-name k) s)))
+                                    sanitized (sanitize-name k)
+                                    s-str (str sanitized)
+                                    k-str (name k)
+                                    s (if (not= k-str s-str)
+                                        (add-prop s :json-schema/original-name k-str)
+                                        s)]
+                                (assoc acc sanitized s)))
                             {}
                             definitions)
         schema (json-schema->malli json-schema)]

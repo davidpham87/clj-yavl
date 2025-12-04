@@ -10,20 +10,15 @@
 
 ;; Registry definitions (Topological Order)
 (def FieldName
-  [:and #:json-schema{:original-name "FieldName"} string?]
+  string?
 )
 
 (def ArgminDef
-  [:map
- {:closed true, :json-schema/original-name "ArgminDef"}
- [:argmin
-  #:json-schema{:original-name "argmin"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
+  [:map {:closed true} [:argmin [:ref #'FieldName]]]
 )
 
 (def NonArgAggregateOp
   [:enum
- #:json-schema{:original-name "NonArgAggregateOp"}
  "average"
  "count"
  "distinct"
@@ -50,26 +45,15 @@
 )
 
 (def ArgmaxDef
-  [:map
- {:closed true, :json-schema/original-name "ArgmaxDef"}
- [:argmax
-  #:json-schema{:original-name "argmax"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
+  [:map {:closed true} [:argmax [:ref #'FieldName]]]
 )
 
 (def Aggregate
-  [:or
- #:json-schema{:original-name "Aggregate"}
- [:ref
-  #:json-schema{:original-name "NonArgAggregateOp"}
-  #'NonArgAggregateOp]
- [:ref #:json-schema{:original-name "ArgmaxDef"} #'ArgmaxDef]
- [:ref #:json-schema{:original-name "ArgminDef"} #'ArgminDef]]
+  [:or [:ref #'NonArgAggregateOp] [:ref #'ArgmaxDef] [:ref #'ArgminDef]]
 )
 
 (def AggregateOp
   [:enum
- #:json-schema{:original-name "AggregateOp"}
  "argmax"
  "argmin"
  "average"
@@ -99,40 +83,25 @@
 
 (def AggregatedFieldDef
   [:map
- {:closed true, :json-schema/original-name "AggregatedFieldDef"}
- [:as
-  #:json-schema{:original-name "as"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:op
-  #:json-schema{:original-name "op"}
-  [:ref #:json-schema{:original-name "AggregateOp"} #'AggregateOp]]]
+ {:closed true}
+ [:as [:ref #'FieldName]]
+ [:field {:optional true} [:ref #'FieldName]]
+ [:op [:ref #'AggregateOp]]]
 )
 
 (def AggregateTransform
   [:map
- {:closed true, :json-schema/original-name "AggregateTransform"}
- [:aggregate
-  #:json-schema{:original-name "aggregate"}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "AggregatedFieldDef"}
-    #'AggregatedFieldDef]]]
- [:groupby
-  {:json-schema/original-name "groupby", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]]
+ {:closed true}
+ [:aggregate [:vector [:ref #'AggregatedFieldDef]]]
+ [:groupby {:optional true} [:vector [:ref #'FieldName]]]]
 )
 
 (def Align
-  [:enum #:json-schema{:original-name "Align"} "left" "center" "right"]
+  [:enum "left" "center" "right"]
 )
 
 (def SortByChannel
   [:enum
- #:json-schema{:original-name "SortByChannel"}
  "x"
  "y"
  "color"
@@ -149,7 +118,6 @@
 
 (def SortByChannelDesc
   [:enum
- #:json-schema{:original-name "SortByChannelDesc"}
  "-x"
  "-y"
  "-color"
@@ -165,37 +133,26 @@
 )
 
 (def SortOrder
-  [:enum
- #:json-schema{:original-name "SortOrder"}
- "ascending"
- "descending"]
+  [:enum "ascending" "descending"]
 )
 
 (def AllSortString
   [:or
- #:json-schema{:original-name "AllSortString"}
- [:ref #:json-schema{:original-name "SortOrder"} #'SortOrder]
- [:ref #:json-schema{:original-name "SortByChannel"} #'SortByChannel]
- [:ref
-  #:json-schema{:original-name "SortByChannelDesc"}
-  #'SortByChannelDesc]]
+ [:ref #'SortOrder]
+ [:ref #'SortByChannel]
+ [:ref #'SortByChannelDesc]]
 )
 
 (def StrokeJoin
-  [:enum
- #:json-schema{:original-name "StrokeJoin"}
- "miter"
- "round"
- "bevel"]
+  [:enum "miter" "round" "bevel"]
 )
 
 (def FontStyle
-  [:and #:json-schema{:original-name "FontStyle"} string?]
+  string?
 )
 
 (def ColorName
   [:enum
- #:json-schema{:original-name "ColorName"}
  "black"
  "silver"
  "gray"
@@ -347,68 +304,49 @@
 )
 
 (def HexColor
-  [:and #:json-schema{:original-name "HexColor"} string?]
+  string?
 )
 
 (def Color
-  [:or
- #:json-schema{:original-name "Color"}
- [:ref #:json-schema{:original-name "ColorName"} #'ColorName]
- [:ref #:json-schema{:original-name "HexColor"} #'HexColor]
- string?]
+  [:or [:ref #'ColorName] [:ref #'HexColor] string?]
 )
 
 (def GradientStop
-  [:map
- {:closed true, :json-schema/original-name "GradientStop"}
- [:color
-  #:json-schema{:original-name "color"}
-  [:ref #:json-schema{:original-name "Color"} #'Color]]
- [:offset #:json-schema{:original-name "offset"} number?]]
+  [:map {:closed true} [:color [:ref #'Color]] [:offset number?]]
 )
 
 (def RadialGradient
   [:map
- {:closed true, :json-schema/original-name "RadialGradient"}
- [:stops
-  #:json-schema{:original-name "stops"}
-  [:vector
-   [:ref #:json-schema{:original-name "GradientStop"} #'GradientStop]]]
- [:y1 {:json-schema/original-name "y1", :optional true} number?]
- [:r2 {:json-schema/original-name "r2", :optional true} number?]
- [:r1 {:json-schema/original-name "r1", :optional true} number?]
- [:id {:json-schema/original-name "id", :optional true} string?]
- [:gradient #:json-schema{:original-name "gradient"} [:= "radial"]]
- [:x1 {:json-schema/original-name "x1", :optional true} number?]
- [:y2 {:json-schema/original-name "y2", :optional true} number?]
- [:x2 {:json-schema/original-name "x2", :optional true} number?]]
+ {:closed true}
+ [:stops [:vector [:ref #'GradientStop]]]
+ [:y1 {:optional true} number?]
+ [:r2 {:optional true} number?]
+ [:r1 {:optional true} number?]
+ [:id {:optional true} string?]
+ [:gradient [:= "radial"]]
+ [:x1 {:optional true} number?]
+ [:y2 {:optional true} number?]
+ [:x2 {:optional true} number?]]
 )
 
 (def LinearGradient
   [:map
- {:closed true, :json-schema/original-name "LinearGradient"}
- [:gradient #:json-schema{:original-name "gradient"} [:= "linear"]]
- [:id {:json-schema/original-name "id", :optional true} string?]
- [:stops
-  #:json-schema{:original-name "stops"}
-  [:vector
-   [:ref #:json-schema{:original-name "GradientStop"} #'GradientStop]]]
- [:x1 {:json-schema/original-name "x1", :optional true} number?]
- [:x2 {:json-schema/original-name "x2", :optional true} number?]
- [:y1 {:json-schema/original-name "y1", :optional true} number?]
- [:y2 {:json-schema/original-name "y2", :optional true} number?]]
+ {:closed true}
+ [:gradient [:= "linear"]]
+ [:id {:optional true} string?]
+ [:stops [:vector [:ref #'GradientStop]]]
+ [:x1 {:optional true} number?]
+ [:x2 {:optional true} number?]
+ [:y1 {:optional true} number?]
+ [:y2 {:optional true} number?]]
 )
 
 (def Gradient
-  [:or
- #:json-schema{:original-name "Gradient"}
- [:ref #:json-schema{:original-name "LinearGradient"} #'LinearGradient]
- [:ref #:json-schema{:original-name "RadialGradient"} #'RadialGradient]]
+  [:or [:ref #'LinearGradient] [:ref #'RadialGradient]]
 )
 
 (def Blend
   [:enum
- #:json-schema{:original-name "Blend"}
  nil
  "multiply"
  "screen"
@@ -429,7 +367,6 @@
 
 (def Cursor
   [:enum
- #:json-schema{:original-name "Cursor"}
  "auto"
  "default"
  "none"
@@ -469,19 +406,15 @@
 )
 
 (def TextDirection
-  [:enum #:json-schema{:original-name "TextDirection"} "ltr" "rtl"]
+  [:enum "ltr" "rtl"]
 )
 
 (def Orientation
-  [:enum
- #:json-schema{:original-name "Orientation"}
- "horizontal"
- "vertical"]
+  [:enum "horizontal" "vertical"]
 )
 
 (def Interpolate
   [:enum
- #:json-schema{:original-name "Interpolate"}
  "basis"
  "basis-open"
  "basis-closed"
@@ -500,39 +433,27 @@
 )
 
 (def Baseline
-  [:enum #:json-schema{:original-name "Baseline"} "top" "middle" "bottom"]
+  [:enum "top" "middle" "bottom"]
 )
 
 (def TextBaseline
-  [:or
- #:json-schema{:original-name "TextBaseline"}
- [:ref #:json-schema{:original-name "Baseline"} #'Baseline]
- [:enum "alphabetic" "line-top" "line-bottom"]]
+  [:or [:ref #'Baseline] [:enum "alphabetic" "line-top" "line-bottom"]]
 )
 
 (def TooltipContent
-  [:map
- {:closed true, :json-schema/original-name "TooltipContent"}
- [:content
-  #:json-schema{:original-name "content"}
-  [:enum "encoding" "data"]]]
+  [:map {:closed true} [:content [:enum "encoding" "data"]]]
 )
 
 (def StrokeCap
-  [:enum
- #:json-schema{:original-name "StrokeCap"}
- "butt"
- "round"
- "square"]
+  [:enum "butt" "round" "square"]
 )
 
 (def SymbolShape
-  [:and #:json-schema{:original-name "SymbolShape"} string?]
+  string?
 )
 
 (def FontWeight
   [:enum
- #:json-schema{:original-name "FontWeight"}
  "normal"
  "bold"
  "lighter"
@@ -549,12 +470,11 @@
 )
 
 (def URI
-  [:and #:json-schema{:original-name "URI"} string?]
+  string?
 )
 
 (def MarkInvalidDataMode
   [:enum
- #:json-schema{:original-name "MarkInvalidDataMode"}
  "filter"
  "break-paths-filter-domains"
  "break-paths-show-domains"
@@ -563,437 +483,140 @@
 )
 
 (def Text
-  [:or #:json-schema{:original-name "Text"} string? [:vector string?]]
+  [:or string? [:vector string?]]
 )
 
 (def ExprRef
-  [:map
- {:closed true, :json-schema/original-name "ExprRef"}
- [:expr #:json-schema{:original-name "expr"} string?]]
+  [:map {:closed true} [:expr string?]]
 )
 
 (def OverlayMarkDef
   [:map
- {:closed true, :json-schema/original-name "OverlayMarkDef"}
- [:y
-  {:json-schema/original-name "y", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "height"]]]
- [:description
-  {:json-schema/original-name "description", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ {:closed true}
+ [:y {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
+ [:description {:optional true} [:or string? [:ref #'ExprRef]]]
  [:baseline
-  {:json-schema/original-name "baseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:y2Offset
-  {:json-schema/original-name "y2Offset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:smooth
-  {:json-schema/original-name "smooth", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:padAngle
-  {:json-schema/original-name "padAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeOpacity
-  {:json-schema/original-name "strokeOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:startAngle
-  {:json-schema/original-name "startAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aspect
-  {:json-schema/original-name "aspect", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
+ [:y2Offset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:smooth {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:padAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:startAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aspect {:optional true} [:or boolean? [:ref #'ExprRef]]]
  [:cornerRadiusBottomRight
-  {:json-schema/original-name "cornerRadiusBottomRight",
-   :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ariaRoleDescription
-  {:json-schema/original-name "ariaRoleDescription", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:align
-  {:json-schema/original-name "align", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:ariaRoleDescription {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:align {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
  [:stroke
-  {:json-schema/original-name "stroke", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
- [:clip
-  {:json-schema/original-name "clip", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dx
-  {:json-schema/original-name "dx", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef] nil?]]
+ [:clip {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:dx {:optional true} [:or number? [:ref #'ExprRef]]]
  [:color
-  {:json-schema/original-name "color", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:tension
-  {:json-schema/original-name "tension", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dir
-  {:json-schema/original-name "dir", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextDirection"} #'TextDirection]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:innerRadius
-  {:json-schema/original-name "innerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:limit
-  {:json-schema/original-name "limit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:radiusOffset
-  {:json-schema/original-name "radiusOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:timeUnitBandSize
-  {:json-schema/original-name "timeUnitBandSize", :optional true}
-  number?]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef]]]
+ [:tension {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:dir {:optional true} [:or [:ref #'TextDirection] [:ref #'ExprRef]]]
+ [:innerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:limit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:radiusOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:timeUnitBandSize {:optional true} number?]
  [:fill
-  {:json-schema/original-name "fill", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef] nil?]]
  [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:time
-  {:json-schema/original-name "time", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ellipsis
-  {:json-schema/original-name "ellipsis", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:width
-  {:json-schema/original-name "width", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dy
-  {:json-schema/original-name "dy", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cursor
-  {:json-schema/original-name "cursor", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Cursor"} #'Cursor]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:lineBreak
-  {:json-schema/original-name "lineBreak", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:invalid
-  {:json-schema/original-name "invalid", :optional true}
-  [:or
-   [:ref
-    #:json-schema{:original-name "MarkInvalidDataMode"}
-    #'MarkInvalidDataMode]
-   nil?]]
- [:fillOpacity
-  {:json-schema/original-name "fillOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:ref #:json-schema{:original-name "Orientation"} #'Orientation]]
- [:x2Offset
-  {:json-schema/original-name "x2Offset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeMiterLimit
-  {:json-schema/original-name "strokeMiterLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:timeUnitBandPosition
-  {:json-schema/original-name "timeUnitBandPosition", :optional true}
-  number?]
+  {:optional true}
+  [:or [:vector number?] [:ref #'ExprRef]]]
+ [:time {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ellipsis {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:width {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:dy {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cursor {:optional true} [:or [:ref #'Cursor] [:ref #'ExprRef]]]
+ [:lineBreak {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:invalid {:optional true} [:or [:ref #'MarkInvalidDataMode] nil?]]
+ [:fillOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:orient {:optional true} [:ref #'Orientation]]
+ [:x2Offset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeMiterLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:timeUnitBandPosition {:optional true} number?]
  [:interpolate
-  {:json-schema/original-name "interpolate", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Interpolate"} #'Interpolate]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:angle
-  {:json-schema/original-name "angle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeDashOffset
-  {:json-schema/original-name "strokeDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta
-  {:json-schema/original-name "theta", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:radius
-  {:json-schema/original-name "radius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta2
-  {:json-schema/original-name "theta2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cornerRadius
-  {:json-schema/original-name "cornerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:font
-  {:json-schema/original-name "font", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:size
-  {:json-schema/original-name "size", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:outerRadius
-  {:json-schema/original-name "outerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:style
-  {:json-schema/original-name "style", :optional true}
-  [:or string? [:vector string?]]]
- [:thetaOffset
-  {:json-schema/original-name "thetaOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aria
-  {:json-schema/original-name "aria", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:opacity
-  {:json-schema/original-name "opacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta2Offset
-  {:json-schema/original-name "theta2Offset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Interpolate] [:ref #'ExprRef]]]
+ [:angle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:radius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta2 {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cornerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:font {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:size {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:outerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:style {:optional true} [:or string? [:vector string?]]]
+ [:thetaOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:strokeWidth {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:opacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta2Offset {:optional true} [:or number? [:ref #'ExprRef]]]
  [:fontStyle
-  {:json-schema/original-name "fontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
  [:fontWeight
-  {:json-schema/original-name "fontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
  [:strokeJoin
-  {:json-schema/original-name "strokeJoin", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeJoin"} #'StrokeJoin]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'StrokeJoin] [:ref #'ExprRef]]]
  [:shape
-  {:json-schema/original-name "shape", :optional true}
-  [:or
-   [:or
-    [:ref #:json-schema{:original-name "SymbolShape"} #'SymbolShape]
-    string?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:url
-  {:json-schema/original-name "url", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "URI"} #'URI]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:order
-  {:json-schema/original-name "order", :optional true}
-  [:or nil? boolean?]]
- [:cornerRadiusTopLeft
-  {:json-schema/original-name "cornerRadiusTopLeft", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or [:ref #'SymbolShape] string?] [:ref #'ExprRef]]]
+ [:url {:optional true} [:or [:ref #'URI] [:ref #'ExprRef]]]
+ [:order {:optional true} [:or nil? boolean?]]
+ [:cornerRadiusTopLeft {:optional true} [:or number? [:ref #'ExprRef]]]
  [:cornerRadiusBottomLeft
-  {:json-schema/original-name "cornerRadiusBottomLeft", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:yOffset
-  {:json-schema/original-name "yOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:lineHeight
-  {:json-schema/original-name "lineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:yOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:lineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
  [:strokeCap
-  {:json-schema/original-name "strokeCap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeCap"} #'StrokeCap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:x
-  {:json-schema/original-name "x", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "width"]]]
+  {:optional true}
+  [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
+ [:x {:optional true} [:or number? [:ref #'ExprRef] [:enum "width"]]]
  [:cornerRadiusTopRight
-  {:json-schema/original-name "cornerRadiusTopRight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:blend
-  {:json-schema/original-name "blend", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Blend"} #'Blend]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:fontSize
-  {:json-schema/original-name "fontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ariaRole
-  {:json-schema/original-name "ariaRole", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:endAngle
-  {:json-schema/original-name "endAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:y2
-  {:json-schema/original-name "y2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "height"]]]
- [:filled
-  {:json-schema/original-name "filled", :optional true}
-  boolean?]
- [:radius2
-  {:json-schema/original-name "radius2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:radius2Offset
-  {:json-schema/original-name "radius2Offset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:x2
-  {:json-schema/original-name "x2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "width"]]]
- [:href
-  {:json-schema/original-name "href", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "URI"} #'URI]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:blend {:optional true} [:or [:ref #'Blend] [:ref #'ExprRef]]]
+ [:fontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ariaRole {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:endAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:y2 {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
+ [:filled {:optional true} boolean?]
+ [:radius2 {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:radius2Offset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:x2 {:optional true} [:or number? [:ref #'ExprRef] [:enum "width"]]]
+ [:href {:optional true} [:or [:ref #'URI] [:ref #'ExprRef]]]
  [:tooltip
-  {:json-schema/original-name "tooltip", :optional true}
+  {:optional true}
   [:or
    number?
    string?
    boolean?
    nil?
-   [:ref
-    #:json-schema{:original-name "TooltipContent"}
-    #'TooltipContent]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeOffset
-  {:json-schema/original-name "strokeOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:height
-  {:json-schema/original-name "height", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:text
-  {:json-schema/original-name "text", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:xOffset
-  {:json-schema/original-name "xOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+   [:ref #'TooltipContent]
+   [:ref #'ExprRef]]]
+ [:strokeOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:height {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:text {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]
+ [:xOffset {:optional true} [:or number? [:ref #'ExprRef]]]]
 )
 
 (def RelativeBandSize
-  [:map
- {:closed true, :json-schema/original-name "RelativeBandSize"}
- [:band #:json-schema{:original-name "band"} number?]]
+  [:map {:closed true} [:band number?]]
 )
 
 (def Mark
   [:enum
- #:json-schema{:original-name "Mark"}
  "arc"
  "area"
  "bar"
@@ -1012,3037 +635,980 @@
 
 (def MarkDef
   [:map
- {:closed true, :json-schema/original-name "MarkDef"}
- [:y
-  {:json-schema/original-name "y", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "height"]]]
- [:description
-  {:json-schema/original-name "description", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ {:closed true}
+ [:y {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
+ [:description {:optional true} [:or string? [:ref #'ExprRef]]]
  [:baseline
-  {:json-schema/original-name "baseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:y2Offset
-  {:json-schema/original-name "y2Offset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:smooth
-  {:json-schema/original-name "smooth", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:padAngle
-  {:json-schema/original-name "padAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeOpacity
-  {:json-schema/original-name "strokeOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aspect
-  {:json-schema/original-name "aspect", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
+ [:y2Offset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:smooth {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:padAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aspect {:optional true} [:or boolean? [:ref #'ExprRef]]]
  [:cornerRadiusBottomRight
-  {:json-schema/original-name "cornerRadiusBottomRight",
-   :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ariaRoleDescription
-  {:json-schema/original-name "ariaRoleDescription", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:align
-  {:json-schema/original-name "align", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:ariaRoleDescription {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:align {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
  [:discreteBandSize
-  {:json-schema/original-name "discreteBandSize", :optional true}
-  [:or
-   number?
-   [:ref
-    #:json-schema{:original-name "RelativeBandSize"}
-    #'RelativeBandSize]]]
- [:thickness
-  {:json-schema/original-name "thickness", :optional true}
-  number?]
+  {:optional true}
+  [:or number? [:ref #'RelativeBandSize]]]
+ [:thickness {:optional true} number?]
  [:stroke
-  {:json-schema/original-name "stroke", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
- [:clip
-  {:json-schema/original-name "clip", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dx
-  {:json-schema/original-name "dx", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef] nil?]]
+ [:clip {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:dx {:optional true} [:or number? [:ref #'ExprRef]]]
  [:color
-  {:json-schema/original-name "color", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:tension
-  {:json-schema/original-name "tension", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dir
-  {:json-schema/original-name "dir", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextDirection"} #'TextDirection]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:innerRadius
-  {:json-schema/original-name "innerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:limit
-  {:json-schema/original-name "limit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:binSpacing
-  {:json-schema/original-name "binSpacing", :optional true}
-  number?]
- [:radiusOffset
-  {:json-schema/original-name "radiusOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:timeUnitBandSize
-  {:json-schema/original-name "timeUnitBandSize", :optional true}
-  number?]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef]]]
+ [:tension {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:dir {:optional true} [:or [:ref #'TextDirection] [:ref #'ExprRef]]]
+ [:innerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:limit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:binSpacing {:optional true} number?]
+ [:radiusOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:timeUnitBandSize {:optional true} number?]
  [:fill
-  {:json-schema/original-name "fill", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef] nil?]]
  [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:time
-  {:json-schema/original-name "time", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ellipsis
-  {:json-schema/original-name "ellipsis", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:bandSize
-  {:json-schema/original-name "bandSize", :optional true}
-  number?]
+  {:optional true}
+  [:or [:vector number?] [:ref #'ExprRef]]]
+ [:time {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ellipsis {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:bandSize {:optional true} number?]
  [:width
-  {:json-schema/original-name "width", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "RelativeBandSize"}
-    #'RelativeBandSize]]]
- [:dy
-  {:json-schema/original-name "dy", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cursor
-  {:json-schema/original-name "cursor", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Cursor"} #'Cursor]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:type
-  #:json-schema{:original-name "type"}
-  [:ref #:json-schema{:original-name "Mark"} #'Mark]]
- [:continuousBandSize
-  {:json-schema/original-name "continuousBandSize", :optional true}
-  number?]
- [:cornerRadiusEnd
-  {:json-schema/original-name "cornerRadiusEnd", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:lineBreak
-  {:json-schema/original-name "lineBreak", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:invalid
-  {:json-schema/original-name "invalid", :optional true}
-  [:or
-   [:ref
-    #:json-schema{:original-name "MarkInvalidDataMode"}
-    #'MarkInvalidDataMode]
-   nil?]]
- [:fillOpacity
-  {:json-schema/original-name "fillOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:ref #:json-schema{:original-name "Orientation"} #'Orientation]]
- [:x2Offset
-  {:json-schema/original-name "x2Offset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeMiterLimit
-  {:json-schema/original-name "strokeMiterLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:timeUnitBandPosition
-  {:json-schema/original-name "timeUnitBandPosition", :optional true}
-  number?]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'RelativeBandSize]]]
+ [:dy {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cursor {:optional true} [:or [:ref #'Cursor] [:ref #'ExprRef]]]
+ [:type [:ref #'Mark]]
+ [:continuousBandSize {:optional true} number?]
+ [:cornerRadiusEnd {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:lineBreak {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:invalid {:optional true} [:or [:ref #'MarkInvalidDataMode] nil?]]
+ [:fillOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:orient {:optional true} [:ref #'Orientation]]
+ [:x2Offset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeMiterLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:timeUnitBandPosition {:optional true} number?]
  [:interpolate
-  {:json-schema/original-name "interpolate", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Interpolate"} #'Interpolate]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:angle
-  {:json-schema/original-name "angle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeDashOffset
-  {:json-schema/original-name "strokeDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta
-  {:json-schema/original-name "theta", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:radius
-  {:json-schema/original-name "radius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta2
-  {:json-schema/original-name "theta2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cornerRadius
-  {:json-schema/original-name "cornerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:font
-  {:json-schema/original-name "font", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:size
-  {:json-schema/original-name "size", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:outerRadius
-  {:json-schema/original-name "outerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:style
-  {:json-schema/original-name "style", :optional true}
-  [:or string? [:vector string?]]]
- [:thetaOffset
-  {:json-schema/original-name "thetaOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aria
-  {:json-schema/original-name "aria", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:line
-  {:json-schema/original-name "line", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "OverlayMarkDef"}
-    #'OverlayMarkDef]]]
- [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:opacity
-  {:json-schema/original-name "opacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta2Offset
-  {:json-schema/original-name "theta2Offset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:minBandSize
-  {:json-schema/original-name "minBandSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Interpolate] [:ref #'ExprRef]]]
+ [:angle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:radius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta2 {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cornerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:font {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:size {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:outerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:style {:optional true} [:or string? [:vector string?]]]
+ [:thetaOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:line {:optional true} [:or boolean? [:ref #'OverlayMarkDef]]]
+ [:strokeWidth {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:opacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta2Offset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:minBandSize {:optional true} [:or number? [:ref #'ExprRef]]]
  [:fontStyle
-  {:json-schema/original-name "fontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
  [:fontWeight
-  {:json-schema/original-name "fontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
  [:strokeJoin
-  {:json-schema/original-name "strokeJoin", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeJoin"} #'StrokeJoin]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'StrokeJoin] [:ref #'ExprRef]]]
  [:shape
-  {:json-schema/original-name "shape", :optional true}
-  [:or
-   [:or
-    [:ref #:json-schema{:original-name "SymbolShape"} #'SymbolShape]
-    string?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:url
-  {:json-schema/original-name "url", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "URI"} #'URI]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:order
-  {:json-schema/original-name "order", :optional true}
-  [:or nil? boolean?]]
- [:cornerRadiusTopLeft
-  {:json-schema/original-name "cornerRadiusTopLeft", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or [:ref #'SymbolShape] string?] [:ref #'ExprRef]]]
+ [:url {:optional true} [:or [:ref #'URI] [:ref #'ExprRef]]]
+ [:order {:optional true} [:or nil? boolean?]]
+ [:cornerRadiusTopLeft {:optional true} [:or number? [:ref #'ExprRef]]]
  [:cornerRadiusBottomLeft
-  {:json-schema/original-name "cornerRadiusBottomLeft", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
  [:point
-  {:json-schema/original-name "point", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "OverlayMarkDef"}
-    #'OverlayMarkDef]
-   [:enum "transparent"]]]
- [:yOffset
-  {:json-schema/original-name "yOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:lineHeight
-  {:json-schema/original-name "lineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or boolean? [:ref #'OverlayMarkDef] [:enum "transparent"]]]
+ [:yOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:lineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
  [:strokeCap
-  {:json-schema/original-name "strokeCap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeCap"} #'StrokeCap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:x
-  {:json-schema/original-name "x", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "width"]]]
+  {:optional true}
+  [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
+ [:x {:optional true} [:or number? [:ref #'ExprRef] [:enum "width"]]]
  [:cornerRadiusTopRight
-  {:json-schema/original-name "cornerRadiusTopRight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:blend
-  {:json-schema/original-name "blend", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Blend"} #'Blend]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:fontSize
-  {:json-schema/original-name "fontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ariaRole
-  {:json-schema/original-name "ariaRole", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:y2
-  {:json-schema/original-name "y2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "height"]]]
- [:filled
-  {:json-schema/original-name "filled", :optional true}
-  boolean?]
- [:radius2
-  {:json-schema/original-name "radius2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:radius2Offset
-  {:json-schema/original-name "radius2Offset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:x2
-  {:json-schema/original-name "x2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "width"]]]
- [:href
-  {:json-schema/original-name "href", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "URI"} #'URI]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:blend {:optional true} [:or [:ref #'Blend] [:ref #'ExprRef]]]
+ [:fontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ariaRole {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:y2 {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
+ [:filled {:optional true} boolean?]
+ [:radius2 {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:radius2Offset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:x2 {:optional true} [:or number? [:ref #'ExprRef] [:enum "width"]]]
+ [:href {:optional true} [:or [:ref #'URI] [:ref #'ExprRef]]]
  [:tooltip
-  {:json-schema/original-name "tooltip", :optional true}
+  {:optional true}
   [:or
    number?
    string?
    boolean?
    nil?
-   [:ref
-    #:json-schema{:original-name "TooltipContent"}
-    #'TooltipContent]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeOffset
-  {:json-schema/original-name "strokeOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+   [:ref #'TooltipContent]
+   [:ref #'ExprRef]]]
+ [:strokeOffset {:optional true} [:or number? [:ref #'ExprRef]]]
  [:height
-  {:json-schema/original-name "height", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "RelativeBandSize"}
-    #'RelativeBandSize]]]
- [:text
-  {:json-schema/original-name "text", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:xOffset
-  {:json-schema/original-name "xOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'RelativeBandSize]]]
+ [:text {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]
+ [:xOffset {:optional true} [:or number? [:ref #'ExprRef]]]]
 )
 
 (def ErrorBar
-  [:= #:json-schema{:original-name "ErrorBar"} "errorbar"]
+  [:= "errorbar"]
 )
 
 (def ErrorBand
-  [:= #:json-schema{:original-name "ErrorBand"} "errorband"]
+  [:= "errorband"]
 )
 
 (def BoxPlot
-  [:= #:json-schema{:original-name "BoxPlot"} "boxplot"]
+  [:= "boxplot"]
 )
 
 (def CompositeMark
-  [:or
- #:json-schema{:original-name "CompositeMark"}
- [:ref #:json-schema{:original-name "BoxPlot"} #'BoxPlot]
- [:ref #:json-schema{:original-name "ErrorBar"} #'ErrorBar]
- [:ref #:json-schema{:original-name "ErrorBand"} #'ErrorBand]]
+  [:or [:ref #'BoxPlot] [:ref #'ErrorBar] [:ref #'ErrorBand]]
 )
 
 (def LineConfig
   [:map
- {:closed true, :json-schema/original-name "LineConfig"}
- [:y
-  {:json-schema/original-name "y", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "height"]]]
- [:description
-  {:json-schema/original-name "description", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ {:closed true}
+ [:y {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
+ [:description {:optional true} [:or string? [:ref #'ExprRef]]]
  [:baseline
-  {:json-schema/original-name "baseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:smooth
-  {:json-schema/original-name "smooth", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:padAngle
-  {:json-schema/original-name "padAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeOpacity
-  {:json-schema/original-name "strokeOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:startAngle
-  {:json-schema/original-name "startAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aspect
-  {:json-schema/original-name "aspect", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
+ [:smooth {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:padAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:startAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aspect {:optional true} [:or boolean? [:ref #'ExprRef]]]
  [:cornerRadiusBottomRight
-  {:json-schema/original-name "cornerRadiusBottomRight",
-   :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ariaRoleDescription
-  {:json-schema/original-name "ariaRoleDescription", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:align
-  {:json-schema/original-name "align", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:ariaRoleDescription {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:align {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
  [:stroke
-  {:json-schema/original-name "stroke", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
- [:dx
-  {:json-schema/original-name "dx", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef] nil?]]
+ [:dx {:optional true} [:or number? [:ref #'ExprRef]]]
  [:color
-  {:json-schema/original-name "color", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:tension
-  {:json-schema/original-name "tension", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dir
-  {:json-schema/original-name "dir", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextDirection"} #'TextDirection]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:innerRadius
-  {:json-schema/original-name "innerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:limit
-  {:json-schema/original-name "limit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:timeUnitBandSize
-  {:json-schema/original-name "timeUnitBandSize", :optional true}
-  number?]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef]]]
+ [:tension {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:dir {:optional true} [:or [:ref #'TextDirection] [:ref #'ExprRef]]]
+ [:innerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:limit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:timeUnitBandSize {:optional true} number?]
  [:fill
-  {:json-schema/original-name "fill", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef] nil?]]
  [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:time
-  {:json-schema/original-name "time", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ellipsis
-  {:json-schema/original-name "ellipsis", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:width
-  {:json-schema/original-name "width", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dy
-  {:json-schema/original-name "dy", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cursor
-  {:json-schema/original-name "cursor", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Cursor"} #'Cursor]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:lineBreak
-  {:json-schema/original-name "lineBreak", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:invalid
-  {:json-schema/original-name "invalid", :optional true}
-  [:or
-   [:ref
-    #:json-schema{:original-name "MarkInvalidDataMode"}
-    #'MarkInvalidDataMode]
-   nil?]]
- [:fillOpacity
-  {:json-schema/original-name "fillOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:ref #:json-schema{:original-name "Orientation"} #'Orientation]]
- [:strokeMiterLimit
-  {:json-schema/original-name "strokeMiterLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:timeUnitBandPosition
-  {:json-schema/original-name "timeUnitBandPosition", :optional true}
-  number?]
+  {:optional true}
+  [:or [:vector number?] [:ref #'ExprRef]]]
+ [:time {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ellipsis {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:width {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:dy {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cursor {:optional true} [:or [:ref #'Cursor] [:ref #'ExprRef]]]
+ [:lineBreak {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:invalid {:optional true} [:or [:ref #'MarkInvalidDataMode] nil?]]
+ [:fillOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:orient {:optional true} [:ref #'Orientation]]
+ [:strokeMiterLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:timeUnitBandPosition {:optional true} number?]
  [:interpolate
-  {:json-schema/original-name "interpolate", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Interpolate"} #'Interpolate]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:angle
-  {:json-schema/original-name "angle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeDashOffset
-  {:json-schema/original-name "strokeDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta
-  {:json-schema/original-name "theta", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:radius
-  {:json-schema/original-name "radius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta2
-  {:json-schema/original-name "theta2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cornerRadius
-  {:json-schema/original-name "cornerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:font
-  {:json-schema/original-name "font", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:size
-  {:json-schema/original-name "size", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:outerRadius
-  {:json-schema/original-name "outerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aria
-  {:json-schema/original-name "aria", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:opacity
-  {:json-schema/original-name "opacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Interpolate] [:ref #'ExprRef]]]
+ [:angle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:radius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta2 {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cornerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:font {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:size {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:outerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:strokeWidth {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:opacity {:optional true} [:or number? [:ref #'ExprRef]]]
  [:fontStyle
-  {:json-schema/original-name "fontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
  [:fontWeight
-  {:json-schema/original-name "fontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
  [:strokeJoin
-  {:json-schema/original-name "strokeJoin", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeJoin"} #'StrokeJoin]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'StrokeJoin] [:ref #'ExprRef]]]
  [:shape
-  {:json-schema/original-name "shape", :optional true}
-  [:or
-   [:or
-    [:ref #:json-schema{:original-name "SymbolShape"} #'SymbolShape]
-    string?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:url
-  {:json-schema/original-name "url", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "URI"} #'URI]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:order
-  {:json-schema/original-name "order", :optional true}
-  [:or nil? boolean?]]
- [:cornerRadiusTopLeft
-  {:json-schema/original-name "cornerRadiusTopLeft", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or [:ref #'SymbolShape] string?] [:ref #'ExprRef]]]
+ [:url {:optional true} [:or [:ref #'URI] [:ref #'ExprRef]]]
+ [:order {:optional true} [:or nil? boolean?]]
+ [:cornerRadiusTopLeft {:optional true} [:or number? [:ref #'ExprRef]]]
  [:cornerRadiusBottomLeft
-  {:json-schema/original-name "cornerRadiusBottomLeft", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
  [:point
-  {:json-schema/original-name "point", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "OverlayMarkDef"}
-    #'OverlayMarkDef]
-   [:enum "transparent"]]]
- [:lineHeight
-  {:json-schema/original-name "lineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or boolean? [:ref #'OverlayMarkDef] [:enum "transparent"]]]
+ [:lineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
  [:strokeCap
-  {:json-schema/original-name "strokeCap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeCap"} #'StrokeCap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:x
-  {:json-schema/original-name "x", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "width"]]]
+  {:optional true}
+  [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
+ [:x {:optional true} [:or number? [:ref #'ExprRef] [:enum "width"]]]
  [:cornerRadiusTopRight
-  {:json-schema/original-name "cornerRadiusTopRight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:blend
-  {:json-schema/original-name "blend", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Blend"} #'Blend]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:fontSize
-  {:json-schema/original-name "fontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ariaRole
-  {:json-schema/original-name "ariaRole", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:endAngle
-  {:json-schema/original-name "endAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:y2
-  {:json-schema/original-name "y2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "height"]]]
- [:filled
-  {:json-schema/original-name "filled", :optional true}
-  boolean?]
- [:radius2
-  {:json-schema/original-name "radius2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:x2
-  {:json-schema/original-name "x2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "width"]]]
- [:href
-  {:json-schema/original-name "href", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "URI"} #'URI]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:blend {:optional true} [:or [:ref #'Blend] [:ref #'ExprRef]]]
+ [:fontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ariaRole {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:endAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:y2 {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
+ [:filled {:optional true} boolean?]
+ [:radius2 {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:x2 {:optional true} [:or number? [:ref #'ExprRef] [:enum "width"]]]
+ [:href {:optional true} [:or [:ref #'URI] [:ref #'ExprRef]]]
  [:tooltip
-  {:json-schema/original-name "tooltip", :optional true}
+  {:optional true}
   [:or
    number?
    string?
    boolean?
    nil?
-   [:ref
-    #:json-schema{:original-name "TooltipContent"}
-    #'TooltipContent]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeOffset
-  {:json-schema/original-name "strokeOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:height
-  {:json-schema/original-name "height", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:text
-  {:json-schema/original-name "text", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+   [:ref #'TooltipContent]
+   [:ref #'ExprRef]]]
+ [:strokeOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:height {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:text {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]]
 )
 
 (def RectConfig
   [:map
- {:closed true, :json-schema/original-name "RectConfig"}
- [:y
-  {:json-schema/original-name "y", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "height"]]]
- [:description
-  {:json-schema/original-name "description", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ {:closed true}
+ [:y {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
+ [:description {:optional true} [:or string? [:ref #'ExprRef]]]
  [:baseline
-  {:json-schema/original-name "baseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:smooth
-  {:json-schema/original-name "smooth", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:padAngle
-  {:json-schema/original-name "padAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeOpacity
-  {:json-schema/original-name "strokeOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:startAngle
-  {:json-schema/original-name "startAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aspect
-  {:json-schema/original-name "aspect", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
+ [:smooth {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:padAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:startAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aspect {:optional true} [:or boolean? [:ref #'ExprRef]]]
  [:cornerRadiusBottomRight
-  {:json-schema/original-name "cornerRadiusBottomRight",
-   :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ariaRoleDescription
-  {:json-schema/original-name "ariaRoleDescription", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:align
-  {:json-schema/original-name "align", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:ariaRoleDescription {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:align {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
  [:discreteBandSize
-  {:json-schema/original-name "discreteBandSize", :optional true}
-  [:or
-   number?
-   [:ref
-    #:json-schema{:original-name "RelativeBandSize"}
-    #'RelativeBandSize]]]
+  {:optional true}
+  [:or number? [:ref #'RelativeBandSize]]]
  [:stroke
-  {:json-schema/original-name "stroke", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
- [:dx
-  {:json-schema/original-name "dx", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef] nil?]]
+ [:dx {:optional true} [:or number? [:ref #'ExprRef]]]
  [:color
-  {:json-schema/original-name "color", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:tension
-  {:json-schema/original-name "tension", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dir
-  {:json-schema/original-name "dir", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextDirection"} #'TextDirection]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:innerRadius
-  {:json-schema/original-name "innerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:limit
-  {:json-schema/original-name "limit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:binSpacing
-  {:json-schema/original-name "binSpacing", :optional true}
-  number?]
- [:timeUnitBandSize
-  {:json-schema/original-name "timeUnitBandSize", :optional true}
-  number?]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef]]]
+ [:tension {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:dir {:optional true} [:or [:ref #'TextDirection] [:ref #'ExprRef]]]
+ [:innerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:limit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:binSpacing {:optional true} number?]
+ [:timeUnitBandSize {:optional true} number?]
  [:fill
-  {:json-schema/original-name "fill", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef] nil?]]
  [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:time
-  {:json-schema/original-name "time", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ellipsis
-  {:json-schema/original-name "ellipsis", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:width
-  {:json-schema/original-name "width", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dy
-  {:json-schema/original-name "dy", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cursor
-  {:json-schema/original-name "cursor", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Cursor"} #'Cursor]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:continuousBandSize
-  {:json-schema/original-name "continuousBandSize", :optional true}
-  number?]
- [:lineBreak
-  {:json-schema/original-name "lineBreak", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:invalid
-  {:json-schema/original-name "invalid", :optional true}
-  [:or
-   [:ref
-    #:json-schema{:original-name "MarkInvalidDataMode"}
-    #'MarkInvalidDataMode]
-   nil?]]
- [:fillOpacity
-  {:json-schema/original-name "fillOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:ref #:json-schema{:original-name "Orientation"} #'Orientation]]
- [:strokeMiterLimit
-  {:json-schema/original-name "strokeMiterLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:timeUnitBandPosition
-  {:json-schema/original-name "timeUnitBandPosition", :optional true}
-  number?]
+  {:optional true}
+  [:or [:vector number?] [:ref #'ExprRef]]]
+ [:time {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ellipsis {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:width {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:dy {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cursor {:optional true} [:or [:ref #'Cursor] [:ref #'ExprRef]]]
+ [:continuousBandSize {:optional true} number?]
+ [:lineBreak {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:invalid {:optional true} [:or [:ref #'MarkInvalidDataMode] nil?]]
+ [:fillOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:orient {:optional true} [:ref #'Orientation]]
+ [:strokeMiterLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:timeUnitBandPosition {:optional true} number?]
  [:interpolate
-  {:json-schema/original-name "interpolate", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Interpolate"} #'Interpolate]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:angle
-  {:json-schema/original-name "angle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeDashOffset
-  {:json-schema/original-name "strokeDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta
-  {:json-schema/original-name "theta", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:radius
-  {:json-schema/original-name "radius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta2
-  {:json-schema/original-name "theta2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cornerRadius
-  {:json-schema/original-name "cornerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:font
-  {:json-schema/original-name "font", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:size
-  {:json-schema/original-name "size", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:outerRadius
-  {:json-schema/original-name "outerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aria
-  {:json-schema/original-name "aria", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:opacity
-  {:json-schema/original-name "opacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:minBandSize
-  {:json-schema/original-name "minBandSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Interpolate] [:ref #'ExprRef]]]
+ [:angle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:radius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta2 {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cornerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:font {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:size {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:outerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:strokeWidth {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:opacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:minBandSize {:optional true} [:or number? [:ref #'ExprRef]]]
  [:fontStyle
-  {:json-schema/original-name "fontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
  [:fontWeight
-  {:json-schema/original-name "fontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
  [:strokeJoin
-  {:json-schema/original-name "strokeJoin", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeJoin"} #'StrokeJoin]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'StrokeJoin] [:ref #'ExprRef]]]
  [:shape
-  {:json-schema/original-name "shape", :optional true}
-  [:or
-   [:or
-    [:ref #:json-schema{:original-name "SymbolShape"} #'SymbolShape]
-    string?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:url
-  {:json-schema/original-name "url", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "URI"} #'URI]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:order
-  {:json-schema/original-name "order", :optional true}
-  [:or nil? boolean?]]
- [:cornerRadiusTopLeft
-  {:json-schema/original-name "cornerRadiusTopLeft", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or [:ref #'SymbolShape] string?] [:ref #'ExprRef]]]
+ [:url {:optional true} [:or [:ref #'URI] [:ref #'ExprRef]]]
+ [:order {:optional true} [:or nil? boolean?]]
+ [:cornerRadiusTopLeft {:optional true} [:or number? [:ref #'ExprRef]]]
  [:cornerRadiusBottomLeft
-  {:json-schema/original-name "cornerRadiusBottomLeft", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:lineHeight
-  {:json-schema/original-name "lineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:lineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
  [:strokeCap
-  {:json-schema/original-name "strokeCap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeCap"} #'StrokeCap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:x
-  {:json-schema/original-name "x", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "width"]]]
+  {:optional true}
+  [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
+ [:x {:optional true} [:or number? [:ref #'ExprRef] [:enum "width"]]]
  [:cornerRadiusTopRight
-  {:json-schema/original-name "cornerRadiusTopRight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:blend
-  {:json-schema/original-name "blend", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Blend"} #'Blend]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:fontSize
-  {:json-schema/original-name "fontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ariaRole
-  {:json-schema/original-name "ariaRole", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:endAngle
-  {:json-schema/original-name "endAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:y2
-  {:json-schema/original-name "y2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "height"]]]
- [:filled
-  {:json-schema/original-name "filled", :optional true}
-  boolean?]
- [:radius2
-  {:json-schema/original-name "radius2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:x2
-  {:json-schema/original-name "x2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "width"]]]
- [:href
-  {:json-schema/original-name "href", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "URI"} #'URI]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:blend {:optional true} [:or [:ref #'Blend] [:ref #'ExprRef]]]
+ [:fontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ariaRole {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:endAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:y2 {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
+ [:filled {:optional true} boolean?]
+ [:radius2 {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:x2 {:optional true} [:or number? [:ref #'ExprRef] [:enum "width"]]]
+ [:href {:optional true} [:or [:ref #'URI] [:ref #'ExprRef]]]
  [:tooltip
-  {:json-schema/original-name "tooltip", :optional true}
+  {:optional true}
   [:or
    number?
    string?
    boolean?
    nil?
-   [:ref
-    #:json-schema{:original-name "TooltipContent"}
-    #'TooltipContent]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeOffset
-  {:json-schema/original-name "strokeOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:height
-  {:json-schema/original-name "height", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:text
-  {:json-schema/original-name "text", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+   [:ref #'TooltipContent]
+   [:ref #'ExprRef]]]
+ [:strokeOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:height {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:text {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]]
 )
 
 (def TickConfig
   [:map
- {:closed true, :json-schema/original-name "TickConfig"}
- [:y
-  {:json-schema/original-name "y", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "height"]]]
- [:description
-  {:json-schema/original-name "description", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ {:closed true}
+ [:y {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
+ [:description {:optional true} [:or string? [:ref #'ExprRef]]]
  [:baseline
-  {:json-schema/original-name "baseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:smooth
-  {:json-schema/original-name "smooth", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:padAngle
-  {:json-schema/original-name "padAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeOpacity
-  {:json-schema/original-name "strokeOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:startAngle
-  {:json-schema/original-name "startAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aspect
-  {:json-schema/original-name "aspect", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
+ [:smooth {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:padAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:startAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aspect {:optional true} [:or boolean? [:ref #'ExprRef]]]
  [:cornerRadiusBottomRight
-  {:json-schema/original-name "cornerRadiusBottomRight",
-   :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ariaRoleDescription
-  {:json-schema/original-name "ariaRoleDescription", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:align
-  {:json-schema/original-name "align", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:ariaRoleDescription {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:align {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
  [:discreteBandSize
-  {:json-schema/original-name "discreteBandSize", :optional true}
-  [:or
-   number?
-   [:ref
-    #:json-schema{:original-name "RelativeBandSize"}
-    #'RelativeBandSize]]]
- [:thickness
-  {:json-schema/original-name "thickness", :optional true}
-  number?]
+  {:optional true}
+  [:or number? [:ref #'RelativeBandSize]]]
+ [:thickness {:optional true} number?]
  [:stroke
-  {:json-schema/original-name "stroke", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
- [:dx
-  {:json-schema/original-name "dx", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef] nil?]]
+ [:dx {:optional true} [:or number? [:ref #'ExprRef]]]
  [:color
-  {:json-schema/original-name "color", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:tension
-  {:json-schema/original-name "tension", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dir
-  {:json-schema/original-name "dir", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextDirection"} #'TextDirection]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:innerRadius
-  {:json-schema/original-name "innerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:limit
-  {:json-schema/original-name "limit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:binSpacing
-  {:json-schema/original-name "binSpacing", :optional true}
-  number?]
- [:timeUnitBandSize
-  {:json-schema/original-name "timeUnitBandSize", :optional true}
-  number?]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef]]]
+ [:tension {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:dir {:optional true} [:or [:ref #'TextDirection] [:ref #'ExprRef]]]
+ [:innerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:limit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:binSpacing {:optional true} number?]
+ [:timeUnitBandSize {:optional true} number?]
  [:fill
-  {:json-schema/original-name "fill", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef] nil?]]
  [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:time
-  {:json-schema/original-name "time", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ellipsis
-  {:json-schema/original-name "ellipsis", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:bandSize
-  {:json-schema/original-name "bandSize", :optional true}
-  number?]
- [:width
-  {:json-schema/original-name "width", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dy
-  {:json-schema/original-name "dy", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cursor
-  {:json-schema/original-name "cursor", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Cursor"} #'Cursor]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:continuousBandSize
-  {:json-schema/original-name "continuousBandSize", :optional true}
-  number?]
- [:lineBreak
-  {:json-schema/original-name "lineBreak", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:invalid
-  {:json-schema/original-name "invalid", :optional true}
-  [:or
-   [:ref
-    #:json-schema{:original-name "MarkInvalidDataMode"}
-    #'MarkInvalidDataMode]
-   nil?]]
- [:fillOpacity
-  {:json-schema/original-name "fillOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:ref #:json-schema{:original-name "Orientation"} #'Orientation]]
- [:strokeMiterLimit
-  {:json-schema/original-name "strokeMiterLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:timeUnitBandPosition
-  {:json-schema/original-name "timeUnitBandPosition", :optional true}
-  number?]
+  {:optional true}
+  [:or [:vector number?] [:ref #'ExprRef]]]
+ [:time {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ellipsis {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:bandSize {:optional true} number?]
+ [:width {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:dy {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cursor {:optional true} [:or [:ref #'Cursor] [:ref #'ExprRef]]]
+ [:continuousBandSize {:optional true} number?]
+ [:lineBreak {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:invalid {:optional true} [:or [:ref #'MarkInvalidDataMode] nil?]]
+ [:fillOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:orient {:optional true} [:ref #'Orientation]]
+ [:strokeMiterLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:timeUnitBandPosition {:optional true} number?]
  [:interpolate
-  {:json-schema/original-name "interpolate", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Interpolate"} #'Interpolate]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:angle
-  {:json-schema/original-name "angle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeDashOffset
-  {:json-schema/original-name "strokeDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta
-  {:json-schema/original-name "theta", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:radius
-  {:json-schema/original-name "radius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta2
-  {:json-schema/original-name "theta2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cornerRadius
-  {:json-schema/original-name "cornerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:font
-  {:json-schema/original-name "font", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:size
-  {:json-schema/original-name "size", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:outerRadius
-  {:json-schema/original-name "outerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aria
-  {:json-schema/original-name "aria", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:opacity
-  {:json-schema/original-name "opacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:minBandSize
-  {:json-schema/original-name "minBandSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Interpolate] [:ref #'ExprRef]]]
+ [:angle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:radius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta2 {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cornerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:font {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:size {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:outerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:strokeWidth {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:opacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:minBandSize {:optional true} [:or number? [:ref #'ExprRef]]]
  [:fontStyle
-  {:json-schema/original-name "fontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
  [:fontWeight
-  {:json-schema/original-name "fontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
  [:strokeJoin
-  {:json-schema/original-name "strokeJoin", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeJoin"} #'StrokeJoin]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'StrokeJoin] [:ref #'ExprRef]]]
  [:shape
-  {:json-schema/original-name "shape", :optional true}
-  [:or
-   [:or
-    [:ref #:json-schema{:original-name "SymbolShape"} #'SymbolShape]
-    string?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:url
-  {:json-schema/original-name "url", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "URI"} #'URI]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:order
-  {:json-schema/original-name "order", :optional true}
-  [:or nil? boolean?]]
- [:cornerRadiusTopLeft
-  {:json-schema/original-name "cornerRadiusTopLeft", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or [:ref #'SymbolShape] string?] [:ref #'ExprRef]]]
+ [:url {:optional true} [:or [:ref #'URI] [:ref #'ExprRef]]]
+ [:order {:optional true} [:or nil? boolean?]]
+ [:cornerRadiusTopLeft {:optional true} [:or number? [:ref #'ExprRef]]]
  [:cornerRadiusBottomLeft
-  {:json-schema/original-name "cornerRadiusBottomLeft", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:lineHeight
-  {:json-schema/original-name "lineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:lineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
  [:strokeCap
-  {:json-schema/original-name "strokeCap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeCap"} #'StrokeCap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:x
-  {:json-schema/original-name "x", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "width"]]]
+  {:optional true}
+  [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
+ [:x {:optional true} [:or number? [:ref #'ExprRef] [:enum "width"]]]
  [:cornerRadiusTopRight
-  {:json-schema/original-name "cornerRadiusTopRight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:blend
-  {:json-schema/original-name "blend", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Blend"} #'Blend]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:fontSize
-  {:json-schema/original-name "fontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ariaRole
-  {:json-schema/original-name "ariaRole", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:endAngle
-  {:json-schema/original-name "endAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:y2
-  {:json-schema/original-name "y2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "height"]]]
- [:filled
-  {:json-schema/original-name "filled", :optional true}
-  boolean?]
- [:radius2
-  {:json-schema/original-name "radius2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:x2
-  {:json-schema/original-name "x2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "width"]]]
- [:href
-  {:json-schema/original-name "href", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "URI"} #'URI]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:blend {:optional true} [:or [:ref #'Blend] [:ref #'ExprRef]]]
+ [:fontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ariaRole {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:endAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:y2 {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
+ [:filled {:optional true} boolean?]
+ [:radius2 {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:x2 {:optional true} [:or number? [:ref #'ExprRef] [:enum "width"]]]
+ [:href {:optional true} [:or [:ref #'URI] [:ref #'ExprRef]]]
  [:tooltip
-  {:json-schema/original-name "tooltip", :optional true}
+  {:optional true}
   [:or
    number?
    string?
    boolean?
    nil?
-   [:ref
-    #:json-schema{:original-name "TooltipContent"}
-    #'TooltipContent]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeOffset
-  {:json-schema/original-name "strokeOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:height
-  {:json-schema/original-name "height", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:text
-  {:json-schema/original-name "text", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+   [:ref #'TooltipContent]
+   [:ref #'ExprRef]]]
+ [:strokeOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:height {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:text {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]]
 )
 
 (def BarConfig
   [:map
- {:closed true, :json-schema/original-name "BarConfig"}
- [:y
-  {:json-schema/original-name "y", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "height"]]]
- [:description
-  {:json-schema/original-name "description", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ {:closed true}
+ [:y {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
+ [:description {:optional true} [:or string? [:ref #'ExprRef]]]
  [:baseline
-  {:json-schema/original-name "baseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:smooth
-  {:json-schema/original-name "smooth", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:padAngle
-  {:json-schema/original-name "padAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeOpacity
-  {:json-schema/original-name "strokeOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:startAngle
-  {:json-schema/original-name "startAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aspect
-  {:json-schema/original-name "aspect", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
+ [:smooth {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:padAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:startAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aspect {:optional true} [:or boolean? [:ref #'ExprRef]]]
  [:cornerRadiusBottomRight
-  {:json-schema/original-name "cornerRadiusBottomRight",
-   :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ariaRoleDescription
-  {:json-schema/original-name "ariaRoleDescription", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:align
-  {:json-schema/original-name "align", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:ariaRoleDescription {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:align {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
  [:discreteBandSize
-  {:json-schema/original-name "discreteBandSize", :optional true}
-  [:or
-   number?
-   [:ref
-    #:json-schema{:original-name "RelativeBandSize"}
-    #'RelativeBandSize]]]
+  {:optional true}
+  [:or number? [:ref #'RelativeBandSize]]]
  [:stroke
-  {:json-schema/original-name "stroke", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
- [:dx
-  {:json-schema/original-name "dx", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef] nil?]]
+ [:dx {:optional true} [:or number? [:ref #'ExprRef]]]
  [:color
-  {:json-schema/original-name "color", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:tension
-  {:json-schema/original-name "tension", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dir
-  {:json-schema/original-name "dir", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextDirection"} #'TextDirection]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:innerRadius
-  {:json-schema/original-name "innerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:limit
-  {:json-schema/original-name "limit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:binSpacing
-  {:json-schema/original-name "binSpacing", :optional true}
-  number?]
- [:timeUnitBandSize
-  {:json-schema/original-name "timeUnitBandSize", :optional true}
-  number?]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef]]]
+ [:tension {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:dir {:optional true} [:or [:ref #'TextDirection] [:ref #'ExprRef]]]
+ [:innerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:limit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:binSpacing {:optional true} number?]
+ [:timeUnitBandSize {:optional true} number?]
  [:fill
-  {:json-schema/original-name "fill", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef] nil?]]
  [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:time
-  {:json-schema/original-name "time", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ellipsis
-  {:json-schema/original-name "ellipsis", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:width
-  {:json-schema/original-name "width", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dy
-  {:json-schema/original-name "dy", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cursor
-  {:json-schema/original-name "cursor", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Cursor"} #'Cursor]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:continuousBandSize
-  {:json-schema/original-name "continuousBandSize", :optional true}
-  number?]
- [:cornerRadiusEnd
-  {:json-schema/original-name "cornerRadiusEnd", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:lineBreak
-  {:json-schema/original-name "lineBreak", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:invalid
-  {:json-schema/original-name "invalid", :optional true}
-  [:or
-   [:ref
-    #:json-schema{:original-name "MarkInvalidDataMode"}
-    #'MarkInvalidDataMode]
-   nil?]]
- [:fillOpacity
-  {:json-schema/original-name "fillOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:ref #:json-schema{:original-name "Orientation"} #'Orientation]]
- [:strokeMiterLimit
-  {:json-schema/original-name "strokeMiterLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:timeUnitBandPosition
-  {:json-schema/original-name "timeUnitBandPosition", :optional true}
-  number?]
+  {:optional true}
+  [:or [:vector number?] [:ref #'ExprRef]]]
+ [:time {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ellipsis {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:width {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:dy {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cursor {:optional true} [:or [:ref #'Cursor] [:ref #'ExprRef]]]
+ [:continuousBandSize {:optional true} number?]
+ [:cornerRadiusEnd {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:lineBreak {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:invalid {:optional true} [:or [:ref #'MarkInvalidDataMode] nil?]]
+ [:fillOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:orient {:optional true} [:ref #'Orientation]]
+ [:strokeMiterLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:timeUnitBandPosition {:optional true} number?]
  [:interpolate
-  {:json-schema/original-name "interpolate", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Interpolate"} #'Interpolate]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:angle
-  {:json-schema/original-name "angle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeDashOffset
-  {:json-schema/original-name "strokeDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta
-  {:json-schema/original-name "theta", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:radius
-  {:json-schema/original-name "radius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta2
-  {:json-schema/original-name "theta2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cornerRadius
-  {:json-schema/original-name "cornerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:font
-  {:json-schema/original-name "font", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:size
-  {:json-schema/original-name "size", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:outerRadius
-  {:json-schema/original-name "outerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aria
-  {:json-schema/original-name "aria", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:opacity
-  {:json-schema/original-name "opacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:minBandSize
-  {:json-schema/original-name "minBandSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Interpolate] [:ref #'ExprRef]]]
+ [:angle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:radius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta2 {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cornerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:font {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:size {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:outerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:strokeWidth {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:opacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:minBandSize {:optional true} [:or number? [:ref #'ExprRef]]]
  [:fontStyle
-  {:json-schema/original-name "fontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
  [:fontWeight
-  {:json-schema/original-name "fontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
  [:strokeJoin
-  {:json-schema/original-name "strokeJoin", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeJoin"} #'StrokeJoin]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'StrokeJoin] [:ref #'ExprRef]]]
  [:shape
-  {:json-schema/original-name "shape", :optional true}
-  [:or
-   [:or
-    [:ref #:json-schema{:original-name "SymbolShape"} #'SymbolShape]
-    string?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:url
-  {:json-schema/original-name "url", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "URI"} #'URI]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:order
-  {:json-schema/original-name "order", :optional true}
-  [:or nil? boolean?]]
- [:cornerRadiusTopLeft
-  {:json-schema/original-name "cornerRadiusTopLeft", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or [:ref #'SymbolShape] string?] [:ref #'ExprRef]]]
+ [:url {:optional true} [:or [:ref #'URI] [:ref #'ExprRef]]]
+ [:order {:optional true} [:or nil? boolean?]]
+ [:cornerRadiusTopLeft {:optional true} [:or number? [:ref #'ExprRef]]]
  [:cornerRadiusBottomLeft
-  {:json-schema/original-name "cornerRadiusBottomLeft", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:lineHeight
-  {:json-schema/original-name "lineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:lineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
  [:strokeCap
-  {:json-schema/original-name "strokeCap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeCap"} #'StrokeCap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:x
-  {:json-schema/original-name "x", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "width"]]]
+  {:optional true}
+  [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
+ [:x {:optional true} [:or number? [:ref #'ExprRef] [:enum "width"]]]
  [:cornerRadiusTopRight
-  {:json-schema/original-name "cornerRadiusTopRight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:blend
-  {:json-schema/original-name "blend", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Blend"} #'Blend]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:fontSize
-  {:json-schema/original-name "fontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ariaRole
-  {:json-schema/original-name "ariaRole", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:endAngle
-  {:json-schema/original-name "endAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:y2
-  {:json-schema/original-name "y2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "height"]]]
- [:filled
-  {:json-schema/original-name "filled", :optional true}
-  boolean?]
- [:radius2
-  {:json-schema/original-name "radius2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:x2
-  {:json-schema/original-name "x2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "width"]]]
- [:href
-  {:json-schema/original-name "href", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "URI"} #'URI]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:blend {:optional true} [:or [:ref #'Blend] [:ref #'ExprRef]]]
+ [:fontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ariaRole {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:endAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:y2 {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
+ [:filled {:optional true} boolean?]
+ [:radius2 {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:x2 {:optional true} [:or number? [:ref #'ExprRef] [:enum "width"]]]
+ [:href {:optional true} [:or [:ref #'URI] [:ref #'ExprRef]]]
  [:tooltip
-  {:json-schema/original-name "tooltip", :optional true}
+  {:optional true}
   [:or
    number?
    string?
    boolean?
    nil?
-   [:ref
-    #:json-schema{:original-name "TooltipContent"}
-    #'TooltipContent]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeOffset
-  {:json-schema/original-name "strokeOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:height
-  {:json-schema/original-name "height", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:text
-  {:json-schema/original-name "text", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+   [:ref #'TooltipContent]
+   [:ref #'ExprRef]]]
+ [:strokeOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:height {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:text {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]]
 )
 
 (def MarkConfig
   [:map
- {:closed true, :json-schema/original-name "MarkConfig"}
- [:y
-  {:json-schema/original-name "y", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "height"]]]
- [:description
-  {:json-schema/original-name "description", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ {:closed true}
+ [:y {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
+ [:description {:optional true} [:or string? [:ref #'ExprRef]]]
  [:baseline
-  {:json-schema/original-name "baseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:smooth
-  {:json-schema/original-name "smooth", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:padAngle
-  {:json-schema/original-name "padAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeOpacity
-  {:json-schema/original-name "strokeOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:startAngle
-  {:json-schema/original-name "startAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aspect
-  {:json-schema/original-name "aspect", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
+ [:smooth {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:padAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:startAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aspect {:optional true} [:or boolean? [:ref #'ExprRef]]]
  [:cornerRadiusBottomRight
-  {:json-schema/original-name "cornerRadiusBottomRight",
-   :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ariaRoleDescription
-  {:json-schema/original-name "ariaRoleDescription", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:align
-  {:json-schema/original-name "align", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:ariaRoleDescription {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:align {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
  [:stroke
-  {:json-schema/original-name "stroke", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
- [:dx
-  {:json-schema/original-name "dx", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef] nil?]]
+ [:dx {:optional true} [:or number? [:ref #'ExprRef]]]
  [:color
-  {:json-schema/original-name "color", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:tension
-  {:json-schema/original-name "tension", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dir
-  {:json-schema/original-name "dir", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextDirection"} #'TextDirection]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:innerRadius
-  {:json-schema/original-name "innerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:limit
-  {:json-schema/original-name "limit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:timeUnitBandSize
-  {:json-schema/original-name "timeUnitBandSize", :optional true}
-  number?]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef]]]
+ [:tension {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:dir {:optional true} [:or [:ref #'TextDirection] [:ref #'ExprRef]]]
+ [:innerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:limit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:timeUnitBandSize {:optional true} number?]
  [:fill
-  {:json-schema/original-name "fill", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef] nil?]]
  [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:time
-  {:json-schema/original-name "time", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ellipsis
-  {:json-schema/original-name "ellipsis", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:width
-  {:json-schema/original-name "width", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dy
-  {:json-schema/original-name "dy", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cursor
-  {:json-schema/original-name "cursor", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Cursor"} #'Cursor]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:lineBreak
-  {:json-schema/original-name "lineBreak", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:invalid
-  {:json-schema/original-name "invalid", :optional true}
-  [:or
-   [:ref
-    #:json-schema{:original-name "MarkInvalidDataMode"}
-    #'MarkInvalidDataMode]
-   nil?]]
- [:fillOpacity
-  {:json-schema/original-name "fillOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:ref #:json-schema{:original-name "Orientation"} #'Orientation]]
- [:strokeMiterLimit
-  {:json-schema/original-name "strokeMiterLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:timeUnitBandPosition
-  {:json-schema/original-name "timeUnitBandPosition", :optional true}
-  number?]
+  {:optional true}
+  [:or [:vector number?] [:ref #'ExprRef]]]
+ [:time {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ellipsis {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:width {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:dy {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cursor {:optional true} [:or [:ref #'Cursor] [:ref #'ExprRef]]]
+ [:lineBreak {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:invalid {:optional true} [:or [:ref #'MarkInvalidDataMode] nil?]]
+ [:fillOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:orient {:optional true} [:ref #'Orientation]]
+ [:strokeMiterLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:timeUnitBandPosition {:optional true} number?]
  [:interpolate
-  {:json-schema/original-name "interpolate", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Interpolate"} #'Interpolate]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:angle
-  {:json-schema/original-name "angle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeDashOffset
-  {:json-schema/original-name "strokeDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta
-  {:json-schema/original-name "theta", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:radius
-  {:json-schema/original-name "radius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta2
-  {:json-schema/original-name "theta2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cornerRadius
-  {:json-schema/original-name "cornerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:font
-  {:json-schema/original-name "font", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:size
-  {:json-schema/original-name "size", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:outerRadius
-  {:json-schema/original-name "outerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aria
-  {:json-schema/original-name "aria", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:opacity
-  {:json-schema/original-name "opacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Interpolate] [:ref #'ExprRef]]]
+ [:angle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:radius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta2 {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cornerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:font {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:size {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:outerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:strokeWidth {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:opacity {:optional true} [:or number? [:ref #'ExprRef]]]
  [:fontStyle
-  {:json-schema/original-name "fontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
  [:fontWeight
-  {:json-schema/original-name "fontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
  [:strokeJoin
-  {:json-schema/original-name "strokeJoin", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeJoin"} #'StrokeJoin]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'StrokeJoin] [:ref #'ExprRef]]]
  [:shape
-  {:json-schema/original-name "shape", :optional true}
-  [:or
-   [:or
-    [:ref #:json-schema{:original-name "SymbolShape"} #'SymbolShape]
-    string?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:url
-  {:json-schema/original-name "url", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "URI"} #'URI]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:order
-  {:json-schema/original-name "order", :optional true}
-  [:or nil? boolean?]]
- [:cornerRadiusTopLeft
-  {:json-schema/original-name "cornerRadiusTopLeft", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or [:ref #'SymbolShape] string?] [:ref #'ExprRef]]]
+ [:url {:optional true} [:or [:ref #'URI] [:ref #'ExprRef]]]
+ [:order {:optional true} [:or nil? boolean?]]
+ [:cornerRadiusTopLeft {:optional true} [:or number? [:ref #'ExprRef]]]
  [:cornerRadiusBottomLeft
-  {:json-schema/original-name "cornerRadiusBottomLeft", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:lineHeight
-  {:json-schema/original-name "lineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:lineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
  [:strokeCap
-  {:json-schema/original-name "strokeCap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeCap"} #'StrokeCap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:x
-  {:json-schema/original-name "x", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "width"]]]
+  {:optional true}
+  [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
+ [:x {:optional true} [:or number? [:ref #'ExprRef] [:enum "width"]]]
  [:cornerRadiusTopRight
-  {:json-schema/original-name "cornerRadiusTopRight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:blend
-  {:json-schema/original-name "blend", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Blend"} #'Blend]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:fontSize
-  {:json-schema/original-name "fontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ariaRole
-  {:json-schema/original-name "ariaRole", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:endAngle
-  {:json-schema/original-name "endAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:y2
-  {:json-schema/original-name "y2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "height"]]]
- [:filled
-  {:json-schema/original-name "filled", :optional true}
-  boolean?]
- [:radius2
-  {:json-schema/original-name "radius2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:x2
-  {:json-schema/original-name "x2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "width"]]]
- [:href
-  {:json-schema/original-name "href", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "URI"} #'URI]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:blend {:optional true} [:or [:ref #'Blend] [:ref #'ExprRef]]]
+ [:fontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ariaRole {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:endAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:y2 {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
+ [:filled {:optional true} boolean?]
+ [:radius2 {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:x2 {:optional true} [:or number? [:ref #'ExprRef] [:enum "width"]]]
+ [:href {:optional true} [:or [:ref #'URI] [:ref #'ExprRef]]]
  [:tooltip
-  {:json-schema/original-name "tooltip", :optional true}
+  {:optional true}
   [:or
    number?
    string?
    boolean?
    nil?
-   [:ref
-    #:json-schema{:original-name "TooltipContent"}
-    #'TooltipContent]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeOffset
-  {:json-schema/original-name "strokeOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:height
-  {:json-schema/original-name "height", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:text
-  {:json-schema/original-name "text", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+   [:ref #'TooltipContent]
+   [:ref #'ExprRef]]]
+ [:strokeOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:height {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:text {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]]
 )
 
 (def AreaConfig
   [:map
- {:closed true, :json-schema/original-name "AreaConfig"}
- [:y
-  {:json-schema/original-name "y", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "height"]]]
- [:description
-  {:json-schema/original-name "description", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ {:closed true}
+ [:y {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
+ [:description {:optional true} [:or string? [:ref #'ExprRef]]]
  [:baseline
-  {:json-schema/original-name "baseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:smooth
-  {:json-schema/original-name "smooth", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:padAngle
-  {:json-schema/original-name "padAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeOpacity
-  {:json-schema/original-name "strokeOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:startAngle
-  {:json-schema/original-name "startAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aspect
-  {:json-schema/original-name "aspect", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
+ [:smooth {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:padAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:startAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aspect {:optional true} [:or boolean? [:ref #'ExprRef]]]
  [:cornerRadiusBottomRight
-  {:json-schema/original-name "cornerRadiusBottomRight",
-   :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ariaRoleDescription
-  {:json-schema/original-name "ariaRoleDescription", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:align
-  {:json-schema/original-name "align", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:ariaRoleDescription {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:align {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
  [:stroke
-  {:json-schema/original-name "stroke", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
- [:dx
-  {:json-schema/original-name "dx", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef] nil?]]
+ [:dx {:optional true} [:or number? [:ref #'ExprRef]]]
  [:color
-  {:json-schema/original-name "color", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:tension
-  {:json-schema/original-name "tension", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dir
-  {:json-schema/original-name "dir", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextDirection"} #'TextDirection]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:innerRadius
-  {:json-schema/original-name "innerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:limit
-  {:json-schema/original-name "limit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:timeUnitBandSize
-  {:json-schema/original-name "timeUnitBandSize", :optional true}
-  number?]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef]]]
+ [:tension {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:dir {:optional true} [:or [:ref #'TextDirection] [:ref #'ExprRef]]]
+ [:innerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:limit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:timeUnitBandSize {:optional true} number?]
  [:fill
-  {:json-schema/original-name "fill", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef] nil?]]
  [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:time
-  {:json-schema/original-name "time", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ellipsis
-  {:json-schema/original-name "ellipsis", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:width
-  {:json-schema/original-name "width", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dy
-  {:json-schema/original-name "dy", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cursor
-  {:json-schema/original-name "cursor", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Cursor"} #'Cursor]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:lineBreak
-  {:json-schema/original-name "lineBreak", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:invalid
-  {:json-schema/original-name "invalid", :optional true}
-  [:or
-   [:ref
-    #:json-schema{:original-name "MarkInvalidDataMode"}
-    #'MarkInvalidDataMode]
-   nil?]]
- [:fillOpacity
-  {:json-schema/original-name "fillOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:ref #:json-schema{:original-name "Orientation"} #'Orientation]]
- [:strokeMiterLimit
-  {:json-schema/original-name "strokeMiterLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:timeUnitBandPosition
-  {:json-schema/original-name "timeUnitBandPosition", :optional true}
-  number?]
+  {:optional true}
+  [:or [:vector number?] [:ref #'ExprRef]]]
+ [:time {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ellipsis {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:width {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:dy {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cursor {:optional true} [:or [:ref #'Cursor] [:ref #'ExprRef]]]
+ [:lineBreak {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:invalid {:optional true} [:or [:ref #'MarkInvalidDataMode] nil?]]
+ [:fillOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:orient {:optional true} [:ref #'Orientation]]
+ [:strokeMiterLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:timeUnitBandPosition {:optional true} number?]
  [:interpolate
-  {:json-schema/original-name "interpolate", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Interpolate"} #'Interpolate]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:angle
-  {:json-schema/original-name "angle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeDashOffset
-  {:json-schema/original-name "strokeDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta
-  {:json-schema/original-name "theta", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:radius
-  {:json-schema/original-name "radius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:theta2
-  {:json-schema/original-name "theta2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cornerRadius
-  {:json-schema/original-name "cornerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:font
-  {:json-schema/original-name "font", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:size
-  {:json-schema/original-name "size", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:outerRadius
-  {:json-schema/original-name "outerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aria
-  {:json-schema/original-name "aria", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:line
-  {:json-schema/original-name "line", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "OverlayMarkDef"}
-    #'OverlayMarkDef]]]
- [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:opacity
-  {:json-schema/original-name "opacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Interpolate] [:ref #'ExprRef]]]
+ [:angle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:radius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:theta2 {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cornerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:font {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:size {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:outerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:line {:optional true} [:or boolean? [:ref #'OverlayMarkDef]]]
+ [:strokeWidth {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:opacity {:optional true} [:or number? [:ref #'ExprRef]]]
  [:fontStyle
-  {:json-schema/original-name "fontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
  [:fontWeight
-  {:json-schema/original-name "fontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
  [:strokeJoin
-  {:json-schema/original-name "strokeJoin", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeJoin"} #'StrokeJoin]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'StrokeJoin] [:ref #'ExprRef]]]
  [:shape
-  {:json-schema/original-name "shape", :optional true}
-  [:or
-   [:or
-    [:ref #:json-schema{:original-name "SymbolShape"} #'SymbolShape]
-    string?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:url
-  {:json-schema/original-name "url", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "URI"} #'URI]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:order
-  {:json-schema/original-name "order", :optional true}
-  [:or nil? boolean?]]
- [:cornerRadiusTopLeft
-  {:json-schema/original-name "cornerRadiusTopLeft", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or [:ref #'SymbolShape] string?] [:ref #'ExprRef]]]
+ [:url {:optional true} [:or [:ref #'URI] [:ref #'ExprRef]]]
+ [:order {:optional true} [:or nil? boolean?]]
+ [:cornerRadiusTopLeft {:optional true} [:or number? [:ref #'ExprRef]]]
  [:cornerRadiusBottomLeft
-  {:json-schema/original-name "cornerRadiusBottomLeft", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
  [:point
-  {:json-schema/original-name "point", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "OverlayMarkDef"}
-    #'OverlayMarkDef]
-   [:enum "transparent"]]]
- [:lineHeight
-  {:json-schema/original-name "lineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or boolean? [:ref #'OverlayMarkDef] [:enum "transparent"]]]
+ [:lineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
  [:strokeCap
-  {:json-schema/original-name "strokeCap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeCap"} #'StrokeCap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:x
-  {:json-schema/original-name "x", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "width"]]]
+  {:optional true}
+  [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
+ [:x {:optional true} [:or number? [:ref #'ExprRef] [:enum "width"]]]
  [:cornerRadiusTopRight
-  {:json-schema/original-name "cornerRadiusTopRight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:blend
-  {:json-schema/original-name "blend", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Blend"} #'Blend]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:fontSize
-  {:json-schema/original-name "fontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ariaRole
-  {:json-schema/original-name "ariaRole", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:endAngle
-  {:json-schema/original-name "endAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:y2
-  {:json-schema/original-name "y2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "height"]]]
- [:filled
-  {:json-schema/original-name "filled", :optional true}
-  boolean?]
- [:radius2
-  {:json-schema/original-name "radius2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:x2
-  {:json-schema/original-name "x2", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "width"]]]
- [:href
-  {:json-schema/original-name "href", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "URI"} #'URI]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:blend {:optional true} [:or [:ref #'Blend] [:ref #'ExprRef]]]
+ [:fontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ariaRole {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:endAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:y2 {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
+ [:filled {:optional true} boolean?]
+ [:radius2 {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:x2 {:optional true} [:or number? [:ref #'ExprRef] [:enum "width"]]]
+ [:href {:optional true} [:or [:ref #'URI] [:ref #'ExprRef]]]
  [:tooltip
-  {:json-schema/original-name "tooltip", :optional true}
+  {:optional true}
   [:or
    number?
    string?
    boolean?
    nil?
-   [:ref
-    #:json-schema{:original-name "TooltipContent"}
-    #'TooltipContent]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeOffset
-  {:json-schema/original-name "strokeOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:height
-  {:json-schema/original-name "height", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:text
-  {:json-schema/original-name "text", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+   [:ref #'TooltipContent]
+   [:ref #'ExprRef]]]
+ [:strokeOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:height {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:text {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]]
 )
 
 (def AnyMarkConfig
   [:or
- #:json-schema{:original-name "AnyMarkConfig"}
- [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]
- [:ref #:json-schema{:original-name "AreaConfig"} #'AreaConfig]
- [:ref #:json-schema{:original-name "BarConfig"} #'BarConfig]
- [:ref #:json-schema{:original-name "RectConfig"} #'RectConfig]
- [:ref #:json-schema{:original-name "LineConfig"} #'LineConfig]
- [:ref #:json-schema{:original-name "TickConfig"} #'TickConfig]]
+ [:ref #'MarkConfig]
+ [:ref #'AreaConfig]
+ [:ref #'BarConfig]
+ [:ref #'RectConfig]
+ [:ref #'LineConfig]
+ [:ref #'TickConfig]]
 )
 
 (def ErrorBarExtent
-  [:enum
- #:json-schema{:original-name "ErrorBarExtent"}
- "ci"
- "iqr"
- "stderr"
- "stdev"]
+  [:enum "ci" "iqr" "stderr" "stdev"]
 )
 
 (def ErrorBandDef
   [:map
- {:closed true, :json-schema/original-name "ErrorBandDef"}
- [:clip {:json-schema/original-name "clip", :optional true} boolean?]
+ {:closed true}
+ [:clip {:optional true} boolean?]
  [:color
-  {:json-schema/original-name "color", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:tension
-  {:json-schema/original-name "tension", :optional true}
-  number?]
- [:band
-  {:json-schema/original-name "band", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]
- [:type
-  #:json-schema{:original-name "type"}
-  [:ref #:json-schema{:original-name "ErrorBand"} #'ErrorBand]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:ref #:json-schema{:original-name "Orientation"} #'Orientation]]
- [:interpolate
-  {:json-schema/original-name "interpolate", :optional true}
-  [:ref #:json-schema{:original-name "Interpolate"} #'Interpolate]]
- [:borders
-  {:json-schema/original-name "borders", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]
- [:opacity
-  {:json-schema/original-name "opacity", :optional true}
-  number?]
- [:extent
-  {:json-schema/original-name "extent", :optional true}
-  [:ref
-   #:json-schema{:original-name "ErrorBarExtent"}
-   #'ErrorBarExtent]]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef]]]
+ [:tension {:optional true} number?]
+ [:band {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
+ [:type [:ref #'ErrorBand]]
+ [:orient {:optional true} [:ref #'Orientation]]
+ [:interpolate {:optional true} [:ref #'Interpolate]]
+ [:borders {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
+ [:opacity {:optional true} number?]
+ [:extent {:optional true} [:ref #'ErrorBarExtent]]]
 )
 
 (def BoxPlotDef
   [:map
- {:closed true, :json-schema/original-name "BoxPlotDef"}
- [:clip {:json-schema/original-name "clip", :optional true} boolean?]
+ {:closed true}
+ [:clip {:optional true} boolean?]
  [:color
-  {:json-schema/original-name "color", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:rule
-  {:json-schema/original-name "rule", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]
- [:box
-  {:json-schema/original-name "box", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]
- [:type
-  #:json-schema{:original-name "type"}
-  [:ref #:json-schema{:original-name "BoxPlot"} #'BoxPlot]]
- [:invalid
-  {:json-schema/original-name "invalid", :optional true}
-  [:or
-   [:ref
-    #:json-schema{:original-name "MarkInvalidDataMode"}
-    #'MarkInvalidDataMode]
-   nil?]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:ref #:json-schema{:original-name "Orientation"} #'Orientation]]
- [:outliers
-  {:json-schema/original-name "outliers", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]
- [:size {:json-schema/original-name "size", :optional true} number?]
- [:median
-  {:json-schema/original-name "median", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]
- [:opacity
-  {:json-schema/original-name "opacity", :optional true}
-  number?]
- [:extent
-  {:json-schema/original-name "extent", :optional true}
-  [:or number? [:enum "min-max"]]]
- [:ticks
-  {:json-schema/original-name "ticks", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef]]]
+ [:rule {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
+ [:box {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
+ [:type [:ref #'BoxPlot]]
+ [:invalid {:optional true} [:or [:ref #'MarkInvalidDataMode] nil?]]
+ [:orient {:optional true} [:ref #'Orientation]]
+ [:outliers {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
+ [:size {:optional true} number?]
+ [:median {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
+ [:opacity {:optional true} number?]
+ [:extent {:optional true} [:or number? [:enum "min-max"]]]
+ [:ticks {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]]
 )
 
 (def ErrorBarDef
   [:map
- {:closed true, :json-schema/original-name "ErrorBarDef"}
- [:thickness
-  {:json-schema/original-name "thickness", :optional true}
-  number?]
- [:clip {:json-schema/original-name "clip", :optional true} boolean?]
+ {:closed true}
+ [:thickness {:optional true} number?]
+ [:clip {:optional true} boolean?]
  [:color
-  {:json-schema/original-name "color", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:rule
-  {:json-schema/original-name "rule", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]
- [:type
-  #:json-schema{:original-name "type"}
-  [:ref #:json-schema{:original-name "ErrorBar"} #'ErrorBar]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:ref #:json-schema{:original-name "Orientation"} #'Orientation]]
- [:size {:json-schema/original-name "size", :optional true} number?]
- [:opacity
-  {:json-schema/original-name "opacity", :optional true}
-  number?]
- [:extent
-  {:json-schema/original-name "extent", :optional true}
-  [:ref
-   #:json-schema{:original-name "ErrorBarExtent"}
-   #'ErrorBarExtent]]
- [:ticks
-  {:json-schema/original-name "ticks", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]]
+  {:optional true}
+  [:or [:ref #'Color] [:ref #'Gradient] [:ref #'ExprRef]]]
+ [:rule {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
+ [:type [:ref #'ErrorBar]]
+ [:orient {:optional true} [:ref #'Orientation]]
+ [:size {:optional true} number?]
+ [:opacity {:optional true} number?]
+ [:extent {:optional true} [:ref #'ErrorBarExtent]]
+ [:ticks {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]]
 )
 
 (def CompositeMarkDef
-  [:or
- #:json-schema{:original-name "CompositeMarkDef"}
- [:ref #:json-schema{:original-name "BoxPlotDef"} #'BoxPlotDef]
- [:ref #:json-schema{:original-name "ErrorBarDef"} #'ErrorBarDef]
- [:ref #:json-schema{:original-name "ErrorBandDef"} #'ErrorBandDef]]
+  [:or [:ref #'BoxPlotDef] [:ref #'ErrorBarDef] [:ref #'ErrorBandDef]]
 )
 
 (def AnyMark
   [:or
- #:json-schema{:original-name "AnyMark"}
- [:ref #:json-schema{:original-name "CompositeMark"} #'CompositeMark]
- [:ref
-  #:json-schema{:original-name "CompositeMarkDef"}
-  #'CompositeMarkDef]
- [:ref #:json-schema{:original-name "Mark"} #'Mark]
- [:ref #:json-schema{:original-name "MarkDef"} #'MarkDef]]
+ [:ref #'CompositeMark]
+ [:ref #'CompositeMarkDef]
+ [:ref #'Mark]
+ [:ref #'MarkDef]]
 )
 
 (def AutosizeType
-  [:enum
- #:json-schema{:original-name "AutosizeType"}
- "pad"
- "none"
- "fit"
- "fit-x"
- "fit-y"]
+  [:enum "pad" "none" "fit" "fit-x" "fit-y"]
 )
 
 (def AutoSizeParams
   [:map
- {:closed true, :json-schema/original-name "AutoSizeParams"}
- [:contains
-  {:json-schema/original-name "contains", :optional true}
-  [:enum "content" "padding"]]
- [:resize
-  {:json-schema/original-name "resize", :optional true}
-  boolean?]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "AutosizeType"} #'AutosizeType]]]
+ {:closed true}
+ [:contains {:optional true} [:enum "content" "padding"]]
+ [:resize {:optional true} boolean?]
+ [:type {:optional true} [:ref #'AutosizeType]]]
 )
 
 (def LogicalNot_Predicate_
   [:map
  {:closed true, :json-schema/original-name "LogicalNot<Predicate>"}
- [:not
-  #:json-schema{:original-name "not"}
-  [:ref
-   #:json-schema{:original-name "PredicateComposition"}
-   #'PredicateComposition]]]
+ [:not [:ref #'PredicateComposition]]]
 )
 
 (def LogicalOr_Predicate_
   [:map
  {:closed true, :json-schema/original-name "LogicalOr<Predicate>"}
- [:or
-  #:json-schema{:original-name "or"}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]]]
+ [:or [:vector [:ref #'PredicateComposition]]]]
 )
 
 (def Day
-  [:and #:json-schema{:original-name "Day"} number?]
+  number?
 )
 
 (def Month
-  [:and #:json-schema{:original-name "Month"} number?]
+  number?
 )
 
 (def DateTime
   [:map
- {:closed true, :json-schema/original-name "DateTime"}
- [:quarter
-  {:json-schema/original-name "quarter", :optional true}
-  number?]
- [:day
-  {:json-schema/original-name "day", :optional true}
-  [:or [:ref #:json-schema{:original-name "Day"} #'Day] string?]]
- [:date {:json-schema/original-name "date", :optional true} number?]
- [:utc {:json-schema/original-name "utc", :optional true} boolean?]
- [:month
-  {:json-schema/original-name "month", :optional true}
-  [:or [:ref #:json-schema{:original-name "Month"} #'Month] string?]]
- [:seconds
-  {:json-schema/original-name "seconds", :optional true}
-  number?]
- [:year {:json-schema/original-name "year", :optional true} number?]
- [:hours {:json-schema/original-name "hours", :optional true} number?]
- [:milliseconds
-  {:json-schema/original-name "milliseconds", :optional true}
-  number?]
- [:minutes
-  {:json-schema/original-name "minutes", :optional true}
-  number?]]
+ {:closed true}
+ [:quarter {:optional true} number?]
+ [:day {:optional true} [:or [:ref #'Day] string?]]
+ [:date {:optional true} number?]
+ [:utc {:optional true} boolean?]
+ [:month {:optional true} [:or [:ref #'Month] string?]]
+ [:seconds {:optional true} number?]
+ [:year {:optional true} number?]
+ [:hours {:optional true} number?]
+ [:milliseconds {:optional true} number?]
+ [:minutes {:optional true} number?]]
 )
 
 (def BinnedTimeUnit
   [:enum
- #:json-schema{:original-name "BinnedTimeUnit"}
  "binnedyear"
  "binnedyearquarter"
  "binnedyearquartermonth"
@@ -4075,7 +1641,6 @@
 
 (def LocalMultiTimeUnit
   [:enum
- #:json-schema{:original-name "LocalMultiTimeUnit"}
  "yearquarter"
  "yearquartermonth"
  "yearmonth"
@@ -4109,7 +1674,6 @@
 
 (def UtcMultiTimeUnit
   [:enum
- #:json-schema{:original-name "UtcMultiTimeUnit"}
  "utcyearquarter"
  "utcyearquartermonth"
  "utcyearmonth"
@@ -4142,19 +1706,11 @@
 )
 
 (def MultiTimeUnit
-  [:or
- #:json-schema{:original-name "MultiTimeUnit"}
- [:ref
-  #:json-schema{:original-name "LocalMultiTimeUnit"}
-  #'LocalMultiTimeUnit]
- [:ref
-  #:json-schema{:original-name "UtcMultiTimeUnit"}
-  #'UtcMultiTimeUnit]]
+  [:or [:ref #'LocalMultiTimeUnit] [:ref #'UtcMultiTimeUnit]]
 )
 
 (def UtcSingleTimeUnit
   [:enum
- #:json-schema{:original-name "UtcSingleTimeUnit"}
  "utcyear"
  "utcquarter"
  "utcmonth"
@@ -4170,7 +1726,6 @@
 
 (def LocalSingleTimeUnit
   [:enum
- #:json-schema{:original-name "LocalSingleTimeUnit"}
  "year"
  "quarter"
  "month"
@@ -4185,298 +1740,169 @@
 )
 
 (def SingleTimeUnit
-  [:or
- #:json-schema{:original-name "SingleTimeUnit"}
- [:ref
-  #:json-schema{:original-name "LocalSingleTimeUnit"}
-  #'LocalSingleTimeUnit]
- [:ref
-  #:json-schema{:original-name "UtcSingleTimeUnit"}
-  #'UtcSingleTimeUnit]]
+  [:or [:ref #'LocalSingleTimeUnit] [:ref #'UtcSingleTimeUnit]]
 )
 
 (def TimeUnit
-  [:or
- #:json-schema{:original-name "TimeUnit"}
- [:ref #:json-schema{:original-name "SingleTimeUnit"} #'SingleTimeUnit]
- [:ref #:json-schema{:original-name "MultiTimeUnit"} #'MultiTimeUnit]]
+  [:or [:ref #'SingleTimeUnit] [:ref #'MultiTimeUnit]]
 )
 
 (def TimeUnitParams
   [:map
- {:closed true, :json-schema/original-name "TimeUnitParams"}
- [:binned
-  {:json-schema/original-name "binned", :optional true}
-  boolean?]
- [:maxbins
-  {:json-schema/original-name "maxbins", :optional true}
-  number?]
- [:step {:json-schema/original-name "step", :optional true} number?]
- [:unit
-  {:json-schema/original-name "unit", :optional true}
-  [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]]
- [:utc {:json-schema/original-name "utc", :optional true} boolean?]]
+ {:closed true}
+ [:binned {:optional true} boolean?]
+ [:maxbins {:optional true} number?]
+ [:step {:optional true} number?]
+ [:unit {:optional true} [:ref #'TimeUnit]]
+ [:utc {:optional true} boolean?]]
 )
 
 (def FieldEqualPredicate
   [:map
- {:closed true, :json-schema/original-name "FieldEqualPredicate"}
+ {:closed true}
  [:equal
-  #:json-schema{:original-name "equal"}
-  [:or
-   string?
-   number?
-   boolean?
-   [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:field
-  #:json-schema{:original-name "field"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
+  [:or string? number? boolean? [:ref #'DateTime] [:ref #'ExprRef]]]
+ [:field [:ref #'FieldName]]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]]
 )
 
 (def FieldGTEPredicate
   [:map
- {:closed true, :json-schema/original-name "FieldGTEPredicate"}
- [:field
-  #:json-schema{:original-name "field"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:gte
-  #:json-schema{:original-name "gte"}
-  [:or
-   string?
-   number?
-   [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ {:closed true}
+ [:field [:ref #'FieldName]]
+ [:gte [:or string? number? [:ref #'DateTime] [:ref #'ExprRef]]]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]]
 )
 
 (def FieldValidPredicate
   [:map
- {:closed true, :json-schema/original-name "FieldValidPredicate"}
- [:field
-  #:json-schema{:original-name "field"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
+ {:closed true}
+ [:field [:ref #'FieldName]]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:valid #:json-schema{:original-name "valid"} boolean?]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:valid boolean?]]
 )
 
 (def FieldGTPredicate
   [:map
- {:closed true, :json-schema/original-name "FieldGTPredicate"}
- [:field
-  #:json-schema{:original-name "field"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:gt
-  #:json-schema{:original-name "gt"}
-  [:or
-   string?
-   number?
-   [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ {:closed true}
+ [:field [:ref #'FieldName]]
+ [:gt [:or string? number? [:ref #'DateTime] [:ref #'ExprRef]]]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]]
 )
 
 (def FieldRangePredicate
   [:map
- {:closed true, :json-schema/original-name "FieldRangePredicate"}
- [:field
-  #:json-schema{:original-name "field"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
+ {:closed true}
+ [:field [:ref #'FieldName]]
  [:range
-  #:json-schema{:original-name "range"}
   [:or
-   [:vector
-    [:or
-     number?
-     nil?
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+   [:vector [:or number? nil? [:ref #'DateTime] [:ref #'ExprRef]]]
+   [:ref #'ExprRef]]]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]]
 )
 
 (def FieldLTEPredicate
   [:map
- {:closed true, :json-schema/original-name "FieldLTEPredicate"}
- [:field
-  #:json-schema{:original-name "field"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:lte
-  #:json-schema{:original-name "lte"}
-  [:or
-   string?
-   number?
-   [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ {:closed true}
+ [:field [:ref #'FieldName]]
+ [:lte [:or string? number? [:ref #'DateTime] [:ref #'ExprRef]]]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]]
 )
 
 (def FieldLTPredicate
   [:map
- {:closed true, :json-schema/original-name "FieldLTPredicate"}
- [:field
-  #:json-schema{:original-name "field"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:lt
-  #:json-schema{:original-name "lt"}
-  [:or
-   string?
-   number?
-   [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ {:closed true}
+ [:field [:ref #'FieldName]]
+ [:lt [:or string? number? [:ref #'DateTime] [:ref #'ExprRef]]]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]]
 )
 
 (def ParameterName
-  [:and #:json-schema{:original-name "ParameterName"} string?]
+  string?
 )
 
 (def ParameterPredicate
   [:map
- {:closed true, :json-schema/original-name "ParameterPredicate"}
- [:empty {:json-schema/original-name "empty", :optional true} boolean?]
- [:param
-  #:json-schema{:original-name "param"}
-  [:ref #:json-schema{:original-name "ParameterName"} #'ParameterName]]]
+ {:closed true}
+ [:empty {:optional true} boolean?]
+ [:param [:ref #'ParameterName]]]
 )
 
 (def FieldOneOfPredicate
   [:map
- {:closed true, :json-schema/original-name "FieldOneOfPredicate"}
- [:field
-  #:json-schema{:original-name "field"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
+ {:closed true}
+ [:field [:ref #'FieldName]]
  [:oneOf
-  #:json-schema{:original-name "oneOf"}
   [:or
    [:vector string?]
    [:vector number?]
    [:vector boolean?]
-   [:vector
-    [:ref #:json-schema{:original-name "DateTime"} #'DateTime]]]]
+   [:vector [:ref #'DateTime]]]]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]]
 )
 
 (def Predicate
   [:or
- #:json-schema{:original-name "Predicate"}
- [:ref
-  #:json-schema{:original-name "FieldEqualPredicate"}
-  #'FieldEqualPredicate]
- [:ref
-  #:json-schema{:original-name "FieldRangePredicate"}
-  #'FieldRangePredicate]
- [:ref
-  #:json-schema{:original-name "FieldOneOfPredicate"}
-  #'FieldOneOfPredicate]
- [:ref
-  #:json-schema{:original-name "FieldLTPredicate"}
-  #'FieldLTPredicate]
- [:ref
-  #:json-schema{:original-name "FieldGTPredicate"}
-  #'FieldGTPredicate]
- [:ref
-  #:json-schema{:original-name "FieldLTEPredicate"}
-  #'FieldLTEPredicate]
- [:ref
-  #:json-schema{:original-name "FieldGTEPredicate"}
-  #'FieldGTEPredicate]
- [:ref
-  #:json-schema{:original-name "FieldValidPredicate"}
-  #'FieldValidPredicate]
- [:ref
-  #:json-schema{:original-name "ParameterPredicate"}
-  #'ParameterPredicate]
+ [:ref #'FieldEqualPredicate]
+ [:ref #'FieldRangePredicate]
+ [:ref #'FieldOneOfPredicate]
+ [:ref #'FieldLTPredicate]
+ [:ref #'FieldGTPredicate]
+ [:ref #'FieldLTEPredicate]
+ [:ref #'FieldGTEPredicate]
+ [:ref #'FieldValidPredicate]
+ [:ref #'ParameterPredicate]
  string?]
 )
 
 (def LogicalAnd_Predicate_
   [:map
  {:closed true, :json-schema/original-name "LogicalAnd<Predicate>"}
- [:and
-  #:json-schema{:original-name "and"}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]]]
+ [:and [:vector [:ref #'PredicateComposition]]]]
 )
 
 (def PredicateComposition
   [:or
- #:json-schema{:original-name "PredicateComposition"}
  [:ref
   #:json-schema{:original-name "LogicalNot<Predicate>"}
   #'LogicalNot_Predicate_]
@@ -4486,7 +1912,7 @@
  [:ref
   #:json-schema{:original-name "LogicalOr<Predicate>"}
   #'LogicalOr_Predicate_]
- [:ref #:json-schema{:original-name "Predicate"} #'Predicate]]
+ [:ref #'Predicate]]
 )
 
 (def ConditionalPredicate__ValueDef__Color_null___ExprRef__
@@ -4495,22 +1921,12 @@
                "ConditionalPredicate<(ValueDef<(Color|null)>|ExprRef)>"}
  [:map
   {:closed true}
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]
-  [:value
-   #:json-schema{:original-name "value"}
-   [:or [:ref #:json-schema{:original-name "Color"} #'Color] nil?]]]
+  [:test [:ref #'PredicateComposition]]
+  [:value [:or [:ref #'Color] nil?]]]
  [:map
   {:closed true}
-  [:expr #:json-schema{:original-name "expr"} string?]
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]]]
+  [:expr string?]
+  [:test [:ref #'PredicateComposition]]]]
 )
 
 (def ConditionalAxisProperty__Color_null__
@@ -4519,7 +1935,6 @@
  [:map
   {:closed true}
   [:condition
-   #:json-schema{:original-name "condition"}
    [:or
     [:ref
      #:json-schema{:original-name
@@ -4530,13 +1945,10 @@
       #:json-schema{:original-name
                     "ConditionalPredicate<(ValueDef<(Color|null)>|ExprRef)>"}
       #'ConditionalPredicate__ValueDef__Color_null___ExprRef__]]]]
-  [:value
-   #:json-schema{:original-name "value"}
-   [:or [:ref #:json-schema{:original-name "Color"} #'Color] nil?]]]
+  [:value [:or [:ref #'Color] nil?]]]
  [:map
   {:closed true}
   [:condition
-   #:json-schema{:original-name "condition"}
    [:or
     [:ref
      #:json-schema{:original-name
@@ -4547,18 +1959,17 @@
       #:json-schema{:original-name
                     "ConditionalPredicate<(ValueDef<(Color|null)>|ExprRef)>"}
       #'ConditionalPredicate__ValueDef__Color_null___ExprRef__]]]]
-  [:expr #:json-schema{:original-name "expr"} string?]]]
+  [:expr string?]]]
 )
 
 (def ConditionalAxisColor
   [:ref
- #:json-schema{:original-name "ConditionalAxisColor"}
+ #:json-schema{:original-name "ConditionalAxisProperty<(Color|null)>"}
  #'ConditionalAxisProperty__Color_null__]
 )
 
 (def TimeInterval
   [:enum
- #:json-schema{:original-name "TimeInterval"}
  "millisecond"
  "second"
  "minute"
@@ -4570,12 +1981,7 @@
 )
 
 (def TimeIntervalStep
-  [:map
- {:closed true, :json-schema/original-name "TimeIntervalStep"}
- [:interval
-  #:json-schema{:original-name "interval"}
-  [:ref #:json-schema{:original-name "TimeInterval"} #'TimeInterval]]
- [:step #:json-schema{:original-name "step"} number?]]
+  [:map {:closed true} [:interval [:ref #'TimeInterval]] [:step number?]]
 )
 
 (def ConditionalPredicate__ValueDef__Align_null___ExprRef__
@@ -4584,22 +1990,12 @@
                "ConditionalPredicate<(ValueDef<(Align|null)>|ExprRef)>"}
  [:map
   {:closed true}
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]
-  [:value
-   #:json-schema{:original-name "value"}
-   [:or [:ref #:json-schema{:original-name "Align"} #'Align] nil?]]]
+  [:test [:ref #'PredicateComposition]]
+  [:value [:or [:ref #'Align] nil?]]]
  [:map
   {:closed true}
-  [:expr #:json-schema{:original-name "expr"} string?]
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]]]
+  [:expr string?]
+  [:test [:ref #'PredicateComposition]]]]
 )
 
 (def ConditionalAxisProperty__Align_null__
@@ -4608,7 +2004,6 @@
  [:map
   {:closed true}
   [:condition
-   #:json-schema{:original-name "condition"}
    [:or
     [:ref
      #:json-schema{:original-name
@@ -4619,13 +2014,10 @@
       #:json-schema{:original-name
                     "ConditionalPredicate<(ValueDef<(Align|null)>|ExprRef)>"}
       #'ConditionalPredicate__ValueDef__Align_null___ExprRef__]]]]
-  [:value
-   #:json-schema{:original-name "value"}
-   [:or [:ref #:json-schema{:original-name "Align"} #'Align] nil?]]]
+  [:value [:or [:ref #'Align] nil?]]]
  [:map
   {:closed true}
   [:condition
-   #:json-schema{:original-name "condition"}
    [:or
     [:ref
      #:json-schema{:original-name
@@ -4636,12 +2028,12 @@
       #:json-schema{:original-name
                     "ConditionalPredicate<(ValueDef<(Align|null)>|ExprRef)>"}
       #'ConditionalPredicate__ValueDef__Align_null___ExprRef__]]]]
-  [:expr #:json-schema{:original-name "expr"} string?]]]
+  [:expr string?]]]
 )
 
 (def ConditionalAxisLabelAlign
   [:ref
- #:json-schema{:original-name "ConditionalAxisLabelAlign"}
+ #:json-schema{:original-name "ConditionalAxisProperty<(Align|null)>"}
  #'ConditionalAxisProperty__Align_null__]
 )
 
@@ -4651,24 +2043,12 @@
                "ConditionalPredicate<(ValueDef<(TextBaseline|null)>|ExprRef)>"}
  [:map
   {:closed true}
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]
-  [:value
-   #:json-schema{:original-name "value"}
-   [:or
-    [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-    nil?]]]
+  [:test [:ref #'PredicateComposition]]
+  [:value [:or [:ref #'TextBaseline] nil?]]]
  [:map
   {:closed true}
-  [:expr #:json-schema{:original-name "expr"} string?]
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]]]
+  [:expr string?]
+  [:test [:ref #'PredicateComposition]]]]
 )
 
 (def ConditionalAxisProperty__TextBaseline_null__
@@ -4678,7 +2058,6 @@
  [:map
   {:closed true}
   [:condition
-   #:json-schema{:original-name "condition"}
    [:or
     [:ref
      #:json-schema{:original-name
@@ -4689,15 +2068,10 @@
       #:json-schema{:original-name
                     "ConditionalPredicate<(ValueDef<(TextBaseline|null)>|ExprRef)>"}
       #'ConditionalPredicate__ValueDef__TextBaseline_null___ExprRef__]]]]
-  [:value
-   #:json-schema{:original-name "value"}
-   [:or
-    [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-    nil?]]]
+  [:value [:or [:ref #'TextBaseline] nil?]]]
  [:map
   {:closed true}
   [:condition
-   #:json-schema{:original-name "condition"}
    [:or
     [:ref
      #:json-schema{:original-name
@@ -4708,22 +2082,18 @@
       #:json-schema{:original-name
                     "ConditionalPredicate<(ValueDef<(TextBaseline|null)>|ExprRef)>"}
       #'ConditionalPredicate__ValueDef__TextBaseline_null___ExprRef__]]]]
-  [:expr #:json-schema{:original-name "expr"} string?]]]
+  [:expr string?]]]
 )
 
 (def ConditionalAxisLabelBaseline
   [:ref
- #:json-schema{:original-name "ConditionalAxisLabelBaseline"}
+ #:json-schema{:original-name
+               "ConditionalAxisProperty<(TextBaseline|null)>"}
  #'ConditionalAxisProperty__TextBaseline_null__]
 )
 
 (def TitleAnchor
-  [:enum
- #:json-schema{:original-name "TitleAnchor"}
- nil
- "start"
- "middle"
- "end"]
+  [:enum nil "start" "middle" "end"]
 )
 
 (def ConditionalPredicate__ValueDef__FontStyle_null___ExprRef__
@@ -4732,24 +2102,12 @@
                "ConditionalPredicate<(ValueDef<(FontStyle|null)>|ExprRef)>"}
  [:map
   {:closed true}
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]
-  [:value
-   #:json-schema{:original-name "value"}
-   [:or
-    [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-    nil?]]]
+  [:test [:ref #'PredicateComposition]]
+  [:value [:or [:ref #'FontStyle] nil?]]]
  [:map
   {:closed true}
-  [:expr #:json-schema{:original-name "expr"} string?]
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]]]
+  [:expr string?]
+  [:test [:ref #'PredicateComposition]]]]
 )
 
 (def ConditionalAxisProperty__FontStyle_null__
@@ -4759,7 +2117,6 @@
  [:map
   {:closed true}
   [:condition
-   #:json-schema{:original-name "condition"}
    [:or
     [:ref
      #:json-schema{:original-name
@@ -4770,15 +2127,10 @@
       #:json-schema{:original-name
                     "ConditionalPredicate<(ValueDef<(FontStyle|null)>|ExprRef)>"}
       #'ConditionalPredicate__ValueDef__FontStyle_null___ExprRef__]]]]
-  [:value
-   #:json-schema{:original-name "value"}
-   [:or
-    [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-    nil?]]]
+  [:value [:or [:ref #'FontStyle] nil?]]]
  [:map
   {:closed true}
   [:condition
-   #:json-schema{:original-name "condition"}
    [:or
     [:ref
      #:json-schema{:original-name
@@ -4789,20 +2141,18 @@
       #:json-schema{:original-name
                     "ConditionalPredicate<(ValueDef<(FontStyle|null)>|ExprRef)>"}
       #'ConditionalPredicate__ValueDef__FontStyle_null___ExprRef__]]]]
-  [:expr #:json-schema{:original-name "expr"} string?]]]
+  [:expr string?]]]
 )
 
 (def ConditionalAxisLabelFontStyle
   [:ref
- #:json-schema{:original-name "ConditionalAxisLabelFontStyle"}
+ #:json-schema{:original-name
+               "ConditionalAxisProperty<(FontStyle|null)>"}
  #'ConditionalAxisProperty__FontStyle_null__]
 )
 
 (def LabelOverlap
-  [:or
- #:json-schema{:original-name "LabelOverlap"}
- boolean?
- [:enum "parity" "greedy"]]
+  [:or boolean? [:enum "parity" "greedy"]]
 )
 
 (def ConditionalPredicate__ValueDef__FontWeight_null___ExprRef__
@@ -4811,24 +2161,12 @@
                "ConditionalPredicate<(ValueDef<(FontWeight|null)>|ExprRef)>"}
  [:map
   {:closed true}
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]
-  [:value
-   #:json-schema{:original-name "value"}
-   [:or
-    [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-    nil?]]]
+  [:test [:ref #'PredicateComposition]]
+  [:value [:or [:ref #'FontWeight] nil?]]]
  [:map
   {:closed true}
-  [:expr #:json-schema{:original-name "expr"} string?]
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]]]
+  [:expr string?]
+  [:test [:ref #'PredicateComposition]]]]
 )
 
 (def ConditionalAxisProperty__FontWeight_null__
@@ -4838,7 +2176,6 @@
  [:map
   {:closed true}
   [:condition
-   #:json-schema{:original-name "condition"}
    [:or
     [:ref
      #:json-schema{:original-name
@@ -4849,15 +2186,10 @@
       #:json-schema{:original-name
                     "ConditionalPredicate<(ValueDef<(FontWeight|null)>|ExprRef)>"}
       #'ConditionalPredicate__ValueDef__FontWeight_null___ExprRef__]]]]
-  [:value
-   #:json-schema{:original-name "value"}
-   [:or
-    [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-    nil?]]]
+  [:value [:or [:ref #'FontWeight] nil?]]]
  [:map
   {:closed true}
   [:condition
-   #:json-schema{:original-name "condition"}
    [:or
     [:ref
      #:json-schema{:original-name
@@ -4868,59 +2200,41 @@
       #:json-schema{:original-name
                     "ConditionalPredicate<(ValueDef<(FontWeight|null)>|ExprRef)>"}
       #'ConditionalPredicate__ValueDef__FontWeight_null___ExprRef__]]]]
-  [:expr #:json-schema{:original-name "expr"} string?]]]
+  [:expr string?]]]
 )
 
 (def ConditionalAxisLabelFontWeight
   [:ref
- #:json-schema{:original-name "ConditionalAxisLabelFontWeight"}
+ #:json-schema{:original-name
+               "ConditionalAxisProperty<(FontWeight|null)>"}
  #'ConditionalAxisProperty__FontWeight_null__]
 )
 
 (def AxisOrient
-  [:enum
- #:json-schema{:original-name "AxisOrient"}
- "top"
- "bottom"
- "left"
- "right"]
+  [:enum "top" "bottom" "left" "right"]
 )
 
 (def Dict
-  [:map-of #:json-schema{:original-name "Dict"} any? any?]
+  [:map-of any? any?]
 )
 
 (def TimeFormatSpecifier
   [:map
- {:closed true, :json-schema/original-name "TimeFormatSpecifier"}
- [:quarter
-  {:json-schema/original-name "quarter", :optional true}
-  string?]
- [:day {:json-schema/original-name "day", :optional true} string?]
- [:date {:json-schema/original-name "date", :optional true} string?]
- [:week {:json-schema/original-name "week", :optional true} string?]
- [:month {:json-schema/original-name "month", :optional true} string?]
- [:seconds
-  {:json-schema/original-name "seconds", :optional true}
-  string?]
- [:year {:json-schema/original-name "year", :optional true} string?]
- [:hours {:json-schema/original-name "hours", :optional true} string?]
- [:milliseconds
-  {:json-schema/original-name "milliseconds", :optional true}
-  string?]
- [:minutes
-  {:json-schema/original-name "minutes", :optional true}
-  string?]]
+ {:closed true}
+ [:quarter {:optional true} string?]
+ [:day {:optional true} string?]
+ [:date {:optional true} string?]
+ [:week {:optional true} string?]
+ [:month {:optional true} string?]
+ [:seconds {:optional true} string?]
+ [:year {:optional true} string?]
+ [:hours {:optional true} string?]
+ [:milliseconds {:optional true} string?]
+ [:minutes {:optional true} string?]]
 )
 
 (def Format
-  [:or
- #:json-schema{:original-name "Format"}
- string?
- [:ref
-  #:json-schema{:original-name "TimeFormatSpecifier"}
-  #'TimeFormatSpecifier]
- [:ref #:json-schema{:original-name "Dict"} #'Dict]]
+  [:or string? [:ref #'TimeFormatSpecifier] [:ref #'Dict]]
 )
 
 (def ConditionalPredicate__ValueDef__number_null___ExprRef__
@@ -4929,20 +2243,12 @@
                "ConditionalPredicate<(ValueDef<(number|null)>|ExprRef)>"}
  [:map
   {:closed true}
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]
-  [:value #:json-schema{:original-name "value"} [:or number? nil?]]]
+  [:test [:ref #'PredicateComposition]]
+  [:value [:or number? nil?]]]
  [:map
   {:closed true}
-  [:expr #:json-schema{:original-name "expr"} string?]
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]]]
+  [:expr string?]
+  [:test [:ref #'PredicateComposition]]]]
 )
 
 (def ConditionalAxisProperty__number_null__
@@ -4951,7 +2257,6 @@
  [:map
   {:closed true}
   [:condition
-   #:json-schema{:original-name "condition"}
    [:or
     [:ref
      #:json-schema{:original-name
@@ -4962,11 +2267,10 @@
       #:json-schema{:original-name
                     "ConditionalPredicate<(ValueDef<(number|null)>|ExprRef)>"}
       #'ConditionalPredicate__ValueDef__number_null___ExprRef__]]]]
-  [:value #:json-schema{:original-name "value"} [:or number? nil?]]]
+  [:value [:or number? nil?]]]
  [:map
   {:closed true}
   [:condition
-   #:json-schema{:original-name "condition"}
    [:or
     [:ref
      #:json-schema{:original-name
@@ -4977,12 +2281,12 @@
       #:json-schema{:original-name
                     "ConditionalPredicate<(ValueDef<(number|null)>|ExprRef)>"}
       #'ConditionalPredicate__ValueDef__number_null___ExprRef__]]]]
-  [:expr #:json-schema{:original-name "expr"} string?]]]
+  [:expr string?]]]
 )
 
 (def ConditionalAxisNumber
   [:ref
- #:json-schema{:original-name "ConditionalAxisNumber"}
+ #:json-schema{:original-name "ConditionalAxisProperty<(number|null)>"}
  #'ConditionalAxisProperty__number_null__]
 )
 
@@ -4992,22 +2296,12 @@
                "ConditionalPredicate<(ValueDef<(number[]|null)>|ExprRef)>"}
  [:map
   {:closed true}
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]
-  [:value
-   #:json-schema{:original-name "value"}
-   [:or [:vector number?] nil?]]]
+  [:test [:ref #'PredicateComposition]]
+  [:value [:or [:vector number?] nil?]]]
  [:map
   {:closed true}
-  [:expr #:json-schema{:original-name "expr"} string?]
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]]]
+  [:expr string?]
+  [:test [:ref #'PredicateComposition]]]]
 )
 
 (def ConditionalAxisProperty__number___null__
@@ -5017,7 +2311,6 @@
  [:map
   {:closed true}
   [:condition
-   #:json-schema{:original-name "condition"}
    [:or
     [:ref
      #:json-schema{:original-name
@@ -5028,13 +2321,10 @@
       #:json-schema{:original-name
                     "ConditionalPredicate<(ValueDef<(number[]|null)>|ExprRef)>"}
       #'ConditionalPredicate__ValueDef__number___null___ExprRef__]]]]
-  [:value
-   #:json-schema{:original-name "value"}
-   [:or [:vector number?] nil?]]]
+  [:value [:or [:vector number?] nil?]]]
  [:map
   {:closed true}
   [:condition
-   #:json-schema{:original-name "condition"}
    [:or
     [:ref
      #:json-schema{:original-name
@@ -5045,12 +2335,13 @@
       #:json-schema{:original-name
                     "ConditionalPredicate<(ValueDef<(number[]|null)>|ExprRef)>"}
       #'ConditionalPredicate__ValueDef__number___null___ExprRef__]]]]
-  [:expr #:json-schema{:original-name "expr"} string?]]]
+  [:expr string?]]]
 )
 
 (def ConditionalAxisNumberArray
   [:ref
- #:json-schema{:original-name "ConditionalAxisNumberArray"}
+ #:json-schema{:original-name
+               "ConditionalAxisProperty<(number[]|null)>"}
  #'ConditionalAxisProperty__number___null__]
 )
 
@@ -5060,20 +2351,12 @@
                "ConditionalPredicate<(ValueDef<(string|null)>|ExprRef)>"}
  [:map
   {:closed true}
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]
-  [:value #:json-schema{:original-name "value"} [:or string? nil?]]]
+  [:test [:ref #'PredicateComposition]]
+  [:value [:or string? nil?]]]
  [:map
   {:closed true}
-  [:expr #:json-schema{:original-name "expr"} string?]
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]]]
+  [:expr string?]
+  [:test [:ref #'PredicateComposition]]]]
 )
 
 (def ConditionalAxisProperty__string_null__
@@ -5082,7 +2365,6 @@
  [:map
   {:closed true}
   [:condition
-   #:json-schema{:original-name "condition"}
    [:or
     [:ref
      #:json-schema{:original-name
@@ -5093,11 +2375,10 @@
       #:json-schema{:original-name
                     "ConditionalPredicate<(ValueDef<(string|null)>|ExprRef)>"}
       #'ConditionalPredicate__ValueDef__string_null___ExprRef__]]]]
-  [:value #:json-schema{:original-name "value"} [:or string? nil?]]]
+  [:value [:or string? nil?]]]
  [:map
   {:closed true}
   [:condition
-   #:json-schema{:original-name "condition"}
    [:or
     [:ref
      #:json-schema{:original-name
@@ -5108,1058 +2389,459 @@
       #:json-schema{:original-name
                     "ConditionalPredicate<(ValueDef<(string|null)>|ExprRef)>"}
       #'ConditionalPredicate__ValueDef__string_null___ExprRef__]]]]
-  [:expr #:json-schema{:original-name "expr"} string?]]]
+  [:expr string?]]]
 )
 
 (def ConditionalAxisString
   [:ref
- #:json-schema{:original-name "ConditionalAxisString"}
+ #:json-schema{:original-name "ConditionalAxisProperty<(string|null)>"}
  #'ConditionalAxisProperty__string_null__]
 )
 
 (def Axis
   [:map
- {:closed true, :json-schema/original-name "Axis"}
- [:titleOpacity
-  {:json-schema/original-name "titleOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:description
-  {:json-schema/original-name "description", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ {:closed true}
+ [:titleOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:description {:optional true} [:or string? [:ref #'ExprRef]]]
  [:gridDash
-  {:json-schema/original-name "gridDash", :optional true}
+  {:optional true}
   [:or
    [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumberArray"}
-    #'ConditionalAxisNumberArray]]]
- [:domainOpacity
-  {:json-schema/original-name "domainOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelLimit
-  {:json-schema/original-name "labelLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labels
-  {:json-schema/original-name "labels", :optional true}
-  boolean?]
- [:titleFontSize
-  {:json-schema/original-name "titleFontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:format
-  {:json-schema/original-name "format", :optional true}
-  [:ref #:json-schema{:original-name "Format"} #'Format]]
- [:labelFlushOffset
-  {:json-schema/original-name "labelFlushOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelSeparation
-  {:json-schema/original-name "labelSeparation", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisNumberArray]]]
+ [:domainOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labelLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labels {:optional true} boolean?]
+ [:titleFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:format {:optional true} [:ref #'Format]]
+ [:labelFlushOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labelSeparation {:optional true} [:or number? [:ref #'ExprRef]]]
  [:labelBaseline
-  {:json-schema/original-name "labelBaseline", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisLabelBaseline"}
-    #'ConditionalAxisLabelBaseline]]]
+   [:ref #'TextBaseline]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisLabelBaseline]]]
  [:titleFontStyle
-  {:json-schema/original-name "titleFontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
  [:tickBand
-  {:json-schema/original-name "tickBand", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "center" "extent"]]]
- [:titleLimit
-  {:json-schema/original-name "titleLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'ExprRef] [:enum "center" "extent"]]]
+ [:titleLimit {:optional true} [:or number? [:ref #'ExprRef]]]
  [:gridOpacity
-  {:json-schema/original-name "gridOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
- [:titleAlign
-  {:json-schema/original-name "titleAlign", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+ [:titleAlign {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
  [:labelOverlap
-  {:json-schema/original-name "labelOverlap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "LabelOverlap"} #'LabelOverlap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:offset
-  {:json-schema/original-name "offset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'LabelOverlap] [:ref #'ExprRef]]]
+ [:offset {:optional true} [:or number? [:ref #'ExprRef]]]
  [:domainDash
-  {:json-schema/original-name "domainDash", :optional true}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:vector number?] [:ref #'ExprRef]]]
  [:tickWidth
-  {:json-schema/original-name "tickWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
  [:labelOpacity
-  {:json-schema/original-name "labelOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
  [:domainColor
-  {:json-schema/original-name "domainColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:grid {:json-schema/original-name "grid", :optional true} boolean?]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:grid {:optional true} boolean?]
  [:labelPadding
-  {:json-schema/original-name "labelPadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
- [:labelLineHeight
-  {:json-schema/original-name "labelLineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+ [:labelLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
  [:titleBaseline
-  {:json-schema/original-name "titleBaseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:tickExtra
-  {:json-schema/original-name "tickExtra", :optional true}
-  boolean?]
- [:titleX
-  {:json-schema/original-name "titleX", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
+ [:tickExtra {:optional true} boolean?]
+ [:titleX {:optional true} [:or number? [:ref #'ExprRef]]]
  [:tickOpacity
-  {:json-schema/original-name "tickOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
  [:tickDashOffset
-  {:json-schema/original-name "tickDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
- [:tickCap
-  {:json-schema/original-name "tickCap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeCap"} #'StrokeCap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelFlush
-  {:json-schema/original-name "labelFlush", :optional true}
-  [:or boolean? number?]]
- [:titleAngle
-  {:json-schema/original-name "titleAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+ [:tickCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
+ [:labelFlush {:optional true} [:or boolean? number?]]
+ [:titleAngle {:optional true} [:or number? [:ref #'ExprRef]]]
  [:labelOffset
-  {:json-schema/original-name "labelOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
- [:tickRound
-  {:json-schema/original-name "tickRound", :optional true}
-  boolean?]
- [:titleLineHeight
-  {:json-schema/original-name "titleLineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "AxisOrient"} #'AxisOrient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:tickMinStep
-  {:json-schema/original-name "tickMinStep", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+ [:tickRound {:optional true} boolean?]
+ [:titleLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:orient {:optional true} [:or [:ref #'AxisOrient] [:ref #'ExprRef]]]
+ [:tickMinStep {:optional true} [:or number? [:ref #'ExprRef]]]
  [:tickDash
-  {:json-schema/original-name "tickDash", :optional true}
+  {:optional true}
   [:or
    [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumberArray"}
-    #'ConditionalAxisNumberArray]]]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisNumberArray]]]
  [:titleAnchor
-  {:json-schema/original-name "titleAnchor", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TitleAnchor"} #'TitleAnchor]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TitleAnchor] [:ref #'ExprRef]]]
  [:labelColor
-  {:json-schema/original-name "labelColor", :optional true}
+  {:optional true}
   [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisColor"}
-    #'ConditionalAxisColor]]]
+   [:or nil? [:ref #'Color]]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisColor]]]
  [:domainCap
-  {:json-schema/original-name "domainCap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeCap"} #'StrokeCap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:style
-  {:json-schema/original-name "style", :optional true}
-  [:or string? [:vector string?]]]
- [:labelAngle
-  {:json-schema/original-name "labelAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleY
-  {:json-schema/original-name "titleY", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleFont
-  {:json-schema/original-name "titleFont", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelExpr
-  {:json-schema/original-name "labelExpr", :optional true}
-  string?]
- [:minExtent
-  {:json-schema/original-name "minExtent", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:style {:optional true} [:or string? [:vector string?]]]
+ [:labelAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:titleY {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:titleFont {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:labelExpr {:optional true} string?]
+ [:minExtent {:optional true} [:or number? [:ref #'ExprRef]]]
  [:tickCount
-  {:json-schema/original-name "tickCount", :optional true}
+  {:optional true}
   [:or
    number?
-   [:ref #:json-schema{:original-name "TimeInterval"} #'TimeInterval]
-   [:ref
-    #:json-schema{:original-name "TimeIntervalStep"}
-    #'TimeIntervalStep]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:formatType
-  {:json-schema/original-name "formatType", :optional true}
-  string?]
+   [:ref #'TimeInterval]
+   [:ref #'TimeIntervalStep]
+   [:ref #'ExprRef]]]
+ [:formatType {:optional true} string?]
  [:titleColor
-  {:json-schema/original-name "titleColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
  [:tickSize
-  {:json-schema/original-name "tickSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
- [:aria
-  {:json-schema/original-name "aria", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+ [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
  [:gridDashOffset
-  {:json-schema/original-name "gridDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
  [:gridWidth
-  {:json-schema/original-name "gridWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
- [:titlePadding
-  {:json-schema/original-name "titlePadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+ [:titlePadding {:optional true} [:or number? [:ref #'ExprRef]]]
  [:values
-  {:json-schema/original-name "values", :optional true}
+  {:optional true}
   [:or
    [:vector number?]
    [:vector string?]
    [:vector boolean?]
-   [:vector [:ref #:json-schema{:original-name "DateTime"} #'DateTime]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+   [:vector [:ref #'DateTime]]
+   [:ref #'ExprRef]]]
  [:labelFont
-  {:json-schema/original-name "labelFont", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisString"}
-    #'ConditionalAxisString]]]
- [:maxExtent
-  {:json-schema/original-name "maxExtent", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:gridCap
-  {:json-schema/original-name "gridCap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeCap"} #'StrokeCap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:translate
-  {:json-schema/original-name "translate", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ticks {:json-schema/original-name "ticks", :optional true} boolean?]
- [:position
-  {:json-schema/original-name "position", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:tickOffset
-  {:json-schema/original-name "tickOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or string? [:ref #'ExprRef] [:ref #'ConditionalAxisString]]]
+ [:maxExtent {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:bandPosition {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:gridCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
+ [:translate {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ticks {:optional true} boolean?]
+ [:position {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:tickOffset {:optional true} [:or number? [:ref #'ExprRef]]]
  [:labelAlign
-  {:json-schema/original-name "labelAlign", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisLabelAlign"}
-    #'ConditionalAxisLabelAlign]]]
- [:domain
-  {:json-schema/original-name "domain", :optional true}
-  boolean?]
+   [:ref #'Align]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisLabelAlign]]]
+ [:domain {:optional true} boolean?]
  [:labelFontWeight
-  {:json-schema/original-name "labelFontWeight", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisLabelFontWeight"}
-    #'ConditionalAxisLabelFontWeight]]]
+   [:ref #'FontWeight]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisLabelFontWeight]]]
  [:labelBound
-  {:json-schema/original-name "labelBound", :optional true}
-  [:or
-   [:or number? boolean?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or number? boolean?] [:ref #'ExprRef]]]
  [:labelFontStyle
-  {:json-schema/original-name "labelFontStyle", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisLabelFontStyle"}
-    #'ConditionalAxisLabelFontStyle]]]
+   [:ref #'FontStyle]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisLabelFontStyle]]]
  [:labelFontSize
-  {:json-schema/original-name "labelFontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
- [:zindex
-  {:json-schema/original-name "zindex", :optional true}
-  number?]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+ [:zindex {:optional true} number?]
  [:gridColor
-  {:json-schema/original-name "gridColor", :optional true}
+  {:optional true}
   [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisColor"}
-    #'ConditionalAxisColor]]]
+   [:or nil? [:ref #'Color]]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisColor]]]
  [:titleFontWeight
-  {:json-schema/original-name "titleFontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:domainDashOffset
-  {:json-schema/original-name "domainDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
+ [:domainDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
  [:tickColor
-  {:json-schema/original-name "tickColor", :optional true}
+  {:optional true}
   [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisColor"}
-    #'ConditionalAxisColor]]]
- [:domainWidth
-  {:json-schema/original-name "domainWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+   [:or nil? [:ref #'Color]]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisColor]]]
+ [:domainWidth {:optional true} [:or number? [:ref #'ExprRef]]]]
 )
 
 (def AxisConfig
   [:map
- {:closed true, :json-schema/original-name "AxisConfig"}
- [:titleOpacity
-  {:json-schema/original-name "titleOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:description
-  {:json-schema/original-name "description", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:disable
-  {:json-schema/original-name "disable", :optional true}
-  boolean?]
+ {:closed true}
+ [:titleOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:description {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:disable {:optional true} boolean?]
  [:gridDash
-  {:json-schema/original-name "gridDash", :optional true}
+  {:optional true}
   [:or
    [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumberArray"}
-    #'ConditionalAxisNumberArray]]]
- [:domainOpacity
-  {:json-schema/original-name "domainOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelLimit
-  {:json-schema/original-name "labelLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labels
-  {:json-schema/original-name "labels", :optional true}
-  boolean?]
- [:titleFontSize
-  {:json-schema/original-name "titleFontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:format
-  {:json-schema/original-name "format", :optional true}
-  [:ref #:json-schema{:original-name "Format"} #'Format]]
- [:labelFlushOffset
-  {:json-schema/original-name "labelFlushOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelSeparation
-  {:json-schema/original-name "labelSeparation", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisNumberArray]]]
+ [:domainOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labelLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labels {:optional true} boolean?]
+ [:titleFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:format {:optional true} [:ref #'Format]]
+ [:labelFlushOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labelSeparation {:optional true} [:or number? [:ref #'ExprRef]]]
  [:labelBaseline
-  {:json-schema/original-name "labelBaseline", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisLabelBaseline"}
-    #'ConditionalAxisLabelBaseline]]]
+   [:ref #'TextBaseline]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisLabelBaseline]]]
  [:titleFontStyle
-  {:json-schema/original-name "titleFontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
  [:tickBand
-  {:json-schema/original-name "tickBand", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "center" "extent"]]]
- [:titleLimit
-  {:json-schema/original-name "titleLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'ExprRef] [:enum "center" "extent"]]]
+ [:titleLimit {:optional true} [:or number? [:ref #'ExprRef]]]
  [:gridOpacity
-  {:json-schema/original-name "gridOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
- [:titleAlign
-  {:json-schema/original-name "titleAlign", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+ [:titleAlign {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
  [:labelOverlap
-  {:json-schema/original-name "labelOverlap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "LabelOverlap"} #'LabelOverlap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:offset
-  {:json-schema/original-name "offset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'LabelOverlap] [:ref #'ExprRef]]]
+ [:offset {:optional true} [:or number? [:ref #'ExprRef]]]
  [:domainDash
-  {:json-schema/original-name "domainDash", :optional true}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:vector number?] [:ref #'ExprRef]]]
  [:tickWidth
-  {:json-schema/original-name "tickWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
  [:labelOpacity
-  {:json-schema/original-name "labelOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
  [:domainColor
-  {:json-schema/original-name "domainColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:grid {:json-schema/original-name "grid", :optional true} boolean?]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:grid {:optional true} boolean?]
  [:labelPadding
-  {:json-schema/original-name "labelPadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
- [:labelLineHeight
-  {:json-schema/original-name "labelLineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+ [:labelLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
  [:titleBaseline
-  {:json-schema/original-name "titleBaseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:tickExtra
-  {:json-schema/original-name "tickExtra", :optional true}
-  boolean?]
- [:titleX
-  {:json-schema/original-name "titleX", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
+ [:tickExtra {:optional true} boolean?]
+ [:titleX {:optional true} [:or number? [:ref #'ExprRef]]]
  [:tickOpacity
-  {:json-schema/original-name "tickOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
  [:tickDashOffset
-  {:json-schema/original-name "tickDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
- [:tickCap
-  {:json-schema/original-name "tickCap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeCap"} #'StrokeCap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelFlush
-  {:json-schema/original-name "labelFlush", :optional true}
-  [:or boolean? number?]]
- [:titleAngle
-  {:json-schema/original-name "titleAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+ [:tickCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
+ [:labelFlush {:optional true} [:or boolean? number?]]
+ [:titleAngle {:optional true} [:or number? [:ref #'ExprRef]]]
  [:labelOffset
-  {:json-schema/original-name "labelOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
- [:tickRound
-  {:json-schema/original-name "tickRound", :optional true}
-  boolean?]
- [:titleLineHeight
-  {:json-schema/original-name "titleLineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "AxisOrient"} #'AxisOrient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:tickMinStep
-  {:json-schema/original-name "tickMinStep", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+ [:tickRound {:optional true} boolean?]
+ [:titleLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:orient {:optional true} [:or [:ref #'AxisOrient] [:ref #'ExprRef]]]
+ [:tickMinStep {:optional true} [:or number? [:ref #'ExprRef]]]
  [:tickDash
-  {:json-schema/original-name "tickDash", :optional true}
+  {:optional true}
   [:or
    [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumberArray"}
-    #'ConditionalAxisNumberArray]]]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisNumberArray]]]
  [:titleAnchor
-  {:json-schema/original-name "titleAnchor", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TitleAnchor"} #'TitleAnchor]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TitleAnchor] [:ref #'ExprRef]]]
  [:labelColor
-  {:json-schema/original-name "labelColor", :optional true}
+  {:optional true}
   [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisColor"}
-    #'ConditionalAxisColor]]]
+   [:or nil? [:ref #'Color]]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisColor]]]
  [:domainCap
-  {:json-schema/original-name "domainCap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeCap"} #'StrokeCap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:style
-  {:json-schema/original-name "style", :optional true}
-  [:or string? [:vector string?]]]
- [:labelAngle
-  {:json-schema/original-name "labelAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleY
-  {:json-schema/original-name "titleY", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleFont
-  {:json-schema/original-name "titleFont", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelExpr
-  {:json-schema/original-name "labelExpr", :optional true}
-  string?]
- [:minExtent
-  {:json-schema/original-name "minExtent", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:style {:optional true} [:or string? [:vector string?]]]
+ [:labelAngle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:titleY {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:titleFont {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:labelExpr {:optional true} string?]
+ [:minExtent {:optional true} [:or number? [:ref #'ExprRef]]]
  [:tickCount
-  {:json-schema/original-name "tickCount", :optional true}
+  {:optional true}
   [:or
    number?
-   [:ref #:json-schema{:original-name "TimeInterval"} #'TimeInterval]
-   [:ref
-    #:json-schema{:original-name "TimeIntervalStep"}
-    #'TimeIntervalStep]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:formatType
-  {:json-schema/original-name "formatType", :optional true}
-  string?]
+   [:ref #'TimeInterval]
+   [:ref #'TimeIntervalStep]
+   [:ref #'ExprRef]]]
+ [:formatType {:optional true} string?]
  [:titleColor
-  {:json-schema/original-name "titleColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
  [:tickSize
-  {:json-schema/original-name "tickSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
- [:aria
-  {:json-schema/original-name "aria", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+ [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
  [:gridDashOffset
-  {:json-schema/original-name "gridDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
  [:gridWidth
-  {:json-schema/original-name "gridWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
- [:titlePadding
-  {:json-schema/original-name "titlePadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+ [:titlePadding {:optional true} [:or number? [:ref #'ExprRef]]]
  [:values
-  {:json-schema/original-name "values", :optional true}
+  {:optional true}
   [:or
    [:vector number?]
    [:vector string?]
    [:vector boolean?]
-   [:vector [:ref #:json-schema{:original-name "DateTime"} #'DateTime]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+   [:vector [:ref #'DateTime]]
+   [:ref #'ExprRef]]]
  [:labelFont
-  {:json-schema/original-name "labelFont", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisString"}
-    #'ConditionalAxisString]]]
- [:maxExtent
-  {:json-schema/original-name "maxExtent", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:gridCap
-  {:json-schema/original-name "gridCap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeCap"} #'StrokeCap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:translate
-  {:json-schema/original-name "translate", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ticks {:json-schema/original-name "ticks", :optional true} boolean?]
- [:position
-  {:json-schema/original-name "position", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:tickOffset
-  {:json-schema/original-name "tickOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or string? [:ref #'ExprRef] [:ref #'ConditionalAxisString]]]
+ [:maxExtent {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:bandPosition {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:gridCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
+ [:translate {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ticks {:optional true} boolean?]
+ [:position {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:tickOffset {:optional true} [:or number? [:ref #'ExprRef]]]
  [:labelAlign
-  {:json-schema/original-name "labelAlign", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisLabelAlign"}
-    #'ConditionalAxisLabelAlign]]]
- [:domain
-  {:json-schema/original-name "domain", :optional true}
-  boolean?]
+   [:ref #'Align]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisLabelAlign]]]
+ [:domain {:optional true} boolean?]
  [:labelFontWeight
-  {:json-schema/original-name "labelFontWeight", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisLabelFontWeight"}
-    #'ConditionalAxisLabelFontWeight]]]
+   [:ref #'FontWeight]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisLabelFontWeight]]]
  [:labelBound
-  {:json-schema/original-name "labelBound", :optional true}
-  [:or
-   [:or number? boolean?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or number? boolean?] [:ref #'ExprRef]]]
  [:labelFontStyle
-  {:json-schema/original-name "labelFontStyle", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisLabelFontStyle"}
-    #'ConditionalAxisLabelFontStyle]]]
+   [:ref #'FontStyle]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisLabelFontStyle]]]
  [:labelFontSize
-  {:json-schema/original-name "labelFontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisNumber"}
-    #'ConditionalAxisNumber]]]
- [:zindex
-  {:json-schema/original-name "zindex", :optional true}
-  number?]
+  {:optional true}
+  [:or number? [:ref #'ExprRef] [:ref #'ConditionalAxisNumber]]]
+ [:zindex {:optional true} number?]
  [:gridColor
-  {:json-schema/original-name "gridColor", :optional true}
+  {:optional true}
   [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisColor"}
-    #'ConditionalAxisColor]]]
+   [:or nil? [:ref #'Color]]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisColor]]]
  [:titleFontWeight
-  {:json-schema/original-name "titleFontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:domainDashOffset
-  {:json-schema/original-name "domainDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
+ [:domainDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
  [:tickColor
-  {:json-schema/original-name "tickColor", :optional true}
+  {:optional true}
   [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ConditionalAxisColor"}
-    #'ConditionalAxisColor]]]
- [:domainWidth
-  {:json-schema/original-name "domainWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+   [:or nil? [:ref #'Color]]
+   [:ref #'ExprRef]
+   [:ref #'ConditionalAxisColor]]]
+ [:domainWidth {:optional true} [:or number? [:ref #'ExprRef]]]]
 )
 
 (def ResolveMode
-  [:enum
- #:json-schema{:original-name "ResolveMode"}
- "independent"
- "shared"]
+  [:enum "independent" "shared"]
 )
 
 (def AxisResolveMap
   [:map
- {:closed true, :json-schema/original-name "AxisResolveMap"}
- [:x
-  {:json-schema/original-name "x", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:y
-  {:json-schema/original-name "y", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]]
+ {:closed true}
+ [:x {:optional true} [:ref #'ResolveMode]]
+ [:y {:optional true} [:ref #'ResolveMode]]]
 )
 
 (def BBox
-  [:or
- #:json-schema{:original-name "BBox"}
- [:vector number?]
- [:vector number?]]
+  [:or [:vector number?] [:vector number?]]
 )
 
 (def TitleFrame
-  [:enum #:json-schema{:original-name "TitleFrame"} "bounds" "group"]
+  [:enum "bounds" "group"]
 )
 
 (def TitleOrient
-  [:enum
- #:json-schema{:original-name "TitleOrient"}
- "none"
- "left"
- "right"
- "top"
- "bottom"]
+  [:enum "none" "left" "right" "top" "bottom"]
 )
 
 (def BaseTitleNoValueRefs
   [:map
- {:closed true, :json-schema/original-name "BaseTitleNoValueRefs"}
- [:baseline
-  {:json-schema/original-name "baseline", :optional true}
-  [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]]
- [:align
-  {:json-schema/original-name "align", :optional true}
-  [:ref #:json-schema{:original-name "Align"} #'Align]]
- [:dx
-  {:json-schema/original-name "dx", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ {:closed true}
+ [:baseline {:optional true} [:ref #'TextBaseline]]
+ [:align {:optional true} [:ref #'Align]]
+ [:dx {:optional true} [:or number? [:ref #'ExprRef]]]
  [:frame
-  {:json-schema/original-name "frame", :optional true}
-  [:or
-   [:or
-    [:ref #:json-schema{:original-name "TitleFrame"} #'TitleFrame]
-    string?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or [:ref #'TitleFrame] string?] [:ref #'ExprRef]]]
  [:color
-  {:json-schema/original-name "color", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:subtitleFont
-  {:json-schema/original-name "subtitleFont", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:limit
-  {:json-schema/original-name "limit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:offset
-  {:json-schema/original-name "offset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:subtitleFont {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:limit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:offset {:optional true} [:or number? [:ref #'ExprRef]]]
  [:subtitleFontStyle
-  {:json-schema/original-name "subtitleFontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dy
-  {:json-schema/original-name "dy", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TitleOrient"} #'TitleOrient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:angle
-  {:json-schema/original-name "angle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:font
-  {:json-schema/original-name "font", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:subtitleLineHeight
-  {:json-schema/original-name "subtitleLineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aria
-  {:json-schema/original-name "aria", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
+ [:dy {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:orient {:optional true} [:or [:ref #'TitleOrient] [:ref #'ExprRef]]]
+ [:angle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:font {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:subtitleLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
  [:fontStyle
-  {:json-schema/original-name "fontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
  [:fontWeight
-  {:json-schema/original-name "fontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
  [:subtitleColor
-  {:json-schema/original-name "subtitleColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:subtitlePadding
-  {:json-schema/original-name "subtitlePadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:lineHeight
-  {:json-schema/original-name "lineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:fontSize
-  {:json-schema/original-name "fontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:anchor
-  {:json-schema/original-name "anchor", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TitleAnchor"} #'TitleAnchor]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:subtitleFontSize
-  {:json-schema/original-name "subtitleFontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:zindex
-  {:json-schema/original-name "zindex", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:subtitlePadding {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:lineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:fontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:anchor {:optional true} [:or [:ref #'TitleAnchor] [:ref #'ExprRef]]]
+ [:subtitleFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:zindex {:optional true} [:or number? [:ref #'ExprRef]]]
  [:subtitleFontWeight
-  {:json-schema/original-name "subtitleFontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]]
 )
 
 (def SingleDefUnitChannel
   [:enum
- #:json-schema{:original-name "SingleDefUnitChannel"}
  "text"
  "shape"
  "x"
@@ -6195,270 +2877,138 @@
 
 (def ParameterExtent
   [:or
- #:json-schema{:original-name "ParameterExtent"}
  [:map
   {:closed true}
-  [:field
-   {:json-schema/original-name "field", :optional true}
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
-  [:param
-   #:json-schema{:original-name "param"}
-   [:ref
-    #:json-schema{:original-name "ParameterName"}
-    #'ParameterName]]]
+  [:field {:optional true} [:ref #'FieldName]]
+  [:param [:ref #'ParameterName]]]
  [:map
   {:closed true}
-  [:encoding
-   {:json-schema/original-name "encoding", :optional true}
-   [:ref
-    #:json-schema{:original-name "SingleDefUnitChannel"}
-    #'SingleDefUnitChannel]]
-  [:param
-   #:json-schema{:original-name "param"}
-   [:ref
-    #:json-schema{:original-name "ParameterName"}
-    #'ParameterName]]]]
+  [:encoding {:optional true} [:ref #'SingleDefUnitChannel]]
+  [:param [:ref #'ParameterName]]]]
 )
 
 (def BinExtent
-  [:or
- #:json-schema{:original-name "BinExtent"}
- [:vector number?]
- [:ref
-  #:json-schema{:original-name "ParameterExtent"}
-  #'ParameterExtent]]
+  [:or [:vector number?] [:ref #'ParameterExtent]]
 )
 
 (def BinParams
   [:map
- {:closed true, :json-schema/original-name "BinParams"}
- [:maxbins
-  {:json-schema/original-name "maxbins", :optional true}
-  number?]
- [:divide
-  {:json-schema/original-name "divide", :optional true}
-  [:vector number?]]
- [:steps
-  {:json-schema/original-name "steps", :optional true}
-  [:vector number?]]
- [:minstep
-  {:json-schema/original-name "minstep", :optional true}
-  number?]
- [:extent
-  {:json-schema/original-name "extent", :optional true}
-  [:ref #:json-schema{:original-name "BinExtent"} #'BinExtent]]
- [:binned
-  {:json-schema/original-name "binned", :optional true}
-  boolean?]
- [:nice {:json-schema/original-name "nice", :optional true} boolean?]
- [:anchor
-  {:json-schema/original-name "anchor", :optional true}
-  number?]
- [:base {:json-schema/original-name "base", :optional true} number?]
- [:step {:json-schema/original-name "step", :optional true} number?]]
+ {:closed true}
+ [:maxbins {:optional true} number?]
+ [:divide {:optional true} [:vector number?]]
+ [:steps {:optional true} [:vector number?]]
+ [:minstep {:optional true} number?]
+ [:extent {:optional true} [:ref #'BinExtent]]
+ [:binned {:optional true} boolean?]
+ [:nice {:optional true} boolean?]
+ [:anchor {:optional true} number?]
+ [:base {:optional true} number?]
+ [:step {:optional true} number?]]
 )
 
 (def BinTransform
   [:map
- {:closed true, :json-schema/original-name "BinTransform"}
- [:as
-  #:json-schema{:original-name "as"}
-  [:or
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]
-   [:vector
-    [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]]
- [:bin
-  #:json-schema{:original-name "bin"}
-  [:or
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-   [:enum true]]]
- [:field
-  #:json-schema{:original-name "field"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
+ {:closed true}
+ [:as [:or [:ref #'FieldName] [:vector [:ref #'FieldName]]]]
+ [:bin [:or [:ref #'BinParams] [:enum true]]]
+ [:field [:ref #'FieldName]]]
 )
 
 (def Element
-  [:and #:json-schema{:original-name "Element"} string?]
+  string?
 )
 
 (def BindCheckbox
   [:map
- {:closed true, :json-schema/original-name "BindCheckbox"}
- [:debounce
-  {:json-schema/original-name "debounce", :optional true}
-  number?]
- [:element
-  {:json-schema/original-name "element", :optional true}
-  [:ref #:json-schema{:original-name "Element"} #'Element]]
- [:input #:json-schema{:original-name "input"} [:= "checkbox"]]
- [:name {:json-schema/original-name "name", :optional true} string?]]
+ {:closed true}
+ [:debounce {:optional true} number?]
+ [:element {:optional true} [:ref #'Element]]
+ [:input [:= "checkbox"]]
+ [:name {:optional true} string?]]
 )
 
 (def BindDirect
   [:map
- {:closed true, :json-schema/original-name "BindDirect"}
- [:debounce
-  {:json-schema/original-name "debounce", :optional true}
-  number?]
- [:element
-  #:json-schema{:original-name "element"}
-  [:or
-   [:ref #:json-schema{:original-name "Element"} #'Element]
-   [:map {:closed true}]]]
- [:event {:json-schema/original-name "event", :optional true} string?]]
+ {:closed true}
+ [:debounce {:optional true} number?]
+ [:element [:or [:ref #'Element] [:map {:closed true}]]]
+ [:event {:optional true} string?]]
 )
 
 (def BindInput
   [:map
- {:closed true, :json-schema/original-name "BindInput"}
- [:autocomplete
-  {:json-schema/original-name "autocomplete", :optional true}
-  string?]
- [:debounce
-  {:json-schema/original-name "debounce", :optional true}
-  number?]
- [:element
-  {:json-schema/original-name "element", :optional true}
-  [:ref #:json-schema{:original-name "Element"} #'Element]]
- [:input {:json-schema/original-name "input", :optional true} string?]
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:placeholder
-  {:json-schema/original-name "placeholder", :optional true}
-  string?]]
+ {:closed true}
+ [:autocomplete {:optional true} string?]
+ [:debounce {:optional true} number?]
+ [:element {:optional true} [:ref #'Element]]
+ [:input {:optional true} string?]
+ [:name {:optional true} string?]
+ [:placeholder {:optional true} string?]]
 )
 
 (def BindRadioSelect
   [:map
- {:closed true, :json-schema/original-name "BindRadioSelect"}
- [:debounce
-  {:json-schema/original-name "debounce", :optional true}
-  number?]
- [:element
-  {:json-schema/original-name "element", :optional true}
-  [:ref #:json-schema{:original-name "Element"} #'Element]]
- [:input
-  #:json-schema{:original-name "input"}
-  [:enum "radio" "select"]]
- [:labels
-  {:json-schema/original-name "labels", :optional true}
-  [:vector string?]]
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:options #:json-schema{:original-name "options"} [:vector any?]]]
+ {:closed true}
+ [:debounce {:optional true} number?]
+ [:element {:optional true} [:ref #'Element]]
+ [:input [:enum "radio" "select"]]
+ [:labels {:optional true} [:vector string?]]
+ [:name {:optional true} string?]
+ [:options [:vector any?]]]
 )
 
 (def BindRange
   [:map
- {:closed true, :json-schema/original-name "BindRange"}
- [:debounce
-  {:json-schema/original-name "debounce", :optional true}
-  number?]
- [:element
-  {:json-schema/original-name "element", :optional true}
-  [:ref #:json-schema{:original-name "Element"} #'Element]]
- [:input #:json-schema{:original-name "input"} [:= "range"]]
- [:max {:json-schema/original-name "max", :optional true} number?]
- [:min {:json-schema/original-name "min", :optional true} number?]
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:step {:json-schema/original-name "step", :optional true} number?]]
+ {:closed true}
+ [:debounce {:optional true} number?]
+ [:element {:optional true} [:ref #'Element]]
+ [:input [:= "range"]]
+ [:max {:optional true} number?]
+ [:min {:optional true} number?]
+ [:name {:optional true} string?]
+ [:step {:optional true} number?]]
 )
 
 (def Binding
   [:or
- #:json-schema{:original-name "Binding"}
- [:ref #:json-schema{:original-name "BindCheckbox"} #'BindCheckbox]
- [:ref
-  #:json-schema{:original-name "BindRadioSelect"}
-  #'BindRadioSelect]
- [:ref #:json-schema{:original-name "BindRange"} #'BindRange]
- [:ref #:json-schema{:original-name "BindInput"} #'BindInput]
- [:ref #:json-schema{:original-name "BindDirect"} #'BindDirect]]
+ [:ref #'BindCheckbox]
+ [:ref #'BindRadioSelect]
+ [:ref #'BindRange]
+ [:ref #'BindInput]
+ [:ref #'BindDirect]]
 )
 
 (def BoxPlotConfig
   [:map
- {:closed true, :json-schema/original-name "BoxPlotConfig"}
- [:box
-  {:json-schema/original-name "box", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]
- [:extent
-  {:json-schema/original-name "extent", :optional true}
-  [:or number? [:enum "min-max"]]]
- [:median
-  {:json-schema/original-name "median", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]
- [:outliers
-  {:json-schema/original-name "outliers", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]
- [:rule
-  {:json-schema/original-name "rule", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]
- [:size {:json-schema/original-name "size", :optional true} number?]
- [:ticks
-  {:json-schema/original-name "ticks", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]]
+ {:closed true}
+ [:box {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
+ [:extent {:optional true} [:or number? [:enum "min-max"]]]
+ [:median {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
+ [:outliers {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
+ [:rule {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
+ [:size {:optional true} number?]
+ [:ticks {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]]
 )
 
 (def BrushConfig
   [:map
- {:closed true, :json-schema/original-name "BrushConfig"}
- [:cursor
-  {:json-schema/original-name "cursor", :optional true}
-  [:ref #:json-schema{:original-name "Cursor"} #'Cursor]]
- [:fill
-  {:json-schema/original-name "fill", :optional true}
-  [:ref #:json-schema{:original-name "Color"} #'Color]]
- [:fillOpacity
-  {:json-schema/original-name "fillOpacity", :optional true}
-  number?]
- [:stroke
-  {:json-schema/original-name "stroke", :optional true}
-  [:ref #:json-schema{:original-name "Color"} #'Color]]
- [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
-  [:vector number?]]
- [:strokeDashOffset
-  {:json-schema/original-name "strokeDashOffset", :optional true}
-  number?]
- [:strokeOpacity
-  {:json-schema/original-name "strokeOpacity", :optional true}
-  number?]
- [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
-  number?]]
+ {:closed true}
+ [:cursor {:optional true} [:ref #'Cursor]]
+ [:fill {:optional true} [:ref #'Color]]
+ [:fillOpacity {:optional true} number?]
+ [:stroke {:optional true} [:ref #'Color]]
+ [:strokeDash {:optional true} [:vector number?]]
+ [:strokeDashOffset {:optional true} number?]
+ [:strokeOpacity {:optional true} number?]
+ [:strokeWidth {:optional true} number?]]
 )
 
 (def CalculateTransform
-  [:map
- {:closed true, :json-schema/original-name "CalculateTransform"}
- [:as
-  #:json-schema{:original-name "as"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:calculate #:json-schema{:original-name "calculate"} string?]]
+  [:map {:closed true} [:as [:ref #'FieldName]] [:calculate string?]]
 )
 
 (def Categorical
   [:enum
- #:json-schema{:original-name "Categorical"}
  "accent"
  "category10"
  "category20"
@@ -6477,12 +3027,7 @@
 )
 
 (def StandardType
-  [:enum
- #:json-schema{:original-name "StandardType"}
- "quantitative"
- "ordinal"
- "temporal"
- "nominal"]
+  [:enum "quantitative" "ordinal" "temporal" "nominal"]
 )
 
 (def ConditionalPredicate_ValueDef__Gradient_string_null_ExprRef___
@@ -6490,18 +3035,8 @@
  {:closed true,
   :json-schema/original-name
   "ConditionalPredicate<ValueDef<(Gradient|string|null|ExprRef)>>"}
- [:test
-  #:json-schema{:original-name "test"}
-  [:ref
-   #:json-schema{:original-name "PredicateComposition"}
-   #'PredicateComposition]]
- [:value
-  #:json-schema{:original-name "value"}
-  [:or
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   string?
-   nil?]]]
+ [:test [:ref #'PredicateComposition]]
+ [:value [:or [:ref #'Gradient] [:ref #'ExprRef] string? nil?]]]
 )
 
 (def ConditionalParameter_ValueDef__Gradient_string_null_ExprRef___
@@ -6509,17 +3044,9 @@
  {:closed true,
   :json-schema/original-name
   "ConditionalParameter<ValueDef<(Gradient|string|null|ExprRef)>>"}
- [:empty {:json-schema/original-name "empty", :optional true} boolean?]
- [:param
-  #:json-schema{:original-name "param"}
-  [:ref #:json-schema{:original-name "ParameterName"} #'ParameterName]]
- [:value
-  #:json-schema{:original-name "value"}
-  [:or
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   string?
-   nil?]]]
+ [:empty {:optional true} boolean?]
+ [:param [:ref #'ParameterName]]
+ [:value [:or [:ref #'Gradient] [:ref #'ExprRef] string? nil?]]]
 )
 
 (def ConditionalValueDef__Gradient_string_null_ExprRef__
@@ -6537,36 +3064,26 @@
 )
 
 (def RepeatRef
-  [:map
- {:closed true, :json-schema/original-name "RepeatRef"}
- [:repeat
-  #:json-schema{:original-name "repeat"}
-  [:enum "row" "column" "repeat" "layer"]]]
+  [:map {:closed true} [:repeat [:enum "row" "column" "repeat" "layer"]]]
 )
 
 (def Field
-  [:or
- #:json-schema{:original-name "Field"}
- [:ref #:json-schema{:original-name "FieldName"} #'FieldName]
- [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]
+  [:or [:ref #'FieldName] [:ref #'RepeatRef]]
 )
 
 (def ScaleInterpolateParams
   [:map
- {:closed true, :json-schema/original-name "ScaleInterpolateParams"}
- [:gamma {:json-schema/original-name "gamma", :optional true} number?]
- [:type
-  #:json-schema{:original-name "type"}
-  [:enum "rgb" "cubehelix" "cubehelix-long"]]]
+ {:closed true}
+ [:gamma {:optional true} number?]
+ [:type [:enum "rgb" "cubehelix" "cubehelix-long"]]]
 )
 
 (def Cyclical
-  [:enum #:json-schema{:original-name "Cyclical"} "rainbow" "sinebow"]
+  [:enum "rainbow" "sinebow"]
 )
 
 (def SequentialMultiHue
   [:enum
- #:json-schema{:original-name "SequentialMultiHue"}
  "turbo"
  "viridis"
  "inferno"
@@ -6777,7 +3294,6 @@
 
 (def Diverging
   [:enum
- #:json-schema{:original-name "Diverging"}
  "blueorange"
  "blueorange-3"
  "blueorange-4"
@@ -6882,7 +3398,6 @@
 
 (def SequentialSingleHue
   [:enum
- #:json-schema{:original-name "SequentialSingleHue"}
  "blues"
  "tealblues"
  "teals"
@@ -6897,46 +3412,30 @@
 
 (def ColorScheme
   [:or
- #:json-schema{:original-name "ColorScheme"}
- [:ref #:json-schema{:original-name "Categorical"} #'Categorical]
- [:ref
-  #:json-schema{:original-name "SequentialSingleHue"}
-  #'SequentialSingleHue]
- [:ref
-  #:json-schema{:original-name "SequentialMultiHue"}
-  #'SequentialMultiHue]
- [:ref #:json-schema{:original-name "Diverging"} #'Diverging]
- [:ref #:json-schema{:original-name "Cyclical"} #'Cyclical]]
+ [:ref #'Categorical]
+ [:ref #'SequentialSingleHue]
+ [:ref #'SequentialMultiHue]
+ [:ref #'Diverging]
+ [:ref #'Cyclical]]
 )
 
 (def SchemeParams
   [:map
- {:closed true, :json-schema/original-name "SchemeParams"}
- [:count {:json-schema/original-name "count", :optional true} number?]
- [:extent
-  {:json-schema/original-name "extent", :optional true}
-  [:vector number?]]
- [:name
-  #:json-schema{:original-name "name"}
-  [:ref #:json-schema{:original-name "ColorScheme"} #'ColorScheme]]]
+ {:closed true}
+ [:count {:optional true} number?]
+ [:extent {:optional true} [:vector number?]]
+ [:name [:ref #'ColorScheme]]]
 )
 
 (def DomainUnionWith
   [:map
- {:closed true, :json-schema/original-name "DomainUnionWith"}
+ {:closed true}
  [:unionWith
-  #:json-schema{:original-name "unionWith"}
-  [:vector
-   [:or
-    number?
-    string?
-    boolean?
-    [:ref #:json-schema{:original-name "DateTime"} #'DateTime]]]]]
+  [:vector [:or number? string? boolean? [:ref #'DateTime]]]]]
 )
 
 (def RangeEnum
   [:enum
- #:json-schema{:original-name "RangeEnum"}
  "width"
  "height"
  "symbol"
@@ -6949,22 +3448,18 @@
 
 (def ScaleBinParams
   [:map
- {:closed true, :json-schema/original-name "ScaleBinParams"}
- [:start {:json-schema/original-name "start", :optional true} number?]
- [:step #:json-schema{:original-name "step"} number?]
- [:stop {:json-schema/original-name "stop", :optional true} number?]]
+ {:closed true}
+ [:start {:optional true} number?]
+ [:step number?]
+ [:stop {:optional true} number?]]
 )
 
 (def ScaleBins
-  [:or
- #:json-schema{:original-name "ScaleBins"}
- [:vector number?]
- [:ref #:json-schema{:original-name "ScaleBinParams"} #'ScaleBinParams]]
+  [:or [:vector number?] [:ref #'ScaleBinParams]]
 )
 
 (def ScaleInterpolateEnum
   [:enum
- #:json-schema{:original-name "ScaleInterpolateEnum"}
  "rgb"
  "lab"
  "hcl"
@@ -6976,14 +3471,11 @@
 )
 
 (def FieldRange
-  [:map
- {:closed true, :json-schema/original-name "FieldRange"}
- [:field #:json-schema{:original-name "field"} string?]]
+  [:map {:closed true} [:field string?]]
 )
 
 (def ScaleType
   [:enum
- #:json-schema{:original-name "ScaleType"}
  "linear"
  "log"
  "pow"
@@ -7004,102 +3496,42 @@
 
 (def Scale
   [:map
- {:closed true, :json-schema/original-name "Scale"}
- [:zero
-  {:json-schema/original-name "zero", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:exponent
-  {:json-schema/original-name "exponent", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:paddingInner
-  {:json-schema/original-name "paddingInner", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:align
-  {:json-schema/original-name "align", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:domainRaw
-  {:json-schema/original-name "domainRaw", :optional true}
-  [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]
- [:constant
-  {:json-schema/original-name "constant", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:bins
-  {:json-schema/original-name "bins", :optional true}
-  [:ref #:json-schema{:original-name "ScaleBins"} #'ScaleBins]]
- [:paddingOuter
-  {:json-schema/original-name "paddingOuter", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "ScaleType"} #'ScaleType]]
+ {:closed true}
+ [:zero {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:exponent {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:paddingInner {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:align {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:domainRaw {:optional true} [:ref #'ExprRef]]
+ [:constant {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:bins {:optional true} [:ref #'ScaleBins]]
+ [:paddingOuter {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:type {:optional true} [:ref #'ScaleType]]
  [:interpolate
-  {:json-schema/original-name "interpolate", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "ScaleInterpolateEnum"}
-    #'ScaleInterpolateEnum]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref
-    #:json-schema{:original-name "ScaleInterpolateParams"}
-    #'ScaleInterpolateParams]]]
+   [:ref #'ScaleInterpolateEnum]
+   [:ref #'ExprRef]
+   [:ref #'ScaleInterpolateParams]]]
  [:domainMax
-  {:json-schema/original-name "domainMax", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:round
-  {:json-schema/original-name "round", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:rangeMax
-  {:json-schema/original-name "rangeMax", :optional true}
-  [:or
-   number?
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:rangeMin
-  {:json-schema/original-name "rangeMin", :optional true}
-  [:or
-   number?
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:padding
-  {:json-schema/original-name "padding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'DateTime] [:ref #'ExprRef]]]
+ [:round {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:rangeMax {:optional true} [:or number? string? [:ref #'ExprRef]]]
+ [:rangeMin {:optional true} [:or number? string? [:ref #'ExprRef]]]
+ [:padding {:optional true} [:or number? [:ref #'ExprRef]]]
  [:nice
-  {:json-schema/original-name "nice", :optional true}
+  {:optional true}
   [:or
    boolean?
    number?
-   [:ref #:json-schema{:original-name "TimeInterval"} #'TimeInterval]
-   [:ref
-    #:json-schema{:original-name "TimeIntervalStep"}
-    #'TimeIntervalStep]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+   [:ref #'TimeInterval]
+   [:ref #'TimeIntervalStep]
+   [:ref #'ExprRef]]]
  [:domainMin
-  {:json-schema/original-name "domainMin", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'DateTime] [:ref #'ExprRef]]]
  [:domain
-  {:json-schema/original-name "domain", :optional true}
+  {:optional true}
   [:or
    [:vector
     [:or
@@ -7107,133 +3539,73 @@
      string?
      number?
      boolean?
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-   [:ref
-    #:json-schema{:original-name "ParameterExtent"}
-    #'ParameterExtent]
-   [:ref
-    #:json-schema{:original-name "DomainUnionWith"}
-    #'DomainUnionWith]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]]]
+   [:ref #'ParameterExtent]
+   [:ref #'DomainUnionWith]
+   [:ref #'ExprRef]
    [:enum "unaggregated"]]]
- [:base
-  {:json-schema/original-name "base", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:clamp
-  {:json-schema/original-name "clamp", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ [:base {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:clamp {:optional true} [:or boolean? [:ref #'ExprRef]]]
  [:scheme
-  {:json-schema/original-name "scheme", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "ColorScheme"} #'ColorScheme]
-   [:ref #:json-schema{:original-name "SchemeParams"} #'SchemeParams]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:reverse
-  {:json-schema/original-name "reverse", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'ColorScheme] [:ref #'SchemeParams] [:ref #'ExprRef]]]
+ [:reverse {:optional true} [:or boolean? [:ref #'ExprRef]]]
  [:range
-  {:json-schema/original-name "range", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "RangeEnum"} #'RangeEnum]
-   [:ref #:json-schema{:original-name "FieldRange"} #'FieldRange]
-   [:vector
-    [:or
-     number?
-     string?
-     [:vector number?]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]]
- [:domainMid
-  {:json-schema/original-name "domainMid", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+   [:ref #'RangeEnum]
+   [:ref #'FieldRange]
+   [:vector [:or number? string? [:vector number?] [:ref #'ExprRef]]]]]
+ [:domainMid {:optional true} [:or number? [:ref #'ExprRef]]]]
 )
 
 (def EncodingSortField
   [:map
- {:closed true, :json-schema/original-name "EncodingSortField"}
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:op
-  {:json-schema/original-name "op", :optional true}
-  [:ref
-   #:json-schema{:original-name "NonArgAggregateOp"}
-   #'NonArgAggregateOp]]
- [:order
-  {:json-schema/original-name "order", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "SortOrder"} #'SortOrder]
-   nil?]]]
+ {:closed true}
+ [:field {:optional true} [:ref #'Field]]
+ [:op {:optional true} [:ref #'NonArgAggregateOp]]
+ [:order {:optional true} [:or [:ref #'SortOrder] nil?]]]
 )
 
 (def SortArray
   [:or
- #:json-schema{:original-name "SortArray"}
  [:vector number?]
  [:vector string?]
  [:vector boolean?]
- [:vector [:ref #:json-schema{:original-name "DateTime"} #'DateTime]]]
+ [:vector [:ref #'DateTime]]]
 )
 
 (def SortByEncoding
   [:map
- {:closed true, :json-schema/original-name "SortByEncoding"}
- [:encoding
-  #:json-schema{:original-name "encoding"}
-  [:ref #:json-schema{:original-name "SortByChannel"} #'SortByChannel]]
- [:order
-  {:json-schema/original-name "order", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "SortOrder"} #'SortOrder]
-   nil?]]]
+ {:closed true}
+ [:encoding [:ref #'SortByChannel]]
+ [:order {:optional true} [:or [:ref #'SortOrder] nil?]]]
 )
 
 (def Sort
   [:or
- #:json-schema{:original-name "Sort"}
- [:ref #:json-schema{:original-name "SortArray"} #'SortArray]
- [:ref #:json-schema{:original-name "AllSortString"} #'AllSortString]
- [:ref
-  #:json-schema{:original-name "EncodingSortField"}
-  #'EncodingSortField]
- [:ref #:json-schema{:original-name "SortByEncoding"} #'SortByEncoding]
+ [:ref #'SortArray]
+ [:ref #'AllSortString]
+ [:ref #'EncodingSortField]
+ [:ref #'SortByEncoding]
  nil?]
 )
 
 (def LayoutAlign
-  [:enum #:json-schema{:original-name "LayoutAlign"} "all" "each" "none"]
+  [:enum "all" "each" "none"]
 )
 
 (def TickCount
-  [:or
- #:json-schema{:original-name "TickCount"}
- number?
- [:ref #:json-schema{:original-name "TimeInterval"} #'TimeInterval]
- [:ref
-  #:json-schema{:original-name "TimeIntervalStep"}
-  #'TimeIntervalStep]]
+  [:or number? [:ref #'TimeInterval] [:ref #'TimeIntervalStep]]
 )
 
 (def Orient
-  [:enum
- #:json-schema{:original-name "Orient"}
- "left"
- "right"
- "top"
- "bottom"]
+  [:enum "left" "right" "top" "bottom"]
 )
 
 (def LegendOrient
   [:enum
- #:json-schema{:original-name "LegendOrient"}
  "none"
  "left"
  "right"
@@ -7247,324 +3619,118 @@
 
 (def Legend
   [:map
- {:closed true, :json-schema/original-name "Legend"}
- [:titleOpacity
-  {:json-schema/original-name "titleOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:description
-  {:json-schema/original-name "description", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelLimit
-  {:json-schema/original-name "labelLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ {:closed true}
+ [:titleOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:description {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:labelLimit {:optional true} [:or number? [:ref #'ExprRef]]]
  [:symbolDash
-  {:json-schema/original-name "symbolDash", :optional true}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:vector number?] [:ref #'ExprRef]]]
  [:gridAlign
-  {:json-schema/original-name "gridAlign", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "LayoutAlign"} #'LayoutAlign]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:symbolSize
-  {:json-schema/original-name "symbolSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleFontSize
-  {:json-schema/original-name "titleFontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:format
-  {:json-schema/original-name "format", :optional true}
-  [:ref #:json-schema{:original-name "Format"} #'Format]]
- [:gradientOpacity
-  {:json-schema/original-name "gradientOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelSeparation
-  {:json-schema/original-name "labelSeparation", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'LayoutAlign] [:ref #'ExprRef]]]
+ [:symbolSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:titleFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:format {:optional true} [:ref #'Format]]
+ [:gradientOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labelSeparation {:optional true} [:or number? [:ref #'ExprRef]]]
  [:labelBaseline
-  {:json-schema/original-name "labelBaseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
  [:titleFontStyle
-  {:json-schema/original-name "titleFontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleLimit
-  {:json-schema/original-name "titleLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleAlign
-  {:json-schema/original-name "titleAlign", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
+ [:titleLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:titleAlign {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
  [:labelOverlap
-  {:json-schema/original-name "labelOverlap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "LabelOverlap"} #'LabelOverlap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:gradientStrokeWidth
-  {:json-schema/original-name "gradientStrokeWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:gradientThickness
-  {:json-schema/original-name "gradientThickness", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:offset
-  {:json-schema/original-name "offset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelOpacity
-  {:json-schema/original-name "labelOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:columns
-  {:json-schema/original-name "columns", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelPadding
-  {:json-schema/original-name "labelPadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:columnPadding
-  {:json-schema/original-name "columnPadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:clipHeight
-  {:json-schema/original-name "clipHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'LabelOverlap] [:ref #'ExprRef]]]
+ [:gradientStrokeWidth {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:gradientThickness {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:offset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labelOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:columns {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labelPadding {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:columnPadding {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:clipHeight {:optional true} [:or number? [:ref #'ExprRef]]]
  [:titleBaseline
-  {:json-schema/original-name "titleBaseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:symbolDashOffset
-  {:json-schema/original-name "symbolDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:enum "symbol" "gradient"]]
- [:labelOffset
-  {:json-schema/original-name "labelOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleLineHeight
-  {:json-schema/original-name "titleLineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:ref #:json-schema{:original-name "LegendOrient"} #'LegendOrient]]
- [:tickMinStep
-  {:json-schema/original-name "tickMinStep", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cornerRadius
-  {:json-schema/original-name "cornerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
+ [:symbolDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:type {:optional true} [:enum "symbol" "gradient"]]
+ [:labelOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:titleLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:orient {:optional true} [:ref #'LegendOrient]]
+ [:tickMinStep {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cornerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
  [:titleAnchor
-  {:json-schema/original-name "titleAnchor", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TitleAnchor"} #'TitleAnchor]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TitleAnchor] [:ref #'ExprRef]]]
  [:gradientStrokeColor
-  {:json-schema/original-name "gradientStrokeColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
  [:labelColor
-  {:json-schema/original-name "labelColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:titleFont
-  {:json-schema/original-name "titleFont", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:titleFont {:optional true} [:or string? [:ref #'ExprRef]]]
  [:symbolFillColor
-  {:json-schema/original-name "symbolFillColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelExpr
-  {:json-schema/original-name "labelExpr", :optional true}
-  string?]
- [:titleOrient
-  {:json-schema/original-name "titleOrient", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Orient"} #'Orient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:labelExpr {:optional true} string?]
+ [:titleOrient {:optional true} [:or [:ref #'Orient] [:ref #'ExprRef]]]
  [:tickCount
-  {:json-schema/original-name "tickCount", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TickCount"} #'TickCount]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:formatType
-  {:json-schema/original-name "formatType", :optional true}
-  string?]
+  {:optional true}
+  [:or [:ref #'TickCount] [:ref #'ExprRef]]]
+ [:formatType {:optional true} string?]
  [:titleColor
-  {:json-schema/original-name "titleColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:symbolOffset
-  {:json-schema/original-name "symbolOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:legendX
-  {:json-schema/original-name "legendX", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aria
-  {:json-schema/original-name "aria", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:symbolOpacity
-  {:json-schema/original-name "symbolOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titlePadding
-  {:json-schema/original-name "titlePadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:symbolOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:legendX {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:symbolOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:titlePadding {:optional true} [:or number? [:ref #'ExprRef]]]
  [:values
-  {:json-schema/original-name "values", :optional true}
+  {:optional true}
   [:or
    [:vector number?]
    [:vector string?]
    [:vector boolean?]
-   [:vector [:ref #:json-schema{:original-name "DateTime"} #'DateTime]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:gradientLength
-  {:json-schema/original-name "gradientLength", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:padding
-  {:json-schema/original-name "padding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelFont
-  {:json-schema/original-name "labelFont", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+   [:vector [:ref #'DateTime]]
+   [:ref #'ExprRef]]]
+ [:gradientLength {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:padding {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labelFont {:optional true} [:or string? [:ref #'ExprRef]]]
  [:strokeColor
-  {:json-schema/original-name "strokeColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
  [:symbolStrokeColor
-  {:json-schema/original-name "symbolStrokeColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:rowPadding
-  {:json-schema/original-name "rowPadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelAlign
-  {:json-schema/original-name "labelAlign", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:rowPadding {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labelAlign {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
  [:symbolType
-  {:json-schema/original-name "symbolType", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "SymbolShape"} #'SymbolShape]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'SymbolShape] [:ref #'ExprRef]]]
  [:labelFontWeight
-  {:json-schema/original-name "labelFontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
  [:labelFontStyle
-  {:json-schema/original-name "labelFontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelFontSize
-  {:json-schema/original-name "labelFontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
+ [:labelFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
  [:fillColor
-  {:json-schema/original-name "fillColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:zindex
-  {:json-schema/original-name "zindex", :optional true}
-  number?]
- [:direction
-  {:json-schema/original-name "direction", :optional true}
-  [:ref #:json-schema{:original-name "Orientation"} #'Orientation]]
- [:symbolStrokeWidth
-  {:json-schema/original-name "symbolStrokeWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:zindex {:optional true} number?]
+ [:direction {:optional true} [:ref #'Orientation]]
+ [:symbolStrokeWidth {:optional true} [:or number? [:ref #'ExprRef]]]
  [:titleFontWeight
-  {:json-schema/original-name "titleFontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:legendY
-  {:json-schema/original-name "legendY", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:symbolLimit
-  {:json-schema/original-name "symbolLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
+ [:legendY {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:symbolLimit {:optional true} [:or number? [:ref #'ExprRef]]]]
 )
 
 (def FieldOrDatumDefWithCondition_MarkPropFieldDef__Gradient_string_null__
@@ -7572,23 +3738,13 @@
  {:closed true,
   :json-schema/original-name
   "FieldOrDatumDefWithCondition<MarkPropFieldDef,(Gradient|string|null)>"}
- [:scale
-  {:json-schema/original-name "scale", :optional true}
-  [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
- [:legend
-  {:json-schema/original-name "legend", :optional true}
-  [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+ [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+ [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+ [:field {:optional true} [:ref #'Field]]
+ [:type {:optional true} [:ref #'StandardType]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name
@@ -7599,50 +3755,24 @@
      #:json-schema{:original-name
                    "ConditionalValueDef<(Gradient|string|null|ExprRef)>"}
      #'ConditionalValueDef__Gradient_string_null_ExprRef__]]]]
- [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+ [:bandPosition {:optional true} number?]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
- [:sort
-  {:json-schema/original-name "sort", :optional true}
-  [:ref #:json-schema{:original-name "Sort"} #'Sort]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:aggregate {:optional true} [:ref #'Aggregate]]
+ [:sort {:optional true} [:ref #'Sort]]]
 )
 
 (def Type
-  [:enum
- #:json-schema{:original-name "Type"}
- "quantitative"
- "ordinal"
- "temporal"
- "nominal"
- "geojson"]
+  [:enum "quantitative" "ordinal" "temporal" "nominal" "geojson"]
 )
 
 (def PrimitiveValue
-  [:or
- #:json-schema{:original-name "PrimitiveValue"}
- number?
- string?
- boolean?
- nil?]
+  [:or number? string? boolean? nil?]
 )
 
 (def ConditionalParameter_MarkPropFieldOrDatumDef_
@@ -7651,88 +3781,39 @@
                "ConditionalParameter<MarkPropFieldOrDatumDef>"}
  [:map
   {:closed true}
-  [:scale
-   {:json-schema/original-name "scale", :optional true}
-   [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-  [:legend
-   {:json-schema/original-name "legend", :optional true}
-   [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-  [:field
-   {:json-schema/original-name "field", :optional true}
-   [:ref #:json-schema{:original-name "Field"} #'Field]]
-  [:type
-   {:json-schema/original-name "type", :optional true}
-   [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
-  [:empty
-   {:json-schema/original-name "empty", :optional true}
-   boolean?]
-  [:param
-   #:json-schema{:original-name "param"}
-   [:ref
-    #:json-schema{:original-name "ParameterName"}
-    #'ParameterName]]
-  [:title
-   {:json-schema/original-name "title", :optional true}
-   [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-  [:bin
-   {:json-schema/original-name "bin", :optional true}
-   [:or
-    boolean?
-    nil?
-    [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-  [:bandPosition
-   {:json-schema/original-name "bandPosition", :optional true}
-   number?]
+  [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+  [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+  [:field {:optional true} [:ref #'Field]]
+  [:type {:optional true} [:ref #'StandardType]]
+  [:empty {:optional true} boolean?]
+  [:param [:ref #'ParameterName]]
+  [:title {:optional true} [:or [:ref #'Text] nil?]]
+  [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+  [:bandPosition {:optional true} number?]
   [:timeUnit
-   {:json-schema/original-name "timeUnit", :optional true}
+   {:optional true}
    [:or
-    [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-    [:ref
-     #:json-schema{:original-name "BinnedTimeUnit"}
-     #'BinnedTimeUnit]
-    [:ref
-     #:json-schema{:original-name "TimeUnitParams"}
-     #'TimeUnitParams]]]
-  [:aggregate
-   {:json-schema/original-name "aggregate", :optional true}
-   [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-  [:sort
-   {:json-schema/original-name "sort", :optional true}
-   [:ref #:json-schema{:original-name "Sort"} #'Sort]]]
+    [:ref #'TimeUnit]
+    [:ref #'BinnedTimeUnit]
+    [:ref #'TimeUnitParams]]]
+  [:aggregate {:optional true} [:ref #'Aggregate]]
+  [:sort {:optional true} [:ref #'Sort]]]
  [:map
   {:closed true}
-  [:bandPosition
-   {:json-schema/original-name "bandPosition", :optional true}
-   number?]
+  [:bandPosition {:optional true} number?]
   [:datum
-   {:json-schema/original-name "datum", :optional true}
+   {:optional true}
    [:or
-    [:ref
-     #:json-schema{:original-name "PrimitiveValue"}
-     #'PrimitiveValue]
-    [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-    [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-    [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-  [:empty
-   {:json-schema/original-name "empty", :optional true}
-   boolean?]
-  [:legend
-   {:json-schema/original-name "legend", :optional true}
-   [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-  [:param
-   #:json-schema{:original-name "param"}
-   [:ref
-    #:json-schema{:original-name "ParameterName"}
-    #'ParameterName]]
-  [:scale
-   {:json-schema/original-name "scale", :optional true}
-   [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-  [:title
-   {:json-schema/original-name "title", :optional true}
-   [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-  [:type
-   {:json-schema/original-name "type", :optional true}
-   [:ref #:json-schema{:original-name "Type"} #'Type]]]]
+    [:ref #'PrimitiveValue]
+    [:ref #'DateTime]
+    [:ref #'ExprRef]
+    [:ref #'RepeatRef]]]
+  [:empty {:optional true} boolean?]
+  [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+  [:param [:ref #'ParameterName]]
+  [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+  [:title {:optional true} [:or [:ref #'Text] nil?]]
+  [:type {:optional true} [:ref #'Type]]]]
 )
 
 (def ConditionalPredicate_MarkPropFieldOrDatumDef_
@@ -7741,87 +3822,41 @@
                "ConditionalPredicate<MarkPropFieldOrDatumDef>"}
  [:map
   {:closed true}
-  [:scale
-   {:json-schema/original-name "scale", :optional true}
-   [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-  [:legend
-   {:json-schema/original-name "legend", :optional true}
-   [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-  [:field
-   {:json-schema/original-name "field", :optional true}
-   [:ref #:json-schema{:original-name "Field"} #'Field]]
-  [:type
-   {:json-schema/original-name "type", :optional true}
-   [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
-  [:title
-   {:json-schema/original-name "title", :optional true}
-   [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-  [:bin
-   {:json-schema/original-name "bin", :optional true}
-   [:or
-    boolean?
-    nil?
-    [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-  [:bandPosition
-   {:json-schema/original-name "bandPosition", :optional true}
-   number?]
+  [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+  [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+  [:field {:optional true} [:ref #'Field]]
+  [:type {:optional true} [:ref #'StandardType]]
+  [:title {:optional true} [:or [:ref #'Text] nil?]]
+  [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+  [:bandPosition {:optional true} number?]
   [:timeUnit
-   {:json-schema/original-name "timeUnit", :optional true}
+   {:optional true}
    [:or
-    [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-    [:ref
-     #:json-schema{:original-name "BinnedTimeUnit"}
-     #'BinnedTimeUnit]
-    [:ref
-     #:json-schema{:original-name "TimeUnitParams"}
-     #'TimeUnitParams]]]
-  [:aggregate
-   {:json-schema/original-name "aggregate", :optional true}
-   [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]
-  [:sort
-   {:json-schema/original-name "sort", :optional true}
-   [:ref #:json-schema{:original-name "Sort"} #'Sort]]]
+    [:ref #'TimeUnit]
+    [:ref #'BinnedTimeUnit]
+    [:ref #'TimeUnitParams]]]
+  [:aggregate {:optional true} [:ref #'Aggregate]]
+  [:test [:ref #'PredicateComposition]]
+  [:sort {:optional true} [:ref #'Sort]]]
  [:map
   {:closed true}
-  [:bandPosition
-   {:json-schema/original-name "bandPosition", :optional true}
-   number?]
+  [:bandPosition {:optional true} number?]
   [:datum
-   {:json-schema/original-name "datum", :optional true}
+   {:optional true}
    [:or
-    [:ref
-     #:json-schema{:original-name "PrimitiveValue"}
-     #'PrimitiveValue]
-    [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-    [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-    [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-  [:legend
-   {:json-schema/original-name "legend", :optional true}
-   [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-  [:scale
-   {:json-schema/original-name "scale", :optional true}
-   [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]
-  [:title
-   {:json-schema/original-name "title", :optional true}
-   [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-  [:type
-   {:json-schema/original-name "type", :optional true}
-   [:ref #:json-schema{:original-name "Type"} #'Type]]]]
+    [:ref #'PrimitiveValue]
+    [:ref #'DateTime]
+    [:ref #'ExprRef]
+    [:ref #'RepeatRef]]]
+  [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+  [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+  [:test [:ref #'PredicateComposition]]
+  [:title {:optional true} [:or [:ref #'Text] nil?]]
+  [:type {:optional true} [:ref #'Type]]]]
 )
 
 (def ConditionalMarkPropFieldOrDatumDef
   [:or
- #:json-schema{:original-name "ConditionalMarkPropFieldOrDatumDef"}
  [:ref
   #:json-schema{:original-name
                 "ConditionalPredicate<MarkPropFieldOrDatumDef>"}
@@ -7838,11 +3873,9 @@
   :json-schema/original-name
   "ValueDefWithCondition<MarkPropFieldOrDatumDef,(Gradient|string|null)>"}
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "ConditionalMarkPropFieldOrDatumDef"}
-    #'ConditionalMarkPropFieldOrDatumDef]
+   [:ref #'ConditionalMarkPropFieldOrDatumDef]
    [:ref
     #:json-schema{:original-name
                   "ConditionalValueDef<(Gradient|string|null|ExprRef)>"}
@@ -7853,12 +3886,8 @@
                    "ConditionalValueDef<(Gradient|string|null|ExprRef)>"}
      #'ConditionalValueDef__Gradient_string_null_ExprRef__]]]]
  [:value
-  {:json-schema/original-name "value", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   string?
-   nil?]]]
+  {:optional true}
+  [:or [:ref #'Gradient] [:ref #'ExprRef] string? nil?]]]
 )
 
 (def FieldOrDatumDefWithCondition_DatumDef__Gradient_string_null__
@@ -7866,11 +3895,9 @@
  {:closed true,
   :json-schema/original-name
   "FieldOrDatumDefWithCondition<DatumDef,(Gradient|string|null)>"}
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ [:bandPosition {:optional true} number?]
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name
@@ -7882,20 +3909,14 @@
                    "ConditionalValueDef<(Gradient|string|null|ExprRef)>"}
      #'ConditionalValueDef__Gradient_string_null_ExprRef__]]]]
  [:datum
-  {:json-schema/original-name "datum", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "PrimitiveValue"}
-    #'PrimitiveValue]
-   [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "Type"} #'Type]]]
+   [:ref #'PrimitiveValue]
+   [:ref #'DateTime]
+   [:ref #'ExprRef]
+   [:ref #'RepeatRef]]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:type {:optional true} [:ref #'Type]]]
 )
 
 (def MarkPropDef__Gradient_string_null__
@@ -7917,33 +3938,26 @@
 
 (def ColorDef
   [:ref
- #:json-schema{:original-name "ColorDef"}
+ #:json-schema{:original-name "MarkPropDef<(Gradient|string|null)>"}
  #'MarkPropDef__Gradient_string_null__]
 )
 
 (def CompositionConfig
   [:map
- {:closed true, :json-schema/original-name "CompositionConfig"}
- [:columns
-  {:json-schema/original-name "columns", :optional true}
-  number?]
- [:spacing
-  {:json-schema/original-name "spacing", :optional true}
-  number?]]
+ {:closed true}
+ [:columns {:optional true} number?]
+ [:spacing {:optional true} number?]]
 )
 
 (def RowCol_number_
   [:map
  {:closed true, :json-schema/original-name "RowCol<number>"}
- [:column
-  {:json-schema/original-name "column", :optional true}
-  number?]
- [:row {:json-schema/original-name "row", :optional true} number?]]
+ [:column {:optional true} number?]
+ [:row {:optional true} number?]]
 )
 
 (def InlineDataset
   [:or
- #:json-schema{:original-name "InlineDataset"}
  [:vector number?]
  [:vector string?]
  [:vector boolean?]
@@ -7953,105 +3967,74 @@
 )
 
 (def Parse
-  [:map-of #:json-schema{:original-name "Parse"} any? any?]
+  [:map-of any? any?]
 )
 
 (def CsvDataFormat
   [:map
- {:closed true, :json-schema/original-name "CsvDataFormat"}
- [:parse
-  {:json-schema/original-name "parse", :optional true}
-  [:or [:ref #:json-schema{:original-name "Parse"} #'Parse] nil?]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:enum "csv" "tsv"]]]
+ {:closed true}
+ [:parse {:optional true} [:or [:ref #'Parse] nil?]]
+ [:type {:optional true} [:enum "csv" "tsv"]]]
 )
 
 (def JsonDataFormat
   [:map
- {:closed true, :json-schema/original-name "JsonDataFormat"}
- [:parse
-  {:json-schema/original-name "parse", :optional true}
-  [:or [:ref #:json-schema{:original-name "Parse"} #'Parse] nil?]]
- [:property
-  {:json-schema/original-name "property", :optional true}
-  string?]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:= "json"]]]
+ {:closed true}
+ [:parse {:optional true} [:or [:ref #'Parse] nil?]]
+ [:property {:optional true} string?]
+ [:type {:optional true} [:= "json"]]]
 )
 
 (def TopoDataFormat
   [:map
- {:closed true, :json-schema/original-name "TopoDataFormat"}
- [:feature
-  {:json-schema/original-name "feature", :optional true}
-  string?]
- [:mesh {:json-schema/original-name "mesh", :optional true} string?]
- [:parse
-  {:json-schema/original-name "parse", :optional true}
-  [:or [:ref #:json-schema{:original-name "Parse"} #'Parse] nil?]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:= "topojson"]]]
+ {:closed true}
+ [:feature {:optional true} string?]
+ [:mesh {:optional true} string?]
+ [:parse {:optional true} [:or [:ref #'Parse] nil?]]
+ [:type {:optional true} [:= "topojson"]]]
 )
 
 (def DsvDataFormat
   [:map
- {:closed true, :json-schema/original-name "DsvDataFormat"}
- [:delimiter #:json-schema{:original-name "delimiter"} string?]
- [:parse
-  {:json-schema/original-name "parse", :optional true}
-  [:or [:ref #:json-schema{:original-name "Parse"} #'Parse] nil?]]
- [:type {:json-schema/original-name "type", :optional true} [:= "dsv"]]]
+ {:closed true}
+ [:delimiter string?]
+ [:parse {:optional true} [:or [:ref #'Parse] nil?]]
+ [:type {:optional true} [:= "dsv"]]]
 )
 
 (def DataFormat
   [:or
- #:json-schema{:original-name "DataFormat"}
- [:ref #:json-schema{:original-name "CsvDataFormat"} #'CsvDataFormat]
- [:ref #:json-schema{:original-name "DsvDataFormat"} #'DsvDataFormat]
- [:ref #:json-schema{:original-name "JsonDataFormat"} #'JsonDataFormat]
- [:ref #:json-schema{:original-name "TopoDataFormat"} #'TopoDataFormat]]
+ [:ref #'CsvDataFormat]
+ [:ref #'DsvDataFormat]
+ [:ref #'JsonDataFormat]
+ [:ref #'TopoDataFormat]]
 )
 
 (def InlineData
   [:map
- {:closed true, :json-schema/original-name "InlineData"}
- [:format
-  {:json-schema/original-name "format", :optional true}
-  [:ref #:json-schema{:original-name "DataFormat"} #'DataFormat]]
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:values
-  #:json-schema{:original-name "values"}
-  [:ref #:json-schema{:original-name "InlineDataset"} #'InlineDataset]]]
+ {:closed true}
+ [:format {:optional true} [:ref #'DataFormat]]
+ [:name {:optional true} string?]
+ [:values [:ref #'InlineDataset]]]
 )
 
 (def NamedData
   [:map
- {:closed true, :json-schema/original-name "NamedData"}
- [:format
-  {:json-schema/original-name "format", :optional true}
-  [:ref #:json-schema{:original-name "DataFormat"} #'DataFormat]]
- [:name #:json-schema{:original-name "name"} string?]]
+ {:closed true}
+ [:format {:optional true} [:ref #'DataFormat]]
+ [:name string?]]
 )
 
 (def UrlData
   [:map
- {:closed true, :json-schema/original-name "UrlData"}
- [:format
-  {:json-schema/original-name "format", :optional true}
-  [:ref #:json-schema{:original-name "DataFormat"} #'DataFormat]]
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:url #:json-schema{:original-name "url"} string?]]
+ {:closed true}
+ [:format {:optional true} [:ref #'DataFormat]]
+ [:name {:optional true} string?]
+ [:url string?]]
 )
 
 (def DataSource
-  [:or
- #:json-schema{:original-name "DataSource"}
- [:ref #:json-schema{:original-name "UrlData"} #'UrlData]
- [:ref #:json-schema{:original-name "InlineData"} #'InlineData]
- [:ref #:json-schema{:original-name "NamedData"} #'NamedData]]
+  [:or [:ref #'UrlData] [:ref #'InlineData] [:ref #'NamedData]]
 )
 
 (def Vector2_number_
@@ -8068,37 +4051,35 @@
 
 (def GraticuleParams
   [:map
- {:closed true, :json-schema/original-name "GraticuleParams"}
+ {:closed true}
  [:extent
-  {:json-schema/original-name "extent", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "Vector2<Vector2<number>>"}
    #'Vector2_Vector2_number__]]
  [:extentMajor
-  {:json-schema/original-name "extentMajor", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "Vector2<Vector2<number>>"}
    #'Vector2_Vector2_number__]]
  [:extentMinor
-  {:json-schema/original-name "extentMinor", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "Vector2<Vector2<number>>"}
    #'Vector2_Vector2_number__]]
- [:precision
-  {:json-schema/original-name "precision", :optional true}
-  number?]
+ [:precision {:optional true} number?]
  [:step
-  {:json-schema/original-name "step", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "Vector2<number>"}
    #'Vector2_number_]]
  [:stepMajor
-  {:json-schema/original-name "stepMajor", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "Vector2<number>"}
    #'Vector2_number_]]
  [:stepMinor
-  {:json-schema/original-name "stepMinor", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "Vector2<number>"}
    #'Vector2_number_]]]
@@ -8106,155 +4087,87 @@
 
 (def GraticuleGenerator
   [:map
- {:closed true, :json-schema/original-name "GraticuleGenerator"}
- [:graticule
-  #:json-schema{:original-name "graticule"}
-  [:or
-   [:ref
-    #:json-schema{:original-name "GraticuleParams"}
-    #'GraticuleParams]
-   [:enum true]]]
- [:name {:json-schema/original-name "name", :optional true} string?]]
+ {:closed true}
+ [:graticule [:or [:ref #'GraticuleParams] [:enum true]]]
+ [:name {:optional true} string?]]
 )
 
 (def SequenceParams
   [:map
- {:closed true, :json-schema/original-name "SequenceParams"}
- [:as
-  {:json-schema/original-name "as", :optional true}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:start #:json-schema{:original-name "start"} number?]
- [:step {:json-schema/original-name "step", :optional true} number?]
- [:stop #:json-schema{:original-name "stop"} number?]]
+ {:closed true}
+ [:as {:optional true} [:ref #'FieldName]]
+ [:start number?]
+ [:step {:optional true} number?]
+ [:stop number?]]
 )
 
 (def SequenceGenerator
   [:map
- {:closed true, :json-schema/original-name "SequenceGenerator"}
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:sequence
-  #:json-schema{:original-name "sequence"}
-  [:ref
-   #:json-schema{:original-name "SequenceParams"}
-   #'SequenceParams]]]
+ {:closed true}
+ [:name {:optional true} string?]
+ [:sequence [:ref #'SequenceParams]]]
 )
 
 (def SphereGenerator
   [:map
- {:closed true, :json-schema/original-name "SphereGenerator"}
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:sphere
-  #:json-schema{:original-name "sphere"}
-  [:or [:map-of any? any?] [:enum true]]]]
+ {:closed true}
+ [:name {:optional true} string?]
+ [:sphere [:or [:map-of any? any?] [:enum true]]]]
 )
 
 (def Generator
   [:or
- #:json-schema{:original-name "Generator"}
- [:ref
-  #:json-schema{:original-name "SequenceGenerator"}
-  #'SequenceGenerator]
- [:ref
-  #:json-schema{:original-name "SphereGenerator"}
-  #'SphereGenerator]
- [:ref
-  #:json-schema{:original-name "GraticuleGenerator"}
-  #'GraticuleGenerator]]
+ [:ref #'SequenceGenerator]
+ [:ref #'SphereGenerator]
+ [:ref #'GraticuleGenerator]]
 )
 
 (def Data
-  [:or
- #:json-schema{:original-name "Data"}
- [:ref #:json-schema{:original-name "DataSource"} #'DataSource]
- [:ref #:json-schema{:original-name "Generator"} #'Generator]]
+  [:or [:ref #'DataSource] [:ref #'Generator]]
 )
 
 (def PivotTransform
   [:map
- {:closed true, :json-schema/original-name "PivotTransform"}
- [:groupby
-  {:json-schema/original-name "groupby", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:limit {:json-schema/original-name "limit", :optional true} number?]
- [:op
-  {:json-schema/original-name "op", :optional true}
-  [:ref #:json-schema{:original-name "AggregateOp"} #'AggregateOp]]
- [:pivot
-  #:json-schema{:original-name "pivot"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:value
-  #:json-schema{:original-name "value"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
+ {:closed true}
+ [:groupby {:optional true} [:vector [:ref #'FieldName]]]
+ [:limit {:optional true} number?]
+ [:op {:optional true} [:ref #'AggregateOp]]
+ [:pivot [:ref #'FieldName]]
+ [:value [:ref #'FieldName]]]
 )
 
 (def DensityTransform
   [:map
- {:closed true, :json-schema/original-name "DensityTransform"}
- [:maxsteps
-  {:json-schema/original-name "maxsteps", :optional true}
-  number?]
- [:cumulative
-  {:json-schema/original-name "cumulative", :optional true}
-  boolean?]
- [:counts
-  {:json-schema/original-name "counts", :optional true}
-  boolean?]
- [:as
-  {:json-schema/original-name "as", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:steps {:json-schema/original-name "steps", :optional true} number?]
- [:bandwidth
-  {:json-schema/original-name "bandwidth", :optional true}
-  number?]
- [:minsteps
-  {:json-schema/original-name "minsteps", :optional true}
-  number?]
- [:groupby
-  {:json-schema/original-name "groupby", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:extent
-  {:json-schema/original-name "extent", :optional true}
-  [:vector number?]]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:enum "independent" "shared"]]
- [:density
-  #:json-schema{:original-name "density"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
+ {:closed true}
+ [:maxsteps {:optional true} number?]
+ [:cumulative {:optional true} boolean?]
+ [:counts {:optional true} boolean?]
+ [:as {:optional true} [:vector [:ref #'FieldName]]]
+ [:steps {:optional true} number?]
+ [:bandwidth {:optional true} number?]
+ [:minsteps {:optional true} number?]
+ [:groupby {:optional true} [:vector [:ref #'FieldName]]]
+ [:extent {:optional true} [:vector number?]]
+ [:resolve {:optional true} [:enum "independent" "shared"]]
+ [:density [:ref #'FieldName]]]
 )
 
 (def FoldTransform
   [:map
- {:closed true, :json-schema/original-name "FoldTransform"}
- [:as
-  {:json-schema/original-name "as", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:fold
-  #:json-schema{:original-name "fold"}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]]
+ {:closed true}
+ [:as {:optional true} [:vector [:ref #'FieldName]]]
+ [:fold [:vector [:ref #'FieldName]]]]
 )
 
 (def SortField
   [:map
- {:closed true, :json-schema/original-name "SortField"}
- [:field
-  #:json-schema{:original-name "field"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:order
-  {:json-schema/original-name "order", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "SortOrder"} #'SortOrder]
-   nil?]]]
+ {:closed true}
+ [:field [:ref #'FieldName]]
+ [:order {:optional true} [:or [:ref #'SortOrder] nil?]]]
 )
 
 (def WindowOnlyOp
   [:enum
- #:json-schema{:original-name "WindowOnlyOp"}
  "row_number"
  "rank"
  "dense_rank"
@@ -8270,806 +4183,383 @@
 
 (def WindowFieldDef
   [:map
- {:closed true, :json-schema/original-name "WindowFieldDef"}
- [:as
-  #:json-schema{:original-name "as"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:op
-  #:json-schema{:original-name "op"}
-  [:or
-   [:ref #:json-schema{:original-name "AggregateOp"} #'AggregateOp]
-   [:ref #:json-schema{:original-name "WindowOnlyOp"} #'WindowOnlyOp]]]
- [:param {:json-schema/original-name "param", :optional true} number?]]
+ {:closed true}
+ [:as [:ref #'FieldName]]
+ [:field {:optional true} [:ref #'FieldName]]
+ [:op [:or [:ref #'AggregateOp] [:ref #'WindowOnlyOp]]]
+ [:param {:optional true} number?]]
 )
 
 (def WindowTransform
   [:map
- {:closed true, :json-schema/original-name "WindowTransform"}
- [:frame
-  {:json-schema/original-name "frame", :optional true}
-  [:vector [:or nil? number?]]]
- [:groupby
-  {:json-schema/original-name "groupby", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:ignorePeers
-  {:json-schema/original-name "ignorePeers", :optional true}
-  boolean?]
- [:sort
-  {:json-schema/original-name "sort", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "SortField"} #'SortField]]]
- [:window
-  #:json-schema{:original-name "window"}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "WindowFieldDef"}
-    #'WindowFieldDef]]]]
+ {:closed true}
+ [:frame {:optional true} [:vector [:or nil? number?]]]
+ [:groupby {:optional true} [:vector [:ref #'FieldName]]]
+ [:ignorePeers {:optional true} boolean?]
+ [:sort {:optional true} [:vector [:ref #'SortField]]]
+ [:window [:vector [:ref #'WindowFieldDef]]]]
 )
 
 (def FilterTransform
-  [:map
- {:closed true, :json-schema/original-name "FilterTransform"}
- [:filter
-  #:json-schema{:original-name "filter"}
-  [:ref
-   #:json-schema{:original-name "PredicateComposition"}
-   #'PredicateComposition]]]
+  [:map {:closed true} [:filter [:ref #'PredicateComposition]]]
 )
 
 (def ExtentTransform
   [:map
- {:closed true, :json-schema/original-name "ExtentTransform"}
- [:extent
-  #:json-schema{:original-name "extent"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:param
-  #:json-schema{:original-name "param"}
-  [:ref #:json-schema{:original-name "ParameterName"} #'ParameterName]]]
+ {:closed true}
+ [:extent [:ref #'FieldName]]
+ [:param [:ref #'ParameterName]]]
 )
 
 (def FlattenTransform
   [:map
- {:closed true, :json-schema/original-name "FlattenTransform"}
- [:as
-  {:json-schema/original-name "as", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:flatten
-  #:json-schema{:original-name "flatten"}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]]
+ {:closed true}
+ [:as {:optional true} [:vector [:ref #'FieldName]]]
+ [:flatten [:vector [:ref #'FieldName]]]]
 )
 
 (def JoinAggregateFieldDef
   [:map
- {:closed true, :json-schema/original-name "JoinAggregateFieldDef"}
- [:as
-  #:json-schema{:original-name "as"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:op
-  #:json-schema{:original-name "op"}
-  [:ref #:json-schema{:original-name "AggregateOp"} #'AggregateOp]]]
+ {:closed true}
+ [:as [:ref #'FieldName]]
+ [:field {:optional true} [:ref #'FieldName]]
+ [:op [:ref #'AggregateOp]]]
 )
 
 (def JoinAggregateTransform
   [:map
- {:closed true, :json-schema/original-name "JoinAggregateTransform"}
- [:groupby
-  {:json-schema/original-name "groupby", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:joinaggregate
-  #:json-schema{:original-name "joinaggregate"}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "JoinAggregateFieldDef"}
-    #'JoinAggregateFieldDef]]]]
+ {:closed true}
+ [:groupby {:optional true} [:vector [:ref #'FieldName]]]
+ [:joinaggregate [:vector [:ref #'JoinAggregateFieldDef]]]]
 )
 
 (def LookupData
   [:map
- {:closed true, :json-schema/original-name "LookupData"}
- [:data
-  #:json-schema{:original-name "data"}
-  [:ref #:json-schema{:original-name "Data"} #'Data]]
- [:fields
-  {:json-schema/original-name "fields", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:key
-  #:json-schema{:original-name "key"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
+ {:closed true}
+ [:data [:ref #'Data]]
+ [:fields {:optional true} [:vector [:ref #'FieldName]]]
+ [:key [:ref #'FieldName]]]
 )
 
 (def LookupSelection
   [:map
- {:closed true, :json-schema/original-name "LookupSelection"}
- [:fields
-  {:json-schema/original-name "fields", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:key
-  #:json-schema{:original-name "key"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:param
-  #:json-schema{:original-name "param"}
-  [:ref #:json-schema{:original-name "ParameterName"} #'ParameterName]]]
+ {:closed true}
+ [:fields {:optional true} [:vector [:ref #'FieldName]]]
+ [:key [:ref #'FieldName]]
+ [:param [:ref #'ParameterName]]]
 )
 
 (def LookupTransform
   [:map
- {:closed true, :json-schema/original-name "LookupTransform"}
+ {:closed true}
  [:as
-  {:json-schema/original-name "as", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]
-   [:vector
-    [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]]
- [:default {:json-schema/original-name "default", :optional true} any?]
- [:from
-  #:json-schema{:original-name "from"}
-  [:or
-   [:ref #:json-schema{:original-name "LookupData"} #'LookupData]
-   [:ref
-    #:json-schema{:original-name "LookupSelection"}
-    #'LookupSelection]]]
- [:lookup #:json-schema{:original-name "lookup"} string?]]
+  {:optional true}
+  [:or [:ref #'FieldName] [:vector [:ref #'FieldName]]]]
+ [:default {:optional true} any?]
+ [:from [:or [:ref #'LookupData] [:ref #'LookupSelection]]]
+ [:lookup string?]]
 )
 
 (def LoessTransform
   [:map
- {:closed true, :json-schema/original-name "LoessTransform"}
- [:as
-  {:json-schema/original-name "as", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:bandwidth
-  {:json-schema/original-name "bandwidth", :optional true}
-  number?]
- [:groupby
-  {:json-schema/original-name "groupby", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:loess
-  #:json-schema{:original-name "loess"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:on
-  #:json-schema{:original-name "on"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
+ {:closed true}
+ [:as {:optional true} [:vector [:ref #'FieldName]]]
+ [:bandwidth {:optional true} number?]
+ [:groupby {:optional true} [:vector [:ref #'FieldName]]]
+ [:loess [:ref #'FieldName]]
+ [:on [:ref #'FieldName]]]
 )
 
 (def StackTransform
   [:map
- {:closed true, :json-schema/original-name "StackTransform"}
- [:as
-  #:json-schema{:original-name "as"}
-  [:or
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]
-   [:vector
-    [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]]
- [:groupby
-  #:json-schema{:original-name "groupby"}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:offset
-  {:json-schema/original-name "offset", :optional true}
-  [:enum "zero" "center" "normalize"]]
- [:sort
-  {:json-schema/original-name "sort", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "SortField"} #'SortField]]]
- [:stack
-  #:json-schema{:original-name "stack"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
+ {:closed true}
+ [:as [:or [:ref #'FieldName] [:vector [:ref #'FieldName]]]]
+ [:groupby [:vector [:ref #'FieldName]]]
+ [:offset {:optional true} [:enum "zero" "center" "normalize"]]
+ [:sort {:optional true} [:vector [:ref #'SortField]]]
+ [:stack [:ref #'FieldName]]]
 )
 
 (def QuantileTransform
   [:map
- {:closed true, :json-schema/original-name "QuantileTransform"}
- [:as
-  {:json-schema/original-name "as", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:groupby
-  {:json-schema/original-name "groupby", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:probs
-  {:json-schema/original-name "probs", :optional true}
-  [:vector number?]]
- [:quantile
-  #:json-schema{:original-name "quantile"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:step {:json-schema/original-name "step", :optional true} number?]]
+ {:closed true}
+ [:as {:optional true} [:vector [:ref #'FieldName]]]
+ [:groupby {:optional true} [:vector [:ref #'FieldName]]]
+ [:probs {:optional true} [:vector number?]]
+ [:quantile [:ref #'FieldName]]
+ [:step {:optional true} number?]]
 )
 
 (def TimeUnitTransformParams
   [:map
- {:closed true, :json-schema/original-name "TimeUnitTransformParams"}
- [:maxbins
-  {:json-schema/original-name "maxbins", :optional true}
-  number?]
- [:step {:json-schema/original-name "step", :optional true} number?]
- [:unit
-  {:json-schema/original-name "unit", :optional true}
-  [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]]
- [:utc {:json-schema/original-name "utc", :optional true} boolean?]]
+ {:closed true}
+ [:maxbins {:optional true} number?]
+ [:step {:optional true} number?]
+ [:unit {:optional true} [:ref #'TimeUnit]]
+ [:utc {:optional true} boolean?]]
 )
 
 (def TimeUnitTransform
   [:map
- {:closed true, :json-schema/original-name "TimeUnitTransform"}
- [:as
-  #:json-schema{:original-name "as"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:field
-  #:json-schema{:original-name "field"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:timeUnit
-  #:json-schema{:original-name "timeUnit"}
-  [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitTransformParams"}
-    #'TimeUnitTransformParams]]]]
+ {:closed true}
+ [:as [:ref #'FieldName]]
+ [:field [:ref #'FieldName]]
+ [:timeUnit [:or [:ref #'TimeUnit] [:ref #'TimeUnitTransformParams]]]]
 )
 
 (def SampleTransform
-  [:map
- {:closed true, :json-schema/original-name "SampleTransform"}
- [:sample #:json-schema{:original-name "sample"} number?]]
+  [:map {:closed true} [:sample number?]]
 )
 
 (def RegressionTransform
   [:map
- {:closed true, :json-schema/original-name "RegressionTransform"}
- [:as
-  {:json-schema/original-name "as", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:extent
-  {:json-schema/original-name "extent", :optional true}
-  [:vector number?]]
- [:groupby
-  {:json-schema/original-name "groupby", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
+ {:closed true}
+ [:as {:optional true} [:vector [:ref #'FieldName]]]
+ [:extent {:optional true} [:vector number?]]
+ [:groupby {:optional true} [:vector [:ref #'FieldName]]]
  [:method
-  {:json-schema/original-name "method", :optional true}
+  {:optional true}
   [:enum "linear" "log" "exp" "pow" "quad" "poly"]]
- [:on
-  #:json-schema{:original-name "on"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:order {:json-schema/original-name "order", :optional true} number?]
- [:params
-  {:json-schema/original-name "params", :optional true}
-  boolean?]
- [:regression
-  #:json-schema{:original-name "regression"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
+ [:on [:ref #'FieldName]]
+ [:order {:optional true} number?]
+ [:params {:optional true} boolean?]
+ [:regression [:ref #'FieldName]]]
 )
 
 (def ImputeMethod
-  [:enum
- #:json-schema{:original-name "ImputeMethod"}
- "value"
- "median"
- "max"
- "min"
- "mean"]
+  [:enum "value" "median" "max" "min" "mean"]
 )
 
 (def ImputeSequence
   [:map
- {:closed true, :json-schema/original-name "ImputeSequence"}
- [:start {:json-schema/original-name "start", :optional true} number?]
- [:step {:json-schema/original-name "step", :optional true} number?]
- [:stop #:json-schema{:original-name "stop"} number?]]
+ {:closed true}
+ [:start {:optional true} number?]
+ [:step {:optional true} number?]
+ [:stop number?]]
 )
 
 (def ImputeTransform
   [:map
- {:closed true, :json-schema/original-name "ImputeTransform"}
- [:frame
-  {:json-schema/original-name "frame", :optional true}
-  [:vector [:or nil? number?]]]
- [:groupby
-  {:json-schema/original-name "groupby", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:impute
-  #:json-schema{:original-name "impute"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
- [:key
-  #:json-schema{:original-name "key"}
-  [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]
+ {:closed true}
+ [:frame {:optional true} [:vector [:or nil? number?]]]
+ [:groupby {:optional true} [:vector [:ref #'FieldName]]]
+ [:impute [:ref #'FieldName]]
+ [:key [:ref #'FieldName]]
  [:keyvals
-  {:json-schema/original-name "keyvals", :optional true}
-  [:or
-   [:vector any?]
-   [:ref
-    #:json-schema{:original-name "ImputeSequence"}
-    #'ImputeSequence]]]
- [:method
-  {:json-schema/original-name "method", :optional true}
-  [:ref #:json-schema{:original-name "ImputeMethod"} #'ImputeMethod]]
- [:value {:json-schema/original-name "value", :optional true} any?]]
+  {:optional true}
+  [:or [:vector any?] [:ref #'ImputeSequence]]]
+ [:method {:optional true} [:ref #'ImputeMethod]]
+ [:value {:optional true} any?]]
 )
 
 (def Transform
   [:or
- #:json-schema{:original-name "Transform"}
- [:ref
-  #:json-schema{:original-name "AggregateTransform"}
-  #'AggregateTransform]
- [:ref #:json-schema{:original-name "BinTransform"} #'BinTransform]
- [:ref
-  #:json-schema{:original-name "CalculateTransform"}
-  #'CalculateTransform]
- [:ref
-  #:json-schema{:original-name "DensityTransform"}
-  #'DensityTransform]
- [:ref
-  #:json-schema{:original-name "ExtentTransform"}
-  #'ExtentTransform]
- [:ref
-  #:json-schema{:original-name "FilterTransform"}
-  #'FilterTransform]
- [:ref
-  #:json-schema{:original-name "FlattenTransform"}
-  #'FlattenTransform]
- [:ref #:json-schema{:original-name "FoldTransform"} #'FoldTransform]
- [:ref
-  #:json-schema{:original-name "ImputeTransform"}
-  #'ImputeTransform]
- [:ref
-  #:json-schema{:original-name "JoinAggregateTransform"}
-  #'JoinAggregateTransform]
- [:ref #:json-schema{:original-name "LoessTransform"} #'LoessTransform]
- [:ref
-  #:json-schema{:original-name "LookupTransform"}
-  #'LookupTransform]
- [:ref
-  #:json-schema{:original-name "QuantileTransform"}
-  #'QuantileTransform]
- [:ref
-  #:json-schema{:original-name "RegressionTransform"}
-  #'RegressionTransform]
- [:ref
-  #:json-schema{:original-name "TimeUnitTransform"}
-  #'TimeUnitTransform]
- [:ref
-  #:json-schema{:original-name "SampleTransform"}
-  #'SampleTransform]
- [:ref #:json-schema{:original-name "StackTransform"} #'StackTransform]
- [:ref
-  #:json-schema{:original-name "WindowTransform"}
-  #'WindowTransform]
- [:ref #:json-schema{:original-name "PivotTransform"} #'PivotTransform]]
+ [:ref #'AggregateTransform]
+ [:ref #'BinTransform]
+ [:ref #'CalculateTransform]
+ [:ref #'DensityTransform]
+ [:ref #'ExtentTransform]
+ [:ref #'FilterTransform]
+ [:ref #'FlattenTransform]
+ [:ref #'FoldTransform]
+ [:ref #'ImputeTransform]
+ [:ref #'JoinAggregateTransform]
+ [:ref #'LoessTransform]
+ [:ref #'LookupTransform]
+ [:ref #'QuantileTransform]
+ [:ref #'RegressionTransform]
+ [:ref #'TimeUnitTransform]
+ [:ref #'SampleTransform]
+ [:ref #'StackTransform]
+ [:ref #'WindowTransform]
+ [:ref #'PivotTransform]]
 )
 
 (def ScaleResolveMap
   [:map
- {:closed true, :json-schema/original-name "ScaleResolveMap"}
- [:y
-  {:json-schema/original-name "y", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:strokeOpacity
-  {:json-schema/original-name "strokeOpacity", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:stroke
-  {:json-schema/original-name "stroke", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:color
-  {:json-schema/original-name "color", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:fill
-  {:json-schema/original-name "fill", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:time
-  {:json-schema/original-name "time", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:fillOpacity
-  {:json-schema/original-name "fillOpacity", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:angle
-  {:json-schema/original-name "angle", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:theta
-  {:json-schema/original-name "theta", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:radius
-  {:json-schema/original-name "radius", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:size
-  {:json-schema/original-name "size", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:opacity
-  {:json-schema/original-name "opacity", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:shape
-  {:json-schema/original-name "shape", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:yOffset
-  {:json-schema/original-name "yOffset", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:x
-  {:json-schema/original-name "x", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:xOffset
-  {:json-schema/original-name "xOffset", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]]
+ {:closed true}
+ [:y {:optional true} [:ref #'ResolveMode]]
+ [:strokeOpacity {:optional true} [:ref #'ResolveMode]]
+ [:stroke {:optional true} [:ref #'ResolveMode]]
+ [:color {:optional true} [:ref #'ResolveMode]]
+ [:fill {:optional true} [:ref #'ResolveMode]]
+ [:strokeDash {:optional true} [:ref #'ResolveMode]]
+ [:time {:optional true} [:ref #'ResolveMode]]
+ [:fillOpacity {:optional true} [:ref #'ResolveMode]]
+ [:angle {:optional true} [:ref #'ResolveMode]]
+ [:theta {:optional true} [:ref #'ResolveMode]]
+ [:radius {:optional true} [:ref #'ResolveMode]]
+ [:size {:optional true} [:ref #'ResolveMode]]
+ [:strokeWidth {:optional true} [:ref #'ResolveMode]]
+ [:opacity {:optional true} [:ref #'ResolveMode]]
+ [:shape {:optional true} [:ref #'ResolveMode]]
+ [:yOffset {:optional true} [:ref #'ResolveMode]]
+ [:x {:optional true} [:ref #'ResolveMode]]
+ [:xOffset {:optional true} [:ref #'ResolveMode]]]
 )
 
 (def LegendResolveMap
   [:map
- {:closed true, :json-schema/original-name "LegendResolveMap"}
- [:strokeOpacity
-  {:json-schema/original-name "strokeOpacity", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:stroke
-  {:json-schema/original-name "stroke", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:color
-  {:json-schema/original-name "color", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:fill
-  {:json-schema/original-name "fill", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:time
-  {:json-schema/original-name "time", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:fillOpacity
-  {:json-schema/original-name "fillOpacity", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:angle
-  {:json-schema/original-name "angle", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:size
-  {:json-schema/original-name "size", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:opacity
-  {:json-schema/original-name "opacity", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]
- [:shape
-  {:json-schema/original-name "shape", :optional true}
-  [:ref #:json-schema{:original-name "ResolveMode"} #'ResolveMode]]]
+ {:closed true}
+ [:strokeOpacity {:optional true} [:ref #'ResolveMode]]
+ [:stroke {:optional true} [:ref #'ResolveMode]]
+ [:color {:optional true} [:ref #'ResolveMode]]
+ [:fill {:optional true} [:ref #'ResolveMode]]
+ [:strokeDash {:optional true} [:ref #'ResolveMode]]
+ [:time {:optional true} [:ref #'ResolveMode]]
+ [:fillOpacity {:optional true} [:ref #'ResolveMode]]
+ [:angle {:optional true} [:ref #'ResolveMode]]
+ [:size {:optional true} [:ref #'ResolveMode]]
+ [:strokeWidth {:optional true} [:ref #'ResolveMode]]
+ [:opacity {:optional true} [:ref #'ResolveMode]]
+ [:shape {:optional true} [:ref #'ResolveMode]]]
 )
 
 (def Resolve
   [:map
- {:closed true, :json-schema/original-name "Resolve"}
- [:axis
-  {:json-schema/original-name "axis", :optional true}
-  [:ref
-   #:json-schema{:original-name "AxisResolveMap"}
-   #'AxisResolveMap]]
- [:legend
-  {:json-schema/original-name "legend", :optional true}
-  [:ref
-   #:json-schema{:original-name "LegendResolveMap"}
-   #'LegendResolveMap]]
- [:scale
-  {:json-schema/original-name "scale", :optional true}
-  [:ref
-   #:json-schema{:original-name "ScaleResolveMap"}
-   #'ScaleResolveMap]]]
+ {:closed true}
+ [:axis {:optional true} [:ref #'AxisResolveMap]]
+ [:legend {:optional true} [:ref #'LegendResolveMap]]
+ [:scale {:optional true} [:ref #'ScaleResolveMap]]]
 )
 
 (def TitleParams
   [:map
- {:closed true, :json-schema/original-name "TitleParams"}
- [:baseline
-  {:json-schema/original-name "baseline", :optional true}
-  [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]]
- [:align
-  {:json-schema/original-name "align", :optional true}
-  [:ref #:json-schema{:original-name "Align"} #'Align]]
- [:dx
-  {:json-schema/original-name "dx", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ {:closed true}
+ [:baseline {:optional true} [:ref #'TextBaseline]]
+ [:align {:optional true} [:ref #'Align]]
+ [:dx {:optional true} [:or number? [:ref #'ExprRef]]]
  [:frame
-  {:json-schema/original-name "frame", :optional true}
-  [:or
-   [:or
-    [:ref #:json-schema{:original-name "TitleFrame"} #'TitleFrame]
-    string?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or [:ref #'TitleFrame] string?] [:ref #'ExprRef]]]
  [:color
-  {:json-schema/original-name "color", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:subtitleFont
-  {:json-schema/original-name "subtitleFont", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:limit
-  {:json-schema/original-name "limit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:offset
-  {:json-schema/original-name "offset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:subtitleFont {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:limit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:offset {:optional true} [:or number? [:ref #'ExprRef]]]
  [:subtitleFontStyle
-  {:json-schema/original-name "subtitleFontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:dy
-  {:json-schema/original-name "dy", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TitleOrient"} #'TitleOrient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:angle
-  {:json-schema/original-name "angle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:font
-  {:json-schema/original-name "font", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:style
-  {:json-schema/original-name "style", :optional true}
-  [:or string? [:vector string?]]]
- [:subtitleLineHeight
-  {:json-schema/original-name "subtitleLineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aria
-  {:json-schema/original-name "aria", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:subtitle
-  {:json-schema/original-name "subtitle", :optional true}
-  [:ref #:json-schema{:original-name "Text"} #'Text]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
+ [:dy {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:orient {:optional true} [:or [:ref #'TitleOrient] [:ref #'ExprRef]]]
+ [:angle {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:font {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:style {:optional true} [:or string? [:vector string?]]]
+ [:subtitleLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:subtitle {:optional true} [:ref #'Text]]
  [:fontStyle
-  {:json-schema/original-name "fontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
  [:fontWeight
-  {:json-schema/original-name "fontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
  [:subtitleColor
-  {:json-schema/original-name "subtitleColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:subtitlePadding
-  {:json-schema/original-name "subtitlePadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:lineHeight
-  {:json-schema/original-name "lineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:fontSize
-  {:json-schema/original-name "fontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:anchor
-  {:json-schema/original-name "anchor", :optional true}
-  [:ref #:json-schema{:original-name "TitleAnchor"} #'TitleAnchor]]
- [:subtitleFontSize
-  {:json-schema/original-name "subtitleFontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:zindex
-  {:json-schema/original-name "zindex", :optional true}
-  number?]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:subtitlePadding {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:lineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:fontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:anchor {:optional true} [:ref #'TitleAnchor]]
+ [:subtitleFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:zindex {:optional true} number?]
  [:subtitleFontWeight
-  {:json-schema/original-name "subtitleFontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:text
-  #:json-schema{:original-name "text"}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
+ [:text [:or [:ref #'Text] [:ref #'ExprRef]]]]
 )
 
 (def HConcatSpec_GenericSpec_
   [:map
  {:closed true, :json-schema/original-name "HConcatSpec<GenericSpec>"}
- [:description
-  {:json-schema/original-name "description", :optional true}
-  string?]
- [:transform
-  {:json-schema/original-name "transform", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
- [:hconcat
-  #:json-schema{:original-name "hconcat"}
-  [:vector [:ref #:json-schema{:original-name "Spec"} #'Spec]]]
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:bounds
-  {:json-schema/original-name "bounds", :optional true}
-  [:enum "full" "flush"]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
- [:center
-  {:json-schema/original-name "center", :optional true}
-  boolean?]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref #:json-schema{:original-name "Resolve"} #'Resolve]]
- [:spacing
-  {:json-schema/original-name "spacing", :optional true}
-  number?]
- [:data
-  {:json-schema/original-name "data", :optional true}
-  [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]
+ [:description {:optional true} string?]
+ [:transform {:optional true} [:vector [:ref #'Transform]]]
+ [:hconcat [:vector [:ref #'Spec]]]
+ [:name {:optional true} string?]
+ [:bounds {:optional true} [:enum "full" "flush"]]
+ [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
+ [:center {:optional true} boolean?]
+ [:resolve {:optional true} [:ref #'Resolve]]
+ [:spacing {:optional true} number?]
+ [:data {:optional true} [:or [:ref #'Data] nil?]]]
 )
 
 (def NonNormalizedSpec
-  [:ref #:json-schema{:original-name "NonNormalizedSpec"} #'Spec]
+  [:ref #'Spec]
 )
 
 (def RepeatMapping
   [:map
- {:closed true, :json-schema/original-name "RepeatMapping"}
- [:column
-  {:json-schema/original-name "column", :optional true}
-  [:vector string?]]
- [:row
-  {:json-schema/original-name "row", :optional true}
-  [:vector string?]]]
+ {:closed true}
+ [:column {:optional true} [:vector string?]]
+ [:row {:optional true} [:vector string?]]]
 )
 
 (def RowCol_LayoutAlign_
   [:map
  {:closed true, :json-schema/original-name "RowCol<LayoutAlign>"}
- [:column
-  {:json-schema/original-name "column", :optional true}
-  [:ref #:json-schema{:original-name "LayoutAlign"} #'LayoutAlign]]
- [:row
-  {:json-schema/original-name "row", :optional true}
-  [:ref #:json-schema{:original-name "LayoutAlign"} #'LayoutAlign]]]
+ [:column {:optional true} [:ref #'LayoutAlign]]
+ [:row {:optional true} [:ref #'LayoutAlign]]]
 )
 
 (def RowCol_boolean_
   [:map
  {:closed true, :json-schema/original-name "RowCol<boolean>"}
- [:column
-  {:json-schema/original-name "column", :optional true}
-  boolean?]
- [:row {:json-schema/original-name "row", :optional true} boolean?]]
+ [:column {:optional true} boolean?]
+ [:row {:optional true} boolean?]]
 )
 
 (def NonLayerRepeatSpec
   [:map
- {:closed true, :json-schema/original-name "NonLayerRepeatSpec"}
- [:description
-  {:json-schema/original-name "description", :optional true}
-  string?]
+ {:closed true}
+ [:description {:optional true} string?]
  [:align
-  {:json-schema/original-name "align", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "LayoutAlign"} #'LayoutAlign]
+   [:ref #'LayoutAlign]
    [:ref
     #:json-schema{:original-name "RowCol<LayoutAlign>"}
     #'RowCol_LayoutAlign_]]]
- [:transform
-  {:json-schema/original-name "transform", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
- [:columns
-  {:json-schema/original-name "columns", :optional true}
-  number?]
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:bounds
-  {:json-schema/original-name "bounds", :optional true}
-  [:enum "full" "flush"]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
+ [:transform {:optional true} [:vector [:ref #'Transform]]]
+ [:columns {:optional true} number?]
+ [:name {:optional true} string?]
+ [:bounds {:optional true} [:enum "full" "flush"]]
+ [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
  [:center
-  {:json-schema/original-name "center", :optional true}
+  {:optional true}
   [:or
    boolean?
    [:ref
     #:json-schema{:original-name "RowCol<boolean>"}
     #'RowCol_boolean_]]]
- [:spec
-  #:json-schema{:original-name "spec"}
-  [:ref
-   #:json-schema{:original-name "NonNormalizedSpec"}
-   #'NonNormalizedSpec]]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref #:json-schema{:original-name "Resolve"} #'Resolve]]
- [:repeat
-  #:json-schema{:original-name "repeat"}
-  [:or
-   [:vector string?]
-   [:ref
-    #:json-schema{:original-name "RepeatMapping"}
-    #'RepeatMapping]]]
+ [:spec [:ref #'NonNormalizedSpec]]
+ [:resolve {:optional true} [:ref #'Resolve]]
+ [:repeat [:or [:vector string?] [:ref #'RepeatMapping]]]
  [:spacing
-  {:json-schema/original-name "spacing", :optional true}
+  {:optional true}
   [:or
    number?
    [:ref
     #:json-schema{:original-name "RowCol<number>"}
     #'RowCol_number_]]]
- [:data
-  {:json-schema/original-name "data", :optional true}
-  [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]
+ [:data {:optional true} [:or [:ref #'Data] nil?]]]
 )
 
 (def SecondaryFieldDef
   [:map
- {:closed true, :json-schema/original-name "SecondaryFieldDef"}
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
- [:bin {:json-schema/original-name "bin", :optional true} nil?]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
+ {:closed true}
+ [:aggregate {:optional true} [:ref #'Aggregate]]
+ [:bandPosition {:optional true} number?]
+ [:bin {:optional true} nil?]
+ [:field {:optional true} [:ref #'Field]]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]]
 )
 
 (def ValueDef__number__width___height__ExprRef__
@@ -9077,53 +4567,36 @@
  {:closed true,
   :json-schema/original-name
   "ValueDef<(number|\"width\"|\"height\"|ExprRef)>"}
- [:value
-  #:json-schema{:original-name "value"}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:enum "width" "height"]]]]
+ [:value [:or number? [:ref #'ExprRef] [:enum "width" "height"]]]]
 )
 
 (def PositionValueDef
   [:ref
- #:json-schema{:original-name "PositionValueDef"}
+ #:json-schema{:original-name
+               "ValueDef<(number|\"width\"|\"height\"|ExprRef)>"}
  #'ValueDef__number__width___height__ExprRef__]
 )
 
 (def DatumDef
   [:map
- {:closed true, :json-schema/original-name "DatumDef"}
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ {:closed true}
+ [:bandPosition {:optional true} number?]
  [:datum
-  {:json-schema/original-name "datum", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "PrimitiveValue"}
-    #'PrimitiveValue]
-   [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "Type"} #'Type]]]
+   [:ref #'PrimitiveValue]
+   [:ref #'DateTime]
+   [:ref #'ExprRef]
+   [:ref #'RepeatRef]]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:type {:optional true} [:ref #'Type]]]
 )
 
 (def Position2Def
   [:or
- #:json-schema{:original-name "Position2Def"}
- [:ref
-  #:json-schema{:original-name "SecondaryFieldDef"}
-  #'SecondaryFieldDef]
- [:ref #:json-schema{:original-name "DatumDef"} #'DatumDef]
- [:ref
-  #:json-schema{:original-name "PositionValueDef"}
-  #'PositionValueDef]]
+ [:ref #'SecondaryFieldDef]
+ [:ref #'DatumDef]
+ [:ref #'PositionValueDef]]
 )
 
 (def ConditionalParameter_ValueDef__string_null_ExprRef___
@@ -9131,16 +4604,9 @@
  {:closed true,
   :json-schema/original-name
   "ConditionalParameter<ValueDef<(string|null|ExprRef)>>"}
- [:empty {:json-schema/original-name "empty", :optional true} boolean?]
- [:param
-  #:json-schema{:original-name "param"}
-  [:ref #:json-schema{:original-name "ParameterName"} #'ParameterName]]
- [:value
-  #:json-schema{:original-name "value"}
-  [:or
-   string?
-   nil?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+ [:empty {:optional true} boolean?]
+ [:param [:ref #'ParameterName]]
+ [:value [:or string? nil? [:ref #'ExprRef]]]]
 )
 
 (def ConditionalPredicate_ValueDef__string_null_ExprRef___
@@ -9148,17 +4614,8 @@
  {:closed true,
   :json-schema/original-name
   "ConditionalPredicate<ValueDef<(string|null|ExprRef)>>"}
- [:test
-  #:json-schema{:original-name "test"}
-  [:ref
-   #:json-schema{:original-name "PredicateComposition"}
-   #'PredicateComposition]]
- [:value
-  #:json-schema{:original-name "value"}
-  [:or
-   string?
-   nil?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+ [:test [:ref #'PredicateComposition]]
+ [:value [:or string? nil? [:ref #'ExprRef]]]]
 )
 
 (def ConditionalValueDef__string_null_ExprRef__
@@ -9181,11 +4638,9 @@
   :json-schema/original-name
   "ValueDefWithCondition<MarkPropFieldOrDatumDef,(string|null)>"}
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "ConditionalMarkPropFieldOrDatumDef"}
-    #'ConditionalMarkPropFieldOrDatumDef]
+   [:ref #'ConditionalMarkPropFieldOrDatumDef]
    [:ref
     #:json-schema{:original-name
                   "ConditionalValueDef<(string|null|ExprRef)>"}
@@ -9195,17 +4650,13 @@
      #:json-schema{:original-name
                    "ConditionalValueDef<(string|null|ExprRef)>"}
      #'ConditionalValueDef__string_null_ExprRef__]]]]
- [:value
-  {:json-schema/original-name "value", :optional true}
-  [:or
-   string?
-   nil?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+ [:value {:optional true} [:or string? nil? [:ref #'ExprRef]]]]
 )
 
 (def StringValueDefWithCondition
   [:ref
- #:json-schema{:original-name "StringValueDefWithCondition"}
+ #:json-schema{:original-name
+               "ValueDefWithCondition<MarkPropFieldOrDatumDef,(string|null)>"}
  #'ValueDefWithCondition_MarkPropFieldOrDatumDef__string_null__]
 )
 
@@ -9213,23 +4664,17 @@
   [:map
  {:closed true,
   :json-schema/original-name "ConditionalPredicate<ValueDef<number>>"}
- [:test
-  #:json-schema{:original-name "test"}
-  [:ref
-   #:json-schema{:original-name "PredicateComposition"}
-   #'PredicateComposition]]
- [:value #:json-schema{:original-name "value"} number?]]
+ [:test [:ref #'PredicateComposition]]
+ [:value number?]]
 )
 
 (def ConditionalParameter_ValueDef_number__
   [:map
  {:closed true,
   :json-schema/original-name "ConditionalParameter<ValueDef<number>>"}
- [:empty {:json-schema/original-name "empty", :optional true} boolean?]
- [:param
-  #:json-schema{:original-name "param"}
-  [:ref #:json-schema{:original-name "ParameterName"} #'ParameterName]]
- [:value #:json-schema{:original-name "value"} number?]]
+ [:empty {:optional true} boolean?]
+ [:param [:ref #'ParameterName]]
+ [:value number?]]
 )
 
 (def ConditionalValueDef_number_
@@ -9247,9 +4692,9 @@
 
 (def OrderValueDef
   [:map
- {:closed true, :json-schema/original-name "OrderValueDef"}
+ {:closed true}
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name "ConditionalValueDef<number>"}
@@ -9258,11 +4703,7 @@
     [:ref
      #:json-schema{:original-name "ConditionalValueDef<number>"}
      #'ConditionalValueDef_number_]]]]
- [:value
-  #:json-schema{:original-name "value"}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+ [:value [:or number? [:ref #'ExprRef]]]]
 )
 
 (def ConditionalParameter_ValueDef__number___ExprRef___
@@ -9270,15 +4711,9 @@
  {:closed true,
   :json-schema/original-name
   "ConditionalParameter<ValueDef<(number[]|ExprRef)>>"}
- [:empty {:json-schema/original-name "empty", :optional true} boolean?]
- [:param
-  #:json-schema{:original-name "param"}
-  [:ref #:json-schema{:original-name "ParameterName"} #'ParameterName]]
- [:value
-  #:json-schema{:original-name "value"}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+ [:empty {:optional true} boolean?]
+ [:param [:ref #'ParameterName]]
+ [:value [:or [:vector number?] [:ref #'ExprRef]]]]
 )
 
 (def ConditionalPredicate_ValueDef__number___ExprRef___
@@ -9286,16 +4721,8 @@
  {:closed true,
   :json-schema/original-name
   "ConditionalPredicate<ValueDef<(number[]|ExprRef)>>"}
- [:test
-  #:json-schema{:original-name "test"}
-  [:ref
-   #:json-schema{:original-name "PredicateComposition"}
-   #'PredicateComposition]]
- [:value
-  #:json-schema{:original-name "value"}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+ [:test [:ref #'PredicateComposition]]
+ [:value [:or [:vector number?] [:ref #'ExprRef]]]]
 )
 
 (def ConditionalValueDef__number___ExprRef__
@@ -9317,23 +4744,13 @@
  {:closed true,
   :json-schema/original-name
   "FieldOrDatumDefWithCondition<MarkPropFieldDef,number[]>"}
- [:scale
-  {:json-schema/original-name "scale", :optional true}
-  [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
- [:legend
-  {:json-schema/original-name "legend", :optional true}
-  [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+ [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+ [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+ [:field {:optional true} [:ref #'Field]]
+ [:type {:optional true} [:ref #'StandardType]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name
@@ -9344,31 +4761,16 @@
      #:json-schema{:original-name
                    "ConditionalValueDef<(number[]|ExprRef)>"}
      #'ConditionalValueDef__number___ExprRef__]]]]
- [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+ [:bandPosition {:optional true} number?]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
- [:sort
-  {:json-schema/original-name "sort", :optional true}
-  [:ref #:json-schema{:original-name "Sort"} #'Sort]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:aggregate {:optional true} [:ref #'Aggregate]]
+ [:sort {:optional true} [:ref #'Sort]]]
 )
 
 (def FieldOrDatumDefWithCondition_DatumDef_number___
@@ -9376,11 +4778,9 @@
  {:closed true,
   :json-schema/original-name
   "FieldOrDatumDefWithCondition<DatumDef,number[]>"}
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ [:bandPosition {:optional true} number?]
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name
@@ -9392,20 +4792,14 @@
                    "ConditionalValueDef<(number[]|ExprRef)>"}
      #'ConditionalValueDef__number___ExprRef__]]]]
  [:datum
-  {:json-schema/original-name "datum", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "PrimitiveValue"}
-    #'PrimitiveValue]
-   [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "Type"} #'Type]]]
+   [:ref #'PrimitiveValue]
+   [:ref #'DateTime]
+   [:ref #'ExprRef]
+   [:ref #'RepeatRef]]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:type {:optional true} [:ref #'Type]]]
 )
 
 (def ValueDefWithCondition_MarkPropFieldOrDatumDef_number___
@@ -9414,11 +4808,9 @@
   :json-schema/original-name
   "ValueDefWithCondition<MarkPropFieldOrDatumDef,number[]>"}
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "ConditionalMarkPropFieldOrDatumDef"}
-    #'ConditionalMarkPropFieldOrDatumDef]
+   [:ref #'ConditionalMarkPropFieldOrDatumDef]
    [:ref
     #:json-schema{:original-name
                   "ConditionalValueDef<(number[]|ExprRef)>"}
@@ -9428,11 +4820,7 @@
      #:json-schema{:original-name
                    "ConditionalValueDef<(number[]|ExprRef)>"}
      #'ConditionalValueDef__number___ExprRef__]]]]
- [:value
-  {:json-schema/original-name "value", :optional true}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+ [:value {:optional true} [:or [:vector number?] [:ref #'ExprRef]]]]
 )
 
 (def MarkPropDef_number___
@@ -9454,89 +4842,55 @@
 
 (def NumericArrayMarkPropDef
   [:ref
- #:json-schema{:original-name "NumericArrayMarkPropDef"}
+ #:json-schema{:original-name "MarkPropDef<number[]>"}
  #'MarkPropDef_number___]
 )
 
 (def ValueDef_number_
   [:map
  {:closed true, :json-schema/original-name "ValueDef<number>"}
- [:value #:json-schema{:original-name "value"} number?]]
+ [:value number?]]
 )
 
 (def ScaleFieldDef
   [:map
- {:closed true, :json-schema/original-name "ScaleFieldDef"}
- [:scale
-  {:json-schema/original-name "scale", :optional true}
-  [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ {:closed true}
+ [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+ [:field {:optional true} [:ref #'Field]]
+ [:type {:optional true} [:ref #'StandardType]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+ [:bandPosition {:optional true} number?]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
- [:sort
-  {:json-schema/original-name "sort", :optional true}
-  [:ref #:json-schema{:original-name "Sort"} #'Sort]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:aggregate {:optional true} [:ref #'Aggregate]]
+ [:sort {:optional true} [:ref #'Sort]]]
 )
 
 (def ScaleDatumDef
   [:map
- {:closed true, :json-schema/original-name "ScaleDatumDef"}
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ {:closed true}
+ [:bandPosition {:optional true} number?]
  [:datum
-  {:json-schema/original-name "datum", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "PrimitiveValue"}
-    #'PrimitiveValue]
-   [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
- [:scale
-  {:json-schema/original-name "scale", :optional true}
-  [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "Type"} #'Type]]]
+   [:ref #'PrimitiveValue]
+   [:ref #'DateTime]
+   [:ref #'ExprRef]
+   [:ref #'RepeatRef]]]
+ [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:type {:optional true} [:ref #'Type]]]
 )
 
 (def OffsetDef
   [:or
- #:json-schema{:original-name "OffsetDef"}
- [:ref #:json-schema{:original-name "ScaleFieldDef"} #'ScaleFieldDef]
- [:ref #:json-schema{:original-name "ScaleDatumDef"} #'ScaleDatumDef]
+ [:ref #'ScaleFieldDef]
+ [:ref #'ScaleDatumDef]
  [:ref
   #:json-schema{:original-name "ValueDef<number>"}
   #'ValueDef_number_]]
@@ -9547,15 +4901,9 @@
  {:closed true,
   :json-schema/original-name
   "ConditionalParameter<ValueDef<(Text|ExprRef)>>"}
- [:empty {:json-schema/original-name "empty", :optional true} boolean?]
- [:param
-  #:json-schema{:original-name "param"}
-  [:ref #:json-schema{:original-name "ParameterName"} #'ParameterName]]
- [:value
-  #:json-schema{:original-name "value"}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+ [:empty {:optional true} boolean?]
+ [:param [:ref #'ParameterName]]
+ [:value [:or [:ref #'Text] [:ref #'ExprRef]]]]
 )
 
 (def ConditionalPredicate_ValueDef__Text_ExprRef___
@@ -9563,16 +4911,8 @@
  {:closed true,
   :json-schema/original-name
   "ConditionalPredicate<ValueDef<(Text|ExprRef)>>"}
- [:test
-  #:json-schema{:original-name "test"}
-  [:ref
-   #:json-schema{:original-name "PredicateComposition"}
-   #'PredicateComposition]]
- [:value
-  #:json-schema{:original-name "value"}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+ [:test [:ref #'PredicateComposition]]
+ [:value [:or [:ref #'Text] [:ref #'ExprRef]]]]
 )
 
 (def ConditionalValueDef__Text_ExprRef__
@@ -9593,11 +4933,9 @@
  {:closed true,
   :json-schema/original-name
   "FieldOrDatumDefWithCondition<StringDatumDef,Text>"}
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ [:bandPosition {:optional true} number?]
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name "ConditionalValueDef<(Text|ExprRef)>"}
@@ -9608,26 +4946,16 @@
                    "ConditionalValueDef<(Text|ExprRef)>"}
      #'ConditionalValueDef__Text_ExprRef__]]]]
  [:datum
-  {:json-schema/original-name "datum", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "PrimitiveValue"}
-    #'PrimitiveValue]
-   [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
- [:format
-  {:json-schema/original-name "format", :optional true}
-  [:ref #:json-schema{:original-name "Format"} #'Format]]
- [:formatType
-  {:json-schema/original-name "formatType", :optional true}
-  string?]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "Type"} #'Type]]]
+   [:ref #'PrimitiveValue]
+   [:ref #'DateTime]
+   [:ref #'ExprRef]
+   [:ref #'RepeatRef]]]
+ [:format {:optional true} [:ref #'Format]]
+ [:formatType {:optional true} string?]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:type {:optional true} [:ref #'Type]]]
 )
 
 (def FieldOrDatumDefWithCondition_StringFieldDef_Text_
@@ -9635,23 +4963,13 @@
  {:closed true,
   :json-schema/original-name
   "FieldOrDatumDefWithCondition<StringFieldDef,Text>"}
- [:format
-  {:json-schema/original-name "format", :optional true}
-  [:ref #:json-schema{:original-name "Format"} #'Format]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:formatType
-  {:json-schema/original-name "formatType", :optional true}
-  string?]
+ [:format {:optional true} [:ref #'Format]]
+ [:field {:optional true} [:ref #'Field]]
+ [:type {:optional true} [:ref #'StandardType]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:formatType {:optional true} string?]
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name "ConditionalValueDef<(Text|ExprRef)>"}
@@ -9662,130 +4980,67 @@
                    "ConditionalValueDef<(Text|ExprRef)>"}
      #'ConditionalValueDef__Text_ExprRef__]]]]
  [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-   [:enum "binned"]]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+  {:optional true}
+  [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+ [:bandPosition {:optional true} number?]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:aggregate {:optional true} [:ref #'Aggregate]]]
 )
 
 (def ConditionalParameter_StringFieldDef_
   [:map
  {:closed true,
   :json-schema/original-name "ConditionalParameter<StringFieldDef>"}
- [:format
-  {:json-schema/original-name "format", :optional true}
-  [:ref #:json-schema{:original-name "Format"} #'Format]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
- [:empty {:json-schema/original-name "empty", :optional true} boolean?]
- [:param
-  #:json-schema{:original-name "param"}
-  [:ref #:json-schema{:original-name "ParameterName"} #'ParameterName]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:formatType
-  {:json-schema/original-name "formatType", :optional true}
-  string?]
+ [:format {:optional true} [:ref #'Format]]
+ [:field {:optional true} [:ref #'Field]]
+ [:type {:optional true} [:ref #'StandardType]]
+ [:empty {:optional true} boolean?]
+ [:param [:ref #'ParameterName]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:formatType {:optional true} string?]
  [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-   [:enum "binned"]]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+  {:optional true}
+  [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+ [:bandPosition {:optional true} number?]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:aggregate {:optional true} [:ref #'Aggregate]]]
 )
 
 (def ConditionalPredicate_StringFieldDef_
   [:map
  {:closed true,
   :json-schema/original-name "ConditionalPredicate<StringFieldDef>"}
- [:format
-  {:json-schema/original-name "format", :optional true}
-  [:ref #:json-schema{:original-name "Format"} #'Format]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:formatType
-  {:json-schema/original-name "formatType", :optional true}
-  string?]
+ [:format {:optional true} [:ref #'Format]]
+ [:field {:optional true} [:ref #'Field]]
+ [:type {:optional true} [:ref #'StandardType]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:formatType {:optional true} string?]
  [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-   [:enum "binned"]]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+  {:optional true}
+  [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+ [:bandPosition {:optional true} number?]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
- [:test
-  #:json-schema{:original-name "test"}
-  [:ref
-   #:json-schema{:original-name "PredicateComposition"}
-   #'PredicateComposition]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:aggregate {:optional true} [:ref #'Aggregate]]
+ [:test [:ref #'PredicateComposition]]]
 )
 
 (def ConditionalStringFieldDef
   [:or
- #:json-schema{:original-name "ConditionalStringFieldDef"}
  [:ref
   #:json-schema{:original-name "ConditionalPredicate<StringFieldDef>"}
   #'ConditionalPredicate_StringFieldDef_]
@@ -9800,11 +5055,9 @@
   :json-schema/original-name
   "ValueDefWithCondition<StringFieldDef,Text>"}
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "ConditionalStringFieldDef"}
-    #'ConditionalStringFieldDef]
+   [:ref #'ConditionalStringFieldDef]
    [:ref
     #:json-schema{:original-name "ConditionalValueDef<(Text|ExprRef)>"}
     #'ConditionalValueDef__Text_ExprRef__]
@@ -9813,16 +5066,11 @@
      #:json-schema{:original-name
                    "ConditionalValueDef<(Text|ExprRef)>"}
      #'ConditionalValueDef__Text_ExprRef__]]]]
- [:value
-  {:json-schema/original-name "value", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+ [:value {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]]
 )
 
 (def TextDef
   [:or
- #:json-schema{:original-name "TextDef"}
  [:ref
   #:json-schema{:original-name
                 "FieldOrDatumDefWithCondition<StringFieldDef,Text>"}
@@ -9839,53 +5087,29 @@
 
 (def TypedFieldDef
   [:map
- {:closed true, :json-schema/original-name "TypedFieldDef"}
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ {:closed true}
+ [:aggregate {:optional true} [:ref #'Aggregate]]
+ [:bandPosition {:optional true} number?]
  [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-   [:enum "binned"]]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
+  {:optional true}
+  [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+ [:field {:optional true} [:ref #'Field]]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:type {:optional true} [:ref #'StandardType]]]
 )
 
 (def FieldDefWithoutScale
-  [:ref
- #:json-schema{:original-name "FieldDefWithoutScale"}
- #'TypedFieldDef]
+  [:ref #'TypedFieldDef]
 )
 
 (def OrderOnlyDef
-  [:map
- {:closed true, :json-schema/original-name "OrderOnlyDef"}
- [:sort
-  {:json-schema/original-name "sort", :optional true}
-  [:ref #:json-schema{:original-name "SortOrder"} #'SortOrder]]]
+  [:map {:closed true} [:sort {:optional true} [:ref #'SortOrder]]]
 )
 
 (def ConditionalParameter_ValueDef__number_ExprRef___
@@ -9893,15 +5117,9 @@
  {:closed true,
   :json-schema/original-name
   "ConditionalParameter<ValueDef<(number|ExprRef)>>"}
- [:empty {:json-schema/original-name "empty", :optional true} boolean?]
- [:param
-  #:json-schema{:original-name "param"}
-  [:ref #:json-schema{:original-name "ParameterName"} #'ParameterName]]
- [:value
-  #:json-schema{:original-name "value"}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+ [:empty {:optional true} boolean?]
+ [:param [:ref #'ParameterName]]
+ [:value [:or number? [:ref #'ExprRef]]]]
 )
 
 (def ConditionalPredicate_ValueDef__number_ExprRef___
@@ -9909,16 +5127,8 @@
  {:closed true,
   :json-schema/original-name
   "ConditionalPredicate<ValueDef<(number|ExprRef)>>"}
- [:test
-  #:json-schema{:original-name "test"}
-  [:ref
-   #:json-schema{:original-name "PredicateComposition"}
-   #'PredicateComposition]]
- [:value
-  #:json-schema{:original-name "value"}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+ [:test [:ref #'PredicateComposition]]
+ [:value [:or number? [:ref #'ExprRef]]]]
 )
 
 (def ConditionalValueDef__number_ExprRef__
@@ -9939,23 +5149,13 @@
  {:closed true,
   :json-schema/original-name
   "FieldOrDatumDefWithCondition<MarkPropFieldDef,number>"}
- [:scale
-  {:json-schema/original-name "scale", :optional true}
-  [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
- [:legend
-  {:json-schema/original-name "legend", :optional true}
-  [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+ [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+ [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+ [:field {:optional true} [:ref #'Field]]
+ [:type {:optional true} [:ref #'StandardType]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name
@@ -9966,31 +5166,16 @@
      #:json-schema{:original-name
                    "ConditionalValueDef<(number|ExprRef)>"}
      #'ConditionalValueDef__number_ExprRef__]]]]
- [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+ [:bandPosition {:optional true} number?]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
- [:sort
-  {:json-schema/original-name "sort", :optional true}
-  [:ref #:json-schema{:original-name "Sort"} #'Sort]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:aggregate {:optional true} [:ref #'Aggregate]]
+ [:sort {:optional true} [:ref #'Sort]]]
 )
 
 (def ValueDefWithCondition_MarkPropFieldOrDatumDef_number_
@@ -9999,11 +5184,9 @@
   :json-schema/original-name
   "ValueDefWithCondition<MarkPropFieldOrDatumDef,number>"}
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "ConditionalMarkPropFieldOrDatumDef"}
-    #'ConditionalMarkPropFieldOrDatumDef]
+   [:ref #'ConditionalMarkPropFieldOrDatumDef]
    [:ref
     #:json-schema{:original-name
                   "ConditionalValueDef<(number|ExprRef)>"}
@@ -10013,11 +5196,7 @@
      #:json-schema{:original-name
                    "ConditionalValueDef<(number|ExprRef)>"}
      #'ConditionalValueDef__number_ExprRef__]]]]
- [:value
-  {:json-schema/original-name "value", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+ [:value {:optional true} [:or number? [:ref #'ExprRef]]]]
 )
 
 (def FieldOrDatumDefWithCondition_DatumDef_number_
@@ -10025,11 +5204,9 @@
  {:closed true,
   :json-schema/original-name
   "FieldOrDatumDefWithCondition<DatumDef,number>"}
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ [:bandPosition {:optional true} number?]
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name
@@ -10041,20 +5218,14 @@
                    "ConditionalValueDef<(number|ExprRef)>"}
      #'ConditionalValueDef__number_ExprRef__]]]]
  [:datum
-  {:json-schema/original-name "datum", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "PrimitiveValue"}
-    #'PrimitiveValue]
-   [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "Type"} #'Type]]]
+   [:ref #'PrimitiveValue]
+   [:ref #'DateTime]
+   [:ref #'ExprRef]
+   [:ref #'RepeatRef]]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:type {:optional true} [:ref #'Type]]]
 )
 
 (def MarkPropDef_number_
@@ -10076,200 +5247,103 @@
 
 (def NumericMarkPropDef
   [:ref
- #:json-schema{:original-name "NumericMarkPropDef"}
+ #:json-schema{:original-name "MarkPropDef<number>"}
  #'MarkPropDef_number_]
 )
 
 (def StackOffset
-  [:enum
- #:json-schema{:original-name "StackOffset"}
- "zero"
- "center"
- "normalize"]
+  [:enum "zero" "center" "normalize"]
 )
 
 (def PositionDatumDefBase
   [:map
- {:closed true, :json-schema/original-name "PositionDatumDefBase"}
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ {:closed true}
+ [:bandPosition {:optional true} number?]
  [:datum
-  {:json-schema/original-name "datum", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "PrimitiveValue"}
-    #'PrimitiveValue]
-   [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
- [:scale
-  {:json-schema/original-name "scale", :optional true}
-  [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
- [:stack
-  {:json-schema/original-name "stack", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StackOffset"} #'StackOffset]
-   nil?
-   boolean?]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "Type"} #'Type]]]
+   [:ref #'PrimitiveValue]
+   [:ref #'DateTime]
+   [:ref #'ExprRef]
+   [:ref #'RepeatRef]]]
+ [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+ [:stack {:optional true} [:or [:ref #'StackOffset] nil? boolean?]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:type {:optional true} [:ref #'Type]]]
 )
 
 (def PositionFieldDefBase
   [:map
- {:closed true, :json-schema/original-name "PositionFieldDefBase"}
- [:scale
-  {:json-schema/original-name "scale", :optional true}
-  [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+ {:closed true}
+ [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+ [:field {:optional true} [:ref #'Field]]
+ [:type {:optional true} [:ref #'StandardType]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
  [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-   [:enum "binned"]]]
- [:stack
-  {:json-schema/original-name "stack", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StackOffset"} #'StackOffset]
-   nil?
-   boolean?]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+  {:optional true}
+  [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+ [:stack {:optional true} [:or [:ref #'StackOffset] nil? boolean?]]
+ [:bandPosition {:optional true} number?]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
- [:sort
-  {:json-schema/original-name "sort", :optional true}
-  [:ref #:json-schema{:original-name "Sort"} #'Sort]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:aggregate {:optional true} [:ref #'Aggregate]]
+ [:sort {:optional true} [:ref #'Sort]]]
 )
 
 (def PolarDef
   [:or
- #:json-schema{:original-name "PolarDef"}
- [:ref
-  #:json-schema{:original-name "PositionFieldDefBase"}
-  #'PositionFieldDefBase]
- [:ref
-  #:json-schema{:original-name "PositionDatumDefBase"}
-  #'PositionDatumDefBase]
- [:ref
-  #:json-schema{:original-name "PositionValueDef"}
-  #'PositionValueDef]]
+ [:ref #'PositionFieldDefBase]
+ [:ref #'PositionDatumDefBase]
+ [:ref #'PositionValueDef]]
 )
 
 (def LatLongFieldDef
   [:map
- {:closed true, :json-schema/original-name "LatLongFieldDef"}
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
- [:bin {:json-schema/original-name "bin", :optional true} nil?]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
+ {:closed true}
+ [:aggregate {:optional true} [:ref #'Aggregate]]
+ [:bandPosition {:optional true} number?]
+ [:bin {:optional true} nil?]
+ [:field {:optional true} [:ref #'Field]]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:= "quantitative"]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:type {:optional true} [:= "quantitative"]]]
 )
 
 (def LatLongDef
-  [:or
- #:json-schema{:original-name "LatLongDef"}
- [:ref
-  #:json-schema{:original-name "LatLongFieldDef"}
-  #'LatLongFieldDef]
- [:ref #:json-schema{:original-name "DatumDef"} #'DatumDef]]
+  [:or [:ref #'LatLongFieldDef] [:ref #'DatumDef]]
 )
 
 (def TimeFieldDef
   [:map
- {:closed true, :json-schema/original-name "TimeFieldDef"}
- [:scale
-  {:json-schema/original-name "scale", :optional true}
-  [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
- [:rescale
-  {:json-schema/original-name "rescale", :optional true}
-  boolean?]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ {:closed true}
+ [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+ [:rescale {:optional true} boolean?]
+ [:field {:optional true} [:ref #'Field]]
+ [:type {:optional true} [:ref #'StandardType]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+ [:bandPosition {:optional true} number?]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
- [:sort
-  {:json-schema/original-name "sort", :optional true}
-  [:ref #:json-schema{:original-name "Sort"} #'Sort]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:aggregate {:optional true} [:ref #'Aggregate]]
+ [:sort {:optional true} [:ref #'Sort]]]
 )
 
 (def TimeDef
-  [:ref #:json-schema{:original-name "TimeDef"} #'TimeFieldDef]
+  [:ref #'TimeFieldDef]
 )
 
 (def ConditionalParameter_ValueDef__string_ExprRef___
@@ -10277,15 +5351,9 @@
  {:closed true,
   :json-schema/original-name
   "ConditionalParameter<ValueDef<(string|ExprRef)>>"}
- [:empty {:json-schema/original-name "empty", :optional true} boolean?]
- [:param
-  #:json-schema{:original-name "param"}
-  [:ref #:json-schema{:original-name "ParameterName"} #'ParameterName]]
- [:value
-  #:json-schema{:original-name "value"}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+ [:empty {:optional true} boolean?]
+ [:param [:ref #'ParameterName]]
+ [:value [:or string? [:ref #'ExprRef]]]]
 )
 
 (def ConditionalPredicate_ValueDef__string_ExprRef___
@@ -10293,16 +5361,8 @@
  {:closed true,
   :json-schema/original-name
   "ConditionalPredicate<ValueDef<(string|ExprRef)>>"}
- [:test
-  #:json-schema{:original-name "test"}
-  [:ref
-   #:json-schema{:original-name "PredicateComposition"}
-   #'PredicateComposition]]
- [:value
-  #:json-schema{:original-name "value"}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+ [:test [:ref #'PredicateComposition]]
+ [:value [:or string? [:ref #'ExprRef]]]]
 )
 
 (def ConditionalValueDef__string_ExprRef__
@@ -10323,23 +5383,13 @@
  {:closed true,
   :json-schema/original-name
   "FieldOrDatumDefWithCondition<StringFieldDef,string>"}
- [:format
-  {:json-schema/original-name "format", :optional true}
-  [:ref #:json-schema{:original-name "Format"} #'Format]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:formatType
-  {:json-schema/original-name "formatType", :optional true}
-  string?]
+ [:format {:optional true} [:ref #'Format]]
+ [:field {:optional true} [:ref #'Field]]
+ [:type {:optional true} [:ref #'StandardType]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:formatType {:optional true} string?]
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name
@@ -10351,125 +5401,68 @@
                    "ConditionalValueDef<(string|ExprRef)>"}
      #'ConditionalValueDef__string_ExprRef__]]]]
  [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-   [:enum "binned"]]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+  {:optional true}
+  [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+ [:bandPosition {:optional true} number?]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:aggregate {:optional true} [:ref #'Aggregate]]]
 )
 
 (def StringFieldDefWithCondition
   [:ref
- #:json-schema{:original-name "StringFieldDefWithCondition"}
+ #:json-schema{:original-name
+               "FieldOrDatumDefWithCondition<StringFieldDef,string>"}
  #'FieldOrDatumDefWithCondition_StringFieldDef_string_]
 )
 
 (def OrderFieldDef
   [:map
- {:closed true, :json-schema/original-name "OrderFieldDef"}
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ {:closed true}
+ [:aggregate {:optional true} [:ref #'Aggregate]]
+ [:bandPosition {:optional true} number?]
  [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-   [:enum "binned"]]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:sort
-  {:json-schema/original-name "sort", :optional true}
-  [:ref #:json-schema{:original-name "SortOrder"} #'SortOrder]]
+  {:optional true}
+  [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+ [:field {:optional true} [:ref #'Field]]
+ [:sort {:optional true} [:ref #'SortOrder]]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:type {:optional true} [:ref #'StandardType]]]
 )
 
 (def StringFieldDef
   [:map
- {:closed true, :json-schema/original-name "StringFieldDef"}
- [:format
-  {:json-schema/original-name "format", :optional true}
-  [:ref #:json-schema{:original-name "Format"} #'Format]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:formatType
-  {:json-schema/original-name "formatType", :optional true}
-  string?]
+ {:closed true}
+ [:format {:optional true} [:ref #'Format]]
+ [:field {:optional true} [:ref #'Field]]
+ [:type {:optional true} [:ref #'StandardType]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:formatType {:optional true} string?]
  [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-   [:enum "binned"]]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+  {:optional true}
+  [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+ [:bandPosition {:optional true} number?]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:aggregate {:optional true} [:ref #'Aggregate]]]
 )
 
 (def TypeForShape
-  [:enum
- #:json-schema{:original-name "TypeForShape"}
- "nominal"
- "ordinal"
- "geojson"]
+  [:enum "nominal" "ordinal" "geojson"]
 )
 
 (def ConditionalParameter_MarkPropFieldOrDatumDef_TypeForShape__
@@ -10478,88 +5471,39 @@
                "ConditionalParameter<MarkPropFieldOrDatumDef<TypeForShape>>"}
  [:map
   {:closed true}
-  [:scale
-   {:json-schema/original-name "scale", :optional true}
-   [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-  [:legend
-   {:json-schema/original-name "legend", :optional true}
-   [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-  [:field
-   {:json-schema/original-name "field", :optional true}
-   [:ref #:json-schema{:original-name "Field"} #'Field]]
-  [:type
-   {:json-schema/original-name "type", :optional true}
-   [:ref #:json-schema{:original-name "TypeForShape"} #'TypeForShape]]
-  [:empty
-   {:json-schema/original-name "empty", :optional true}
-   boolean?]
-  [:param
-   #:json-schema{:original-name "param"}
-   [:ref
-    #:json-schema{:original-name "ParameterName"}
-    #'ParameterName]]
-  [:title
-   {:json-schema/original-name "title", :optional true}
-   [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-  [:bin
-   {:json-schema/original-name "bin", :optional true}
-   [:or
-    boolean?
-    nil?
-    [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-  [:bandPosition
-   {:json-schema/original-name "bandPosition", :optional true}
-   number?]
+  [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+  [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+  [:field {:optional true} [:ref #'Field]]
+  [:type {:optional true} [:ref #'TypeForShape]]
+  [:empty {:optional true} boolean?]
+  [:param [:ref #'ParameterName]]
+  [:title {:optional true} [:or [:ref #'Text] nil?]]
+  [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+  [:bandPosition {:optional true} number?]
   [:timeUnit
-   {:json-schema/original-name "timeUnit", :optional true}
+   {:optional true}
    [:or
-    [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-    [:ref
-     #:json-schema{:original-name "BinnedTimeUnit"}
-     #'BinnedTimeUnit]
-    [:ref
-     #:json-schema{:original-name "TimeUnitParams"}
-     #'TimeUnitParams]]]
-  [:aggregate
-   {:json-schema/original-name "aggregate", :optional true}
-   [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-  [:sort
-   {:json-schema/original-name "sort", :optional true}
-   [:ref #:json-schema{:original-name "Sort"} #'Sort]]]
+    [:ref #'TimeUnit]
+    [:ref #'BinnedTimeUnit]
+    [:ref #'TimeUnitParams]]]
+  [:aggregate {:optional true} [:ref #'Aggregate]]
+  [:sort {:optional true} [:ref #'Sort]]]
  [:map
   {:closed true}
-  [:bandPosition
-   {:json-schema/original-name "bandPosition", :optional true}
-   number?]
+  [:bandPosition {:optional true} number?]
   [:datum
-   {:json-schema/original-name "datum", :optional true}
+   {:optional true}
    [:or
-    [:ref
-     #:json-schema{:original-name "PrimitiveValue"}
-     #'PrimitiveValue]
-    [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-    [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-    [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-  [:empty
-   {:json-schema/original-name "empty", :optional true}
-   boolean?]
-  [:legend
-   {:json-schema/original-name "legend", :optional true}
-   [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-  [:param
-   #:json-schema{:original-name "param"}
-   [:ref
-    #:json-schema{:original-name "ParameterName"}
-    #'ParameterName]]
-  [:scale
-   {:json-schema/original-name "scale", :optional true}
-   [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-  [:title
-   {:json-schema/original-name "title", :optional true}
-   [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-  [:type
-   {:json-schema/original-name "type", :optional true}
-   [:ref #:json-schema{:original-name "Type"} #'Type]]]]
+    [:ref #'PrimitiveValue]
+    [:ref #'DateTime]
+    [:ref #'ExprRef]
+    [:ref #'RepeatRef]]]
+  [:empty {:optional true} boolean?]
+  [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+  [:param [:ref #'ParameterName]]
+  [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+  [:title {:optional true} [:or [:ref #'Text] nil?]]
+  [:type {:optional true} [:ref #'Type]]]]
 )
 
 (def ConditionalPredicate_MarkPropFieldOrDatumDef_TypeForShape__
@@ -10568,82 +5512,37 @@
                "ConditionalPredicate<MarkPropFieldOrDatumDef<TypeForShape>>"}
  [:map
   {:closed true}
-  [:scale
-   {:json-schema/original-name "scale", :optional true}
-   [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-  [:legend
-   {:json-schema/original-name "legend", :optional true}
-   [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-  [:field
-   {:json-schema/original-name "field", :optional true}
-   [:ref #:json-schema{:original-name "Field"} #'Field]]
-  [:type
-   {:json-schema/original-name "type", :optional true}
-   [:ref #:json-schema{:original-name "TypeForShape"} #'TypeForShape]]
-  [:title
-   {:json-schema/original-name "title", :optional true}
-   [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-  [:bin
-   {:json-schema/original-name "bin", :optional true}
-   [:or
-    boolean?
-    nil?
-    [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-  [:bandPosition
-   {:json-schema/original-name "bandPosition", :optional true}
-   number?]
+  [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+  [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+  [:field {:optional true} [:ref #'Field]]
+  [:type {:optional true} [:ref #'TypeForShape]]
+  [:title {:optional true} [:or [:ref #'Text] nil?]]
+  [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+  [:bandPosition {:optional true} number?]
   [:timeUnit
-   {:json-schema/original-name "timeUnit", :optional true}
+   {:optional true}
    [:or
-    [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-    [:ref
-     #:json-schema{:original-name "BinnedTimeUnit"}
-     #'BinnedTimeUnit]
-    [:ref
-     #:json-schema{:original-name "TimeUnitParams"}
-     #'TimeUnitParams]]]
-  [:aggregate
-   {:json-schema/original-name "aggregate", :optional true}
-   [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]
-  [:sort
-   {:json-schema/original-name "sort", :optional true}
-   [:ref #:json-schema{:original-name "Sort"} #'Sort]]]
+    [:ref #'TimeUnit]
+    [:ref #'BinnedTimeUnit]
+    [:ref #'TimeUnitParams]]]
+  [:aggregate {:optional true} [:ref #'Aggregate]]
+  [:test [:ref #'PredicateComposition]]
+  [:sort {:optional true} [:ref #'Sort]]]
  [:map
   {:closed true}
-  [:bandPosition
-   {:json-schema/original-name "bandPosition", :optional true}
-   number?]
+  [:bandPosition {:optional true} number?]
   [:datum
-   {:json-schema/original-name "datum", :optional true}
+   {:optional true}
    [:or
-    [:ref
-     #:json-schema{:original-name "PrimitiveValue"}
-     #'PrimitiveValue]
-    [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-    [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-    [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-  [:legend
-   {:json-schema/original-name "legend", :optional true}
-   [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-  [:scale
-   {:json-schema/original-name "scale", :optional true}
-   [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-  [:test
-   #:json-schema{:original-name "test"}
-   [:ref
-    #:json-schema{:original-name "PredicateComposition"}
-    #'PredicateComposition]]
-  [:title
-   {:json-schema/original-name "title", :optional true}
-   [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-  [:type
-   {:json-schema/original-name "type", :optional true}
-   [:ref #:json-schema{:original-name "Type"} #'Type]]]]
+    [:ref #'PrimitiveValue]
+    [:ref #'DateTime]
+    [:ref #'ExprRef]
+    [:ref #'RepeatRef]]]
+  [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+  [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+  [:test [:ref #'PredicateComposition]]
+  [:title {:optional true} [:or [:ref #'Text] nil?]]
+  [:type {:optional true} [:ref #'Type]]]]
 )
 
 (def ConditionalMarkPropFieldOrDatumDef_TypeForShape_
@@ -10666,7 +5565,7 @@
   :json-schema/original-name
   "ValueDefWithCondition<MarkPropFieldOrDatumDef<TypeForShape>,(string|null)>"}
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name
@@ -10681,12 +5580,7 @@
      #:json-schema{:original-name
                    "ConditionalValueDef<(string|null|ExprRef)>"}
      #'ConditionalValueDef__string_null_ExprRef__]]]]
- [:value
-  {:json-schema/original-name "value", :optional true}
-  [:or
-   string?
-   nil?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+ [:value {:optional true} [:or string? nil? [:ref #'ExprRef]]]]
 )
 
 (def FieldOrDatumDefWithCondition_DatumDef__string_null__
@@ -10694,11 +5588,9 @@
  {:closed true,
   :json-schema/original-name
   "FieldOrDatumDefWithCondition<DatumDef,(string|null)>"}
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ [:bandPosition {:optional true} number?]
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name
@@ -10710,20 +5602,14 @@
                    "ConditionalValueDef<(string|null|ExprRef)>"}
      #'ConditionalValueDef__string_null_ExprRef__]]]]
  [:datum
-  {:json-schema/original-name "datum", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "PrimitiveValue"}
-    #'PrimitiveValue]
-   [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "Type"} #'Type]]]
+   [:ref #'PrimitiveValue]
+   [:ref #'DateTime]
+   [:ref #'ExprRef]
+   [:ref #'RepeatRef]]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:type {:optional true} [:ref #'Type]]]
 )
 
 (def FieldOrDatumDefWithCondition_MarkPropFieldDef_TypeForShape___string_null__
@@ -10731,23 +5617,13 @@
  {:closed true,
   :json-schema/original-name
   "FieldOrDatumDefWithCondition<MarkPropFieldDef<TypeForShape>,(string|null)>"}
- [:scale
-  {:json-schema/original-name "scale", :optional true}
-  [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
- [:legend
-  {:json-schema/original-name "legend", :optional true}
-  [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "TypeForShape"} #'TypeForShape]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+ [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+ [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+ [:field {:optional true} [:ref #'Field]]
+ [:type {:optional true} [:ref #'TypeForShape]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
  [:condition
-  {:json-schema/original-name "condition", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name
@@ -10758,31 +5634,16 @@
      #:json-schema{:original-name
                    "ConditionalValueDef<(string|null|ExprRef)>"}
      #'ConditionalValueDef__string_null_ExprRef__]]]]
- [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+ [:bandPosition {:optional true} number?]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
- [:sort
-  {:json-schema/original-name "sort", :optional true}
-  [:ref #:json-schema{:original-name "Sort"} #'Sort]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:aggregate {:optional true} [:ref #'Aggregate]]
+ [:sort {:optional true} [:ref #'Sort]]]
 )
 
 (def MarkPropDef__string_null__TypeForShape_
@@ -10805,340 +5666,165 @@
 
 (def ShapeDef
   [:ref
- #:json-schema{:original-name "ShapeDef"}
+ #:json-schema{:original-name
+               "MarkPropDef<(string|null),TypeForShape>"}
  #'MarkPropDef__string_null__TypeForShape_]
 )
 
 (def ImputeParams
   [:map
- {:closed true, :json-schema/original-name "ImputeParams"}
- [:frame
-  {:json-schema/original-name "frame", :optional true}
-  [:vector [:or nil? number?]]]
+ {:closed true}
+ [:frame {:optional true} [:vector [:or nil? number?]]]
  [:keyvals
-  {:json-schema/original-name "keyvals", :optional true}
-  [:or
-   [:vector any?]
-   [:ref
-    #:json-schema{:original-name "ImputeSequence"}
-    #'ImputeSequence]]]
- [:method
-  {:json-schema/original-name "method", :optional true}
-  [:ref #:json-schema{:original-name "ImputeMethod"} #'ImputeMethod]]
- [:value {:json-schema/original-name "value", :optional true} any?]]
+  {:optional true}
+  [:or [:vector any?] [:ref #'ImputeSequence]]]
+ [:method {:optional true} [:ref #'ImputeMethod]]
+ [:value {:optional true} any?]]
 )
 
 (def PositionFieldDef
   [:map
- {:closed true, :json-schema/original-name "PositionFieldDef"}
- [:scale
-  {:json-schema/original-name "scale", :optional true}
-  [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
- [:impute
-  {:json-schema/original-name "impute", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "ImputeParams"} #'ImputeParams]
-   nil?]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+ {:closed true}
+ [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+ [:impute {:optional true} [:or [:ref #'ImputeParams] nil?]]
+ [:field {:optional true} [:ref #'Field]]
+ [:type {:optional true} [:ref #'StandardType]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
  [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-   [:enum "binned"]]]
- [:stack
-  {:json-schema/original-name "stack", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StackOffset"} #'StackOffset]
-   nil?
-   boolean?]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+  {:optional true}
+  [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+ [:stack {:optional true} [:or [:ref #'StackOffset] nil? boolean?]]
+ [:bandPosition {:optional true} number?]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
- [:axis
-  {:json-schema/original-name "axis", :optional true}
-  [:or [:ref #:json-schema{:original-name "Axis"} #'Axis] nil?]]
- [:sort
-  {:json-schema/original-name "sort", :optional true}
-  [:ref #:json-schema{:original-name "Sort"} #'Sort]]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:aggregate {:optional true} [:ref #'Aggregate]]
+ [:axis {:optional true} [:or [:ref #'Axis] nil?]]
+ [:sort {:optional true} [:ref #'Sort]]]
 )
 
 (def PositionDatumDef
   [:map
- {:closed true, :json-schema/original-name "PositionDatumDef"}
- [:axis
-  {:json-schema/original-name "axis", :optional true}
-  [:or [:ref #:json-schema{:original-name "Axis"} #'Axis] nil?]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ {:closed true}
+ [:axis {:optional true} [:or [:ref #'Axis] nil?]]
+ [:bandPosition {:optional true} number?]
  [:datum
-  {:json-schema/original-name "datum", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "PrimitiveValue"}
-    #'PrimitiveValue]
-   [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
- [:impute
-  {:json-schema/original-name "impute", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "ImputeParams"} #'ImputeParams]
-   nil?]]
- [:scale
-  {:json-schema/original-name "scale", :optional true}
-  [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
- [:stack
-  {:json-schema/original-name "stack", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StackOffset"} #'StackOffset]
-   nil?
-   boolean?]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "Type"} #'Type]]]
+   [:ref #'PrimitiveValue]
+   [:ref #'DateTime]
+   [:ref #'ExprRef]
+   [:ref #'RepeatRef]]]
+ [:impute {:optional true} [:or [:ref #'ImputeParams] nil?]]
+ [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+ [:stack {:optional true} [:or [:ref #'StackOffset] nil? boolean?]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:type {:optional true} [:ref #'Type]]]
 )
 
 (def PositionDef
   [:or
- #:json-schema{:original-name "PositionDef"}
- [:ref
-  #:json-schema{:original-name "PositionFieldDef"}
-  #'PositionFieldDef]
- [:ref
-  #:json-schema{:original-name "PositionDatumDef"}
-  #'PositionDatumDef]
- [:ref
-  #:json-schema{:original-name "PositionValueDef"}
-  #'PositionValueDef]]
+ [:ref #'PositionFieldDef]
+ [:ref #'PositionDatumDef]
+ [:ref #'PositionValueDef]]
 )
 
 (def Encoding
   [:map
- {:closed true, :json-schema/original-name "Encoding"}
- [:y
-  {:json-schema/original-name "y", :optional true}
-  [:ref #:json-schema{:original-name "PositionDef"} #'PositionDef]]
+ {:closed true}
+ [:y {:optional true} [:ref #'PositionDef]]
  [:description
-  {:json-schema/original-name "description", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "StringFieldDefWithCondition"}
-    #'StringFieldDefWithCondition]
-   [:ref
-    #:json-schema{:original-name "StringValueDefWithCondition"}
-    #'StringValueDefWithCondition]]]
- [:strokeOpacity
-  {:json-schema/original-name "strokeOpacity", :optional true}
-  [:ref
-   #:json-schema{:original-name "NumericMarkPropDef"}
-   #'NumericMarkPropDef]]
+   [:ref #'StringFieldDefWithCondition]
+   [:ref #'StringValueDefWithCondition]]]
+ [:strokeOpacity {:optional true} [:ref #'NumericMarkPropDef]]
  [:xError2
-  {:json-schema/original-name "xError2", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "SecondaryFieldDef"}
-    #'SecondaryFieldDef]
+   [:ref #'SecondaryFieldDef]
    [:ref
     #:json-schema{:original-name "ValueDef<number>"}
     #'ValueDef_number_]]]
- [:stroke
-  {:json-schema/original-name "stroke", :optional true}
-  [:ref #:json-schema{:original-name "ColorDef"} #'ColorDef]]
- [:color
-  {:json-schema/original-name "color", :optional true}
-  [:ref #:json-schema{:original-name "ColorDef"} #'ColorDef]]
- [:key
-  {:json-schema/original-name "key", :optional true}
-  [:ref
-   #:json-schema{:original-name "FieldDefWithoutScale"}
-   #'FieldDefWithoutScale]]
- [:longitude2
-  {:json-schema/original-name "longitude2", :optional true}
-  [:ref #:json-schema{:original-name "Position2Def"} #'Position2Def]]
- [:fill
-  {:json-schema/original-name "fill", :optional true}
-  [:ref #:json-schema{:original-name "ColorDef"} #'ColorDef]]
- [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
-  [:ref
-   #:json-schema{:original-name "NumericArrayMarkPropDef"}
-   #'NumericArrayMarkPropDef]]
- [:time
-  {:json-schema/original-name "time", :optional true}
-  [:ref #:json-schema{:original-name "TimeDef"} #'TimeDef]]
- [:longitude
-  {:json-schema/original-name "longitude", :optional true}
-  [:ref #:json-schema{:original-name "LatLongDef"} #'LatLongDef]]
- [:fillOpacity
-  {:json-schema/original-name "fillOpacity", :optional true}
-  [:ref
-   #:json-schema{:original-name "NumericMarkPropDef"}
-   #'NumericMarkPropDef]]
- [:angle
-  {:json-schema/original-name "angle", :optional true}
-  [:ref
-   #:json-schema{:original-name "NumericMarkPropDef"}
-   #'NumericMarkPropDef]]
- [:theta
-  {:json-schema/original-name "theta", :optional true}
-  [:ref #:json-schema{:original-name "PolarDef"} #'PolarDef]]
- [:radius
-  {:json-schema/original-name "radius", :optional true}
-  [:ref #:json-schema{:original-name "PolarDef"} #'PolarDef]]
- [:theta2
-  {:json-schema/original-name "theta2", :optional true}
-  [:ref #:json-schema{:original-name "Position2Def"} #'Position2Def]]
- [:size
-  {:json-schema/original-name "size", :optional true}
-  [:ref
-   #:json-schema{:original-name "NumericMarkPropDef"}
-   #'NumericMarkPropDef]]
+ [:stroke {:optional true} [:ref #'ColorDef]]
+ [:color {:optional true} [:ref #'ColorDef]]
+ [:key {:optional true} [:ref #'FieldDefWithoutScale]]
+ [:longitude2 {:optional true} [:ref #'Position2Def]]
+ [:fill {:optional true} [:ref #'ColorDef]]
+ [:strokeDash {:optional true} [:ref #'NumericArrayMarkPropDef]]
+ [:time {:optional true} [:ref #'TimeDef]]
+ [:longitude {:optional true} [:ref #'LatLongDef]]
+ [:fillOpacity {:optional true} [:ref #'NumericMarkPropDef]]
+ [:angle {:optional true} [:ref #'NumericMarkPropDef]]
+ [:theta {:optional true} [:ref #'PolarDef]]
+ [:radius {:optional true} [:ref #'PolarDef]]
+ [:theta2 {:optional true} [:ref #'Position2Def]]
+ [:size {:optional true} [:ref #'NumericMarkPropDef]]
  [:yError
-  {:json-schema/original-name "yError", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "SecondaryFieldDef"}
-    #'SecondaryFieldDef]
+   [:ref #'SecondaryFieldDef]
    [:ref
     #:json-schema{:original-name "ValueDef<number>"}
     #'ValueDef_number_]]]
- [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
-  [:ref
-   #:json-schema{:original-name "NumericMarkPropDef"}
-   #'NumericMarkPropDef]]
- [:opacity
-  {:json-schema/original-name "opacity", :optional true}
-  [:ref
-   #:json-schema{:original-name "NumericMarkPropDef"}
-   #'NumericMarkPropDef]]
- [:shape
-  {:json-schema/original-name "shape", :optional true}
-  [:ref #:json-schema{:original-name "ShapeDef"} #'ShapeDef]]
+ [:strokeWidth {:optional true} [:ref #'NumericMarkPropDef]]
+ [:opacity {:optional true} [:ref #'NumericMarkPropDef]]
+ [:shape {:optional true} [:ref #'ShapeDef]]
  [:url
-  {:json-schema/original-name "url", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "StringFieldDefWithCondition"}
-    #'StringFieldDefWithCondition]
-   [:ref
-    #:json-schema{:original-name "StringValueDefWithCondition"}
-    #'StringValueDefWithCondition]]]
- [:latitude
-  {:json-schema/original-name "latitude", :optional true}
-  [:ref #:json-schema{:original-name "LatLongDef"} #'LatLongDef]]
+   [:ref #'StringFieldDefWithCondition]
+   [:ref #'StringValueDefWithCondition]]]
+ [:latitude {:optional true} [:ref #'LatLongDef]]
  [:order
-  {:json-schema/original-name "order", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "OrderFieldDef"} #'OrderFieldDef]
-   [:ref #:json-schema{:original-name "OrderValueDef"} #'OrderValueDef]
-   [:ref #:json-schema{:original-name "OrderOnlyDef"} #'OrderOnlyDef]
-   [:vector
-    [:ref
-     #:json-schema{:original-name "OrderFieldDef"}
-     #'OrderFieldDef]]]]
+   [:ref #'OrderFieldDef]
+   [:ref #'OrderValueDef]
+   [:ref #'OrderOnlyDef]
+   [:vector [:ref #'OrderFieldDef]]]]
  [:xError
-  {:json-schema/original-name "xError", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "SecondaryFieldDef"}
-    #'SecondaryFieldDef]
+   [:ref #'SecondaryFieldDef]
    [:ref
     #:json-schema{:original-name "ValueDef<number>"}
     #'ValueDef_number_]]]
  [:yError2
-  {:json-schema/original-name "yError2", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "SecondaryFieldDef"}
-    #'SecondaryFieldDef]
+   [:ref #'SecondaryFieldDef]
    [:ref
     #:json-schema{:original-name "ValueDef<number>"}
     #'ValueDef_number_]]]
- [:yOffset
-  {:json-schema/original-name "yOffset", :optional true}
-  [:ref #:json-schema{:original-name "OffsetDef"} #'OffsetDef]]
- [:x
-  {:json-schema/original-name "x", :optional true}
-  [:ref #:json-schema{:original-name "PositionDef"} #'PositionDef]]
- [:y2
-  {:json-schema/original-name "y2", :optional true}
-  [:ref #:json-schema{:original-name "Position2Def"} #'Position2Def]]
- [:radius2
-  {:json-schema/original-name "radius2", :optional true}
-  [:ref #:json-schema{:original-name "Position2Def"} #'Position2Def]]
- [:x2
-  {:json-schema/original-name "x2", :optional true}
-  [:ref #:json-schema{:original-name "Position2Def"} #'Position2Def]]
- [:latitude2
-  {:json-schema/original-name "latitude2", :optional true}
-  [:ref #:json-schema{:original-name "Position2Def"} #'Position2Def]]
+ [:yOffset {:optional true} [:ref #'OffsetDef]]
+ [:x {:optional true} [:ref #'PositionDef]]
+ [:y2 {:optional true} [:ref #'Position2Def]]
+ [:radius2 {:optional true} [:ref #'Position2Def]]
+ [:x2 {:optional true} [:ref #'Position2Def]]
+ [:latitude2 {:optional true} [:ref #'Position2Def]]
  [:href
-  {:json-schema/original-name "href", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "StringFieldDefWithCondition"}
-    #'StringFieldDefWithCondition]
-   [:ref
-    #:json-schema{:original-name "StringValueDefWithCondition"}
-    #'StringValueDefWithCondition]]]
+   [:ref #'StringFieldDefWithCondition]
+   [:ref #'StringValueDefWithCondition]]]
  [:tooltip
-  {:json-schema/original-name "tooltip", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "StringFieldDefWithCondition"}
-    #'StringFieldDefWithCondition]
-   [:ref
-    #:json-schema{:original-name "StringValueDefWithCondition"}
-    #'StringValueDefWithCondition]
-   [:vector
-    [:ref
-     #:json-schema{:original-name "StringFieldDef"}
-     #'StringFieldDef]]
+   [:ref #'StringFieldDefWithCondition]
+   [:ref #'StringValueDefWithCondition]
+   [:vector [:ref #'StringFieldDef]]
    nil?]]
- [:text
-  {:json-schema/original-name "text", :optional true}
-  [:ref #:json-schema{:original-name "TextDef"} #'TextDef]]
- [:xOffset
-  {:json-schema/original-name "xOffset", :optional true}
-  [:ref #:json-schema{:original-name "OffsetDef"} #'OffsetDef]]
+ [:text {:optional true} [:ref #'TextDef]]
+ [:xOffset {:optional true} [:ref #'OffsetDef]]
  [:detail
-  {:json-schema/original-name "detail", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "FieldDefWithoutScale"}
-    #'FieldDefWithoutScale]
-   [:vector
-    [:ref
-     #:json-schema{:original-name "FieldDefWithoutScale"}
-     #'FieldDefWithoutScale]]]]]
+   [:ref #'FieldDefWithoutScale]
+   [:vector [:ref #'FieldDefWithoutScale]]]]]
 )
 
 (def Dict_SelectionInitInterval_
@@ -11150,17 +5836,16 @@
 
 (def SelectionInitIntervalMapping
   [:ref
- #:json-schema{:original-name "SelectionInitIntervalMapping"}
+ #:json-schema{:original-name "Dict<SelectionInitInterval>"}
  #'Dict_SelectionInitInterval_]
 )
 
 (def Expr
-  [:and #:json-schema{:original-name "Expr"} string?]
+  string?
 )
 
 (def EventType
   [:enum
- #:json-schema{:original-name "EventType"}
  "click"
  "dblclick"
  "dragenter"
@@ -11189,7 +5874,6 @@
 
 (def MarkType
   [:enum
- #:json-schema{:original-name "MarkType"}
  "arc"
  "area"
  "image"
@@ -11205,258 +5889,114 @@
 )
 
 (def WindowEventType
-  [:or
- #:json-schema{:original-name "WindowEventType"}
- [:ref #:json-schema{:original-name "EventType"} #'EventType]
- string?]
+  [:or [:ref #'EventType] string?]
 )
 
 (def EventStream
   [:or
- #:json-schema{:original-name "EventStream"}
  [:map
   {:closed true}
-  [:markname
-   {:json-schema/original-name "markname", :optional true}
-   string?]
-  [:debounce
-   {:json-schema/original-name "debounce", :optional true}
-   number?]
-  [:consume
-   {:json-schema/original-name "consume", :optional true}
-   boolean?]
-  [:between
-   {:json-schema/original-name "between", :optional true}
-   [:vector [:ref #:json-schema{:original-name "Stream"} #'Stream]]]
-  [:type
-   #:json-schema{:original-name "type"}
-   [:ref #:json-schema{:original-name "EventType"} #'EventType]]
-  [:source
-   {:json-schema/original-name "source", :optional true}
-   [:enum "view" "scope"]]
+  [:markname {:optional true} string?]
+  [:debounce {:optional true} number?]
+  [:consume {:optional true} boolean?]
+  [:between {:optional true} [:vector [:ref #'Stream]]]
+  [:type [:ref #'EventType]]
+  [:source {:optional true} [:enum "view" "scope"]]
   [:filter
-   {:json-schema/original-name "filter", :optional true}
-   [:or
-    [:ref #:json-schema{:original-name "Expr"} #'Expr]
-    [:vector [:ref #:json-schema{:original-name "Expr"} #'Expr]]]]
-  [:marktype
-   {:json-schema/original-name "marktype", :optional true}
-   [:ref #:json-schema{:original-name "MarkType"} #'MarkType]]
-  [:throttle
-   {:json-schema/original-name "throttle", :optional true}
-   number?]]
+   {:optional true}
+   [:or [:ref #'Expr] [:vector [:ref #'Expr]]]]
+  [:marktype {:optional true} [:ref #'MarkType]]
+  [:throttle {:optional true} number?]]
  [:map
   {:closed true}
-  [:markname
-   {:json-schema/original-name "markname", :optional true}
-   string?]
-  [:debounce
-   {:json-schema/original-name "debounce", :optional true}
-   number?]
-  [:consume
-   {:json-schema/original-name "consume", :optional true}
-   boolean?]
-  [:between
-   {:json-schema/original-name "between", :optional true}
-   [:vector [:ref #:json-schema{:original-name "Stream"} #'Stream]]]
-  [:type
-   #:json-schema{:original-name "type"}
-   [:ref
-    #:json-schema{:original-name "WindowEventType"}
-    #'WindowEventType]]
-  [:source #:json-schema{:original-name "source"} [:= "window"]]
+  [:markname {:optional true} string?]
+  [:debounce {:optional true} number?]
+  [:consume {:optional true} boolean?]
+  [:between {:optional true} [:vector [:ref #'Stream]]]
+  [:type [:ref #'WindowEventType]]
+  [:source [:= "window"]]
   [:filter
-   {:json-schema/original-name "filter", :optional true}
-   [:or
-    [:ref #:json-schema{:original-name "Expr"} #'Expr]
-    [:vector [:ref #:json-schema{:original-name "Expr"} #'Expr]]]]
-  [:marktype
-   {:json-schema/original-name "marktype", :optional true}
-   [:ref #:json-schema{:original-name "MarkType"} #'MarkType]]
-  [:throttle
-   {:json-schema/original-name "throttle", :optional true}
-   number?]]]
+   {:optional true}
+   [:or [:ref #'Expr] [:vector [:ref #'Expr]]]]
+  [:marktype {:optional true} [:ref #'MarkType]]
+  [:throttle {:optional true} number?]]]
 )
 
 (def DerivedStream
   [:map
- {:closed true, :json-schema/original-name "DerivedStream"}
- [:between
-  {:json-schema/original-name "between", :optional true}
-  [:vector [:ref #:json-schema{:original-name "Stream"} #'Stream]]]
- [:consume
-  {:json-schema/original-name "consume", :optional true}
-  boolean?]
- [:debounce
-  {:json-schema/original-name "debounce", :optional true}
-  number?]
- [:filter
-  {:json-schema/original-name "filter", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Expr"} #'Expr]
-   [:vector [:ref #:json-schema{:original-name "Expr"} #'Expr]]]]
- [:markname
-  {:json-schema/original-name "markname", :optional true}
-  string?]
- [:marktype
-  {:json-schema/original-name "marktype", :optional true}
-  [:ref #:json-schema{:original-name "MarkType"} #'MarkType]]
- [:stream
-  #:json-schema{:original-name "stream"}
-  [:ref #:json-schema{:original-name "Stream"} #'Stream]]
- [:throttle
-  {:json-schema/original-name "throttle", :optional true}
-  number?]]
+ {:closed true}
+ [:between {:optional true} [:vector [:ref #'Stream]]]
+ [:consume {:optional true} boolean?]
+ [:debounce {:optional true} number?]
+ [:filter {:optional true} [:or [:ref #'Expr] [:vector [:ref #'Expr]]]]
+ [:markname {:optional true} string?]
+ [:marktype {:optional true} [:ref #'MarkType]]
+ [:stream [:ref #'Stream]]
+ [:throttle {:optional true} number?]]
 )
 
 (def MergedStream
   [:map
- {:closed true, :json-schema/original-name "MergedStream"}
- [:between
-  {:json-schema/original-name "between", :optional true}
-  [:vector [:ref #:json-schema{:original-name "Stream"} #'Stream]]]
- [:consume
-  {:json-schema/original-name "consume", :optional true}
-  boolean?]
- [:debounce
-  {:json-schema/original-name "debounce", :optional true}
-  number?]
- [:filter
-  {:json-schema/original-name "filter", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Expr"} #'Expr]
-   [:vector [:ref #:json-schema{:original-name "Expr"} #'Expr]]]]
- [:markname
-  {:json-schema/original-name "markname", :optional true}
-  string?]
- [:marktype
-  {:json-schema/original-name "marktype", :optional true}
-  [:ref #:json-schema{:original-name "MarkType"} #'MarkType]]
- [:merge
-  #:json-schema{:original-name "merge"}
-  [:vector [:ref #:json-schema{:original-name "Stream"} #'Stream]]]
- [:throttle
-  {:json-schema/original-name "throttle", :optional true}
-  number?]]
+ {:closed true}
+ [:between {:optional true} [:vector [:ref #'Stream]]]
+ [:consume {:optional true} boolean?]
+ [:debounce {:optional true} number?]
+ [:filter {:optional true} [:or [:ref #'Expr] [:vector [:ref #'Expr]]]]
+ [:markname {:optional true} string?]
+ [:marktype {:optional true} [:ref #'MarkType]]
+ [:merge [:vector [:ref #'Stream]]]
+ [:throttle {:optional true} number?]]
 )
 
 (def Stream
-  [:or
- #:json-schema{:original-name "Stream"}
- [:ref #:json-schema{:original-name "EventStream"} #'EventStream]
- [:ref #:json-schema{:original-name "DerivedStream"} #'DerivedStream]
- [:ref #:json-schema{:original-name "MergedStream"} #'MergedStream]]
+  [:or [:ref #'EventStream] [:ref #'DerivedStream] [:ref #'MergedStream]]
 )
 
 (def LegendStreamBinding
-  [:map
- {:closed true, :json-schema/original-name "LegendStreamBinding"}
- [:legend
-  #:json-schema{:original-name "legend"}
-  [:or string? [:ref #:json-schema{:original-name "Stream"} #'Stream]]]]
+  [:map {:closed true} [:legend [:or string? [:ref #'Stream]]]]
 )
 
 (def LegendBinding
-  [:or
- #:json-schema{:original-name "LegendBinding"}
- [:ref
-  #:json-schema{:original-name "LegendStreamBinding"}
-  #'LegendStreamBinding]
- [:enum "legend"]]
+  [:or [:ref #'LegendStreamBinding] [:enum "legend"]]
 )
 
 (def SelectionResolution
-  [:enum
- #:json-schema{:original-name "SelectionResolution"}
- "global"
- "union"
- "intersect"]
+  [:enum "global" "union" "intersect"]
 )
 
 (def IntervalSelectionConfig
   [:map
- {:closed true, :json-schema/original-name "IntervalSelectionConfig"}
- [:zoom
-  {:json-schema/original-name "zoom", :optional true}
-  [:or string? boolean?]]
- [:mark
-  {:json-schema/original-name "mark", :optional true}
-  [:ref #:json-schema{:original-name "BrushConfig"} #'BrushConfig]]
- [:fields
-  {:json-schema/original-name "fields", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:type #:json-schema{:original-name "type"} [:= "interval"]]
- [:encodings
-  {:json-schema/original-name "encodings", :optional true}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "SingleDefUnitChannel"}
-    #'SingleDefUnitChannel]]]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref
-   #:json-schema{:original-name "SelectionResolution"}
-   #'SelectionResolution]]
- [:translate
-  {:json-schema/original-name "translate", :optional true}
-  [:or string? boolean?]]
- [:on
-  {:json-schema/original-name "on", :optional true}
-  [:or [:ref #:json-schema{:original-name "Stream"} #'Stream] string?]]
- [:clear
-  {:json-schema/original-name "clear", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Stream"} #'Stream]
-   string?
-   boolean?]]]
+ {:closed true}
+ [:zoom {:optional true} [:or string? boolean?]]
+ [:mark {:optional true} [:ref #'BrushConfig]]
+ [:fields {:optional true} [:vector [:ref #'FieldName]]]
+ [:type [:= "interval"]]
+ [:encodings {:optional true} [:vector [:ref #'SingleDefUnitChannel]]]
+ [:resolve {:optional true} [:ref #'SelectionResolution]]
+ [:translate {:optional true} [:or string? boolean?]]
+ [:on {:optional true} [:or [:ref #'Stream] string?]]
+ [:clear {:optional true} [:or [:ref #'Stream] string? boolean?]]]
 )
 
 (def PointSelectionConfig
   [:map
- {:closed true, :json-schema/original-name "PointSelectionConfig"}
- [:clear
-  {:json-schema/original-name "clear", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Stream"} #'Stream]
-   string?
-   boolean?]]
- [:encodings
-  {:json-schema/original-name "encodings", :optional true}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "SingleDefUnitChannel"}
-    #'SingleDefUnitChannel]]]
- [:fields
-  {:json-schema/original-name "fields", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:nearest
-  {:json-schema/original-name "nearest", :optional true}
-  boolean?]
- [:on
-  {:json-schema/original-name "on", :optional true}
-  [:or [:ref #:json-schema{:original-name "Stream"} #'Stream] string?]]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref
-   #:json-schema{:original-name "SelectionResolution"}
-   #'SelectionResolution]]
- [:toggle
-  {:json-schema/original-name "toggle", :optional true}
-  [:or string? boolean?]]
- [:type #:json-schema{:original-name "type"} [:= "point"]]]
+ {:closed true}
+ [:clear {:optional true} [:or [:ref #'Stream] string? boolean?]]
+ [:encodings {:optional true} [:vector [:ref #'SingleDefUnitChannel]]]
+ [:fields {:optional true} [:vector [:ref #'FieldName]]]
+ [:nearest {:optional true} boolean?]
+ [:on {:optional true} [:or [:ref #'Stream] string?]]
+ [:resolve {:optional true} [:ref #'SelectionResolution]]
+ [:toggle {:optional true} [:or string? boolean?]]
+ [:type [:= "point"]]]
 )
 
 (def SelectionInit
-  [:or
- #:json-schema{:original-name "SelectionInit"}
- [:ref #:json-schema{:original-name "PrimitiveValue"} #'PrimitiveValue]
- [:ref #:json-schema{:original-name "DateTime"} #'DateTime]]
+  [:or [:ref #'PrimitiveValue] [:ref #'DateTime]]
 )
 
 (def SelectionType
-  [:enum #:json-schema{:original-name "SelectionType"} "point" "interval"]
+  [:enum "point" "interval"]
 )
 
 (def Dict_SelectionInit_
@@ -11465,49 +6005,36 @@
 
 (def SelectionInitMapping
   [:ref
- #:json-schema{:original-name "SelectionInitMapping"}
+ #:json-schema{:original-name "Dict<SelectionInit>"}
  #'Dict_SelectionInit_]
 )
 
 (def SelectionParameter
   [:map
- {:closed true, :json-schema/original-name "SelectionParameter"}
+ {:closed true}
  [:bind
-  {:json-schema/original-name "bind", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "Binding"} #'Binding]
-   [:ref #:json-schema{:original-name "LegendBinding"} #'LegendBinding]
+   [:ref #'Binding]
+   [:ref #'LegendBinding]
    [:map-of any? any?]
    [:enum "scales"]]]
- [:name
-  #:json-schema{:original-name "name"}
-  [:ref #:json-schema{:original-name "ParameterName"} #'ParameterName]]
+ [:name [:ref #'ParameterName]]
  [:select
-  #:json-schema{:original-name "select"}
   [:or
-   [:ref #:json-schema{:original-name "SelectionType"} #'SelectionType]
-   [:ref
-    #:json-schema{:original-name "PointSelectionConfig"}
-    #'PointSelectionConfig]
-   [:ref
-    #:json-schema{:original-name "IntervalSelectionConfig"}
-    #'IntervalSelectionConfig]]]
+   [:ref #'SelectionType]
+   [:ref #'PointSelectionConfig]
+   [:ref #'IntervalSelectionConfig]]]
  [:value
-  {:json-schema/original-name "value", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "SelectionInit"} #'SelectionInit]
-   [:ref
-    #:json-schema{:original-name "SelectionInitIntervalMapping"}
-    #'SelectionInitIntervalMapping]
-   [:vector
-    [:ref
-     #:json-schema{:original-name "SelectionInitMapping"}
-     #'SelectionInitMapping]]]]]
+   [:ref #'SelectionInit]
+   [:ref #'SelectionInitIntervalMapping]
+   [:vector [:ref #'SelectionInitMapping]]]]]
 )
 
 (def ProjectionType
   [:enum
- #:json-schema{:original-name "ProjectionType"}
  "albers"
  "albersUsa"
  "azimuthalEqualArea"
@@ -11531,315 +6058,186 @@
 )
 
 (def GeoJsonProperties
-  [:or
- #:json-schema{:original-name "GeoJsonProperties"}
- [:map-of any? any?]
- nil?]
+  [:or [:map-of any? any?] nil?]
 )
 
 (def Position
-  [:vector #:json-schema{:original-name "Position"} number?]
+  [:vector number?]
 )
 
 (def Polygon
   [:map
- {:closed true, :json-schema/original-name "Polygon"}
- [:bbox
-  {:json-schema/original-name "bbox", :optional true}
-  [:ref #:json-schema{:original-name "BBox"} #'BBox]]
- [:coordinates
-  #:json-schema{:original-name "coordinates"}
-  [:vector
-   [:vector
-    [:ref #:json-schema{:original-name "Position"} #'Position]]]]
- [:type #:json-schema{:original-name "type"} [:= "Polygon"]]]
+ {:closed true}
+ [:bbox {:optional true} [:ref #'BBox]]
+ [:coordinates [:vector [:vector [:ref #'Position]]]]
+ [:type [:= "Polygon"]]]
 )
 
 (def LineString
   [:map
- {:closed true, :json-schema/original-name "LineString"}
- [:bbox
-  {:json-schema/original-name "bbox", :optional true}
-  [:ref #:json-schema{:original-name "BBox"} #'BBox]]
- [:coordinates
-  #:json-schema{:original-name "coordinates"}
-  [:vector [:ref #:json-schema{:original-name "Position"} #'Position]]]
- [:type #:json-schema{:original-name "type"} [:= "LineString"]]]
+ {:closed true}
+ [:bbox {:optional true} [:ref #'BBox]]
+ [:coordinates [:vector [:ref #'Position]]]
+ [:type [:= "LineString"]]]
 )
 
 (def GeometryCollection
   [:map
- {:closed true, :json-schema/original-name "GeometryCollection"}
- [:bbox
-  {:json-schema/original-name "bbox", :optional true}
-  [:ref #:json-schema{:original-name "BBox"} #'BBox]]
- [:geometries
-  #:json-schema{:original-name "geometries"}
-  [:vector [:ref #:json-schema{:original-name "Geometry"} #'Geometry]]]
- [:type #:json-schema{:original-name "type"} [:= "GeometryCollection"]]]
+ {:closed true}
+ [:bbox {:optional true} [:ref #'BBox]]
+ [:geometries [:vector [:ref #'Geometry]]]
+ [:type [:= "GeometryCollection"]]]
 )
 
 (def Point
   [:map
- {:closed true, :json-schema/original-name "Point"}
- [:bbox
-  {:json-schema/original-name "bbox", :optional true}
-  [:ref #:json-schema{:original-name "BBox"} #'BBox]]
- [:coordinates
-  #:json-schema{:original-name "coordinates"}
-  [:ref #:json-schema{:original-name "Position"} #'Position]]
- [:type #:json-schema{:original-name "type"} [:= "Point"]]]
+ {:closed true}
+ [:bbox {:optional true} [:ref #'BBox]]
+ [:coordinates [:ref #'Position]]
+ [:type [:= "Point"]]]
 )
 
 (def MultiPolygon
   [:map
- {:closed true, :json-schema/original-name "MultiPolygon"}
- [:bbox
-  {:json-schema/original-name "bbox", :optional true}
-  [:ref #:json-schema{:original-name "BBox"} #'BBox]]
- [:coordinates
-  #:json-schema{:original-name "coordinates"}
-  [:vector
-   [:vector
-    [:vector
-     [:ref #:json-schema{:original-name "Position"} #'Position]]]]]
- [:type #:json-schema{:original-name "type"} [:= "MultiPolygon"]]]
+ {:closed true}
+ [:bbox {:optional true} [:ref #'BBox]]
+ [:coordinates [:vector [:vector [:vector [:ref #'Position]]]]]
+ [:type [:= "MultiPolygon"]]]
 )
 
 (def MultiLineString
   [:map
- {:closed true, :json-schema/original-name "MultiLineString"}
- [:bbox
-  {:json-schema/original-name "bbox", :optional true}
-  [:ref #:json-schema{:original-name "BBox"} #'BBox]]
- [:coordinates
-  #:json-schema{:original-name "coordinates"}
-  [:vector
-   [:vector
-    [:ref #:json-schema{:original-name "Position"} #'Position]]]]
- [:type #:json-schema{:original-name "type"} [:= "MultiLineString"]]]
+ {:closed true}
+ [:bbox {:optional true} [:ref #'BBox]]
+ [:coordinates [:vector [:vector [:ref #'Position]]]]
+ [:type [:= "MultiLineString"]]]
 )
 
 (def MultiPoint
   [:map
- {:closed true, :json-schema/original-name "MultiPoint"}
- [:bbox
-  {:json-schema/original-name "bbox", :optional true}
-  [:ref #:json-schema{:original-name "BBox"} #'BBox]]
- [:coordinates
-  #:json-schema{:original-name "coordinates"}
-  [:vector [:ref #:json-schema{:original-name "Position"} #'Position]]]
- [:type #:json-schema{:original-name "type"} [:= "MultiPoint"]]]
+ {:closed true}
+ [:bbox {:optional true} [:ref #'BBox]]
+ [:coordinates [:vector [:ref #'Position]]]
+ [:type [:= "MultiPoint"]]]
 )
 
 (def Geometry
   [:or
- #:json-schema{:original-name "Geometry"}
- [:ref #:json-schema{:original-name "Point"} #'Point]
- [:ref #:json-schema{:original-name "MultiPoint"} #'MultiPoint]
- [:ref #:json-schema{:original-name "LineString"} #'LineString]
- [:ref
-  #:json-schema{:original-name "MultiLineString"}
-  #'MultiLineString]
- [:ref #:json-schema{:original-name "Polygon"} #'Polygon]
- [:ref #:json-schema{:original-name "MultiPolygon"} #'MultiPolygon]
- [:ref
-  #:json-schema{:original-name "GeometryCollection"}
-  #'GeometryCollection]]
+ [:ref #'Point]
+ [:ref #'MultiPoint]
+ [:ref #'LineString]
+ [:ref #'MultiLineString]
+ [:ref #'Polygon]
+ [:ref #'MultiPolygon]
+ [:ref #'GeometryCollection]]
 )
 
 (def Feature
   [:map
- {:closed true, :json-schema/original-name "Feature"}
- [:bbox
-  {:json-schema/original-name "bbox", :optional true}
-  [:ref #:json-schema{:original-name "BBox"} #'BBox]]
- [:geometry
-  #:json-schema{:original-name "geometry"}
-  [:ref #:json-schema{:original-name "Geometry"} #'Geometry]]
- [:id
-  {:json-schema/original-name "id", :optional true}
-  [:or string? number?]]
- [:properties
-  #:json-schema{:original-name "properties"}
-  [:ref
-   #:json-schema{:original-name "GeoJsonProperties"}
-   #'GeoJsonProperties]]
- [:type #:json-schema{:original-name "type"} [:= "Feature"]]]
+ {:closed true}
+ [:bbox {:optional true} [:ref #'BBox]]
+ [:geometry [:ref #'Geometry]]
+ [:id {:optional true} [:or string? number?]]
+ [:properties [:ref #'GeoJsonProperties]]
+ [:type [:= "Feature"]]]
 )
 
 (def GeoJsonFeature
-  [:ref #:json-schema{:original-name "GeoJsonFeature"} #'Feature]
+  [:ref #'Feature]
 )
 
 (def Feature_Geometry_GeoJsonProperties_
   [:map
  {:closed true,
   :json-schema/original-name "Feature<Geometry,GeoJsonProperties>"}
- [:bbox
-  {:json-schema/original-name "bbox", :optional true}
-  [:ref #:json-schema{:original-name "BBox"} #'BBox]]
- [:geometry
-  #:json-schema{:original-name "geometry"}
-  [:ref #:json-schema{:original-name "Geometry"} #'Geometry]]
- [:id
-  {:json-schema/original-name "id", :optional true}
-  [:or string? number?]]
- [:properties
-  #:json-schema{:original-name "properties"}
-  [:ref
-   #:json-schema{:original-name "GeoJsonProperties"}
-   #'GeoJsonProperties]]
- [:type #:json-schema{:original-name "type"} [:= "Feature"]]]
+ [:bbox {:optional true} [:ref #'BBox]]
+ [:geometry [:ref #'Geometry]]
+ [:id {:optional true} [:or string? number?]]
+ [:properties [:ref #'GeoJsonProperties]]
+ [:type [:= "Feature"]]]
 )
 
 (def FeatureCollection
   [:map
- {:closed true, :json-schema/original-name "FeatureCollection"}
- [:bbox
-  {:json-schema/original-name "bbox", :optional true}
-  [:ref #:json-schema{:original-name "BBox"} #'BBox]]
+ {:closed true}
+ [:bbox {:optional true} [:ref #'BBox]]
  [:features
-  #:json-schema{:original-name "features"}
   [:vector
    [:ref
     #:json-schema{:original-name "Feature<Geometry,GeoJsonProperties>"}
     #'Feature_Geometry_GeoJsonProperties_]]]
- [:type #:json-schema{:original-name "type"} [:= "FeatureCollection"]]]
+ [:type [:= "FeatureCollection"]]]
 )
 
 (def GeoJsonFeatureCollection
-  [:ref
- #:json-schema{:original-name "GeoJsonFeatureCollection"}
- #'FeatureCollection]
+  [:ref #'FeatureCollection]
 )
 
 (def Fit
   [:or
- #:json-schema{:original-name "Fit"}
- [:ref #:json-schema{:original-name "GeoJsonFeature"} #'GeoJsonFeature]
- [:ref
-  #:json-schema{:original-name "GeoJsonFeatureCollection"}
-  #'GeoJsonFeatureCollection]
- [:vector
-  [:ref
-   #:json-schema{:original-name "GeoJsonFeature"}
-   #'GeoJsonFeature]]]
+ [:ref #'GeoJsonFeature]
+ [:ref #'GeoJsonFeatureCollection]
+ [:vector [:ref #'GeoJsonFeature]]]
 )
 
 (def Projection
   [:map
- {:closed true, :json-schema/original-name "Projection"}
+ {:closed true}
  [:clipExtent
-  {:json-schema/original-name "clipExtent", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name "Vector2<Vector2<number>>"}
     #'Vector2_Vector2_number__]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:reflectY
-  {:json-schema/original-name "reflectY", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+   [:ref #'ExprRef]]]
+ [:reflectY {:optional true} [:or boolean? [:ref #'ExprRef]]]
  [:fit
-  {:json-schema/original-name "fit", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Fit"} #'Fit]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   [:vector [:ref #:json-schema{:original-name "Fit"} #'Fit]]]]
- [:scale
-  {:json-schema/original-name "scale", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:parallel
-  {:json-schema/original-name "parallel", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:fraction
-  {:json-schema/original-name "fraction", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:precision
-  {:json-schema/original-name "precision", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Fit] [:ref #'ExprRef] [:vector [:ref #'Fit]]]]
+ [:scale {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:parallel {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:fraction {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:precision {:optional true} [:or number? [:ref #'ExprRef]]]
  [:type
-  {:json-schema/original-name "type", :optional true}
-  [:or
-   [:ref
-    #:json-schema{:original-name "ProjectionType"}
-    #'ProjectionType]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:tilt
-  {:json-schema/original-name "tilt", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:radius
-  {:json-schema/original-name "radius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'ProjectionType] [:ref #'ExprRef]]]
+ [:tilt {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:radius {:optional true} [:or number? [:ref #'ExprRef]]]
  [:size
-  {:json-schema/original-name "size", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name "Vector2<number>"}
     #'Vector2_number_]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:clipAngle
-  {:json-schema/original-name "clipAngle", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+   [:ref #'ExprRef]]]
+ [:clipAngle {:optional true} [:or number? [:ref #'ExprRef]]]
  [:center
-  {:json-schema/original-name "center", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name "Vector2<number>"}
     #'Vector2_number_]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:pointRadius
-  {:json-schema/original-name "pointRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:lobes
-  {:json-schema/original-name "lobes", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:ratio
-  {:json-schema/original-name "ratio", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+   [:ref #'ExprRef]]]
+ [:pointRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:lobes {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:ratio {:optional true} [:or number? [:ref #'ExprRef]]]
  [:extent
-  {:json-schema/original-name "extent", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name "Vector2<Vector2<number>>"}
     #'Vector2_Vector2_number__]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:coefficient
-  {:json-schema/original-name "coefficient", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+   [:ref #'ExprRef]]]
+ [:coefficient {:optional true} [:or number? [:ref #'ExprRef]]]
  [:translate
-  {:json-schema/original-name "translate", :optional true}
+  {:optional true}
   [:or
    [:ref
     #:json-schema{:original-name "Vector2<number>"}
     #'Vector2_number_]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+   [:ref #'ExprRef]]]
  [:rotate
-  {:json-schema/original-name "rotate", :optional true}
+  {:optional true}
   [:or
    [:or
     [:ref
@@ -11848,271 +6246,118 @@
     [:ref
      #:json-schema{:original-name "Vector3<number>"}
      #'Vector3_number_]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:distance
-  {:json-schema/original-name "distance", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:parallels
-  {:json-schema/original-name "parallels", :optional true}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:reflectX
-  {:json-schema/original-name "reflectX", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:spacing
-  {:json-schema/original-name "spacing", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+   [:ref #'ExprRef]]]
+ [:distance {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:parallels {:optional true} [:or [:vector number?] [:ref #'ExprRef]]]
+ [:reflectX {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:spacing {:optional true} [:or number? [:ref #'ExprRef]]]]
 )
 
 (def StepFor
-  [:enum #:json-schema{:original-name "StepFor"} "position" "offset"]
+  [:enum "position" "offset"]
 )
 
 (def Step
   [:map
- {:closed true, :json-schema/original-name "Step"}
- [:for
-  {:json-schema/original-name "for", :optional true}
-  [:ref #:json-schema{:original-name "StepFor"} #'StepFor]]
- [:step #:json-schema{:original-name "step"} number?]]
+ {:closed true}
+ [:for {:optional true} [:ref #'StepFor]]
+ [:step number?]]
 )
 
 (def ViewBackground
   [:map
- {:closed true, :json-schema/original-name "ViewBackground"}
- [:strokeOpacity
-  {:json-schema/original-name "strokeOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:stroke
-  {:json-schema/original-name "stroke", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
- [:fill
-  {:json-schema/original-name "fill", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
+ {:closed true}
+ [:strokeOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:stroke {:optional true} [:or [:ref #'Color] [:ref #'ExprRef] nil?]]
+ [:fill {:optional true} [:or [:ref #'Color] [:ref #'ExprRef] nil?]]
  [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cursor
-  {:json-schema/original-name "cursor", :optional true}
-  [:ref #:json-schema{:original-name "Cursor"} #'Cursor]]
- [:fillOpacity
-  {:json-schema/original-name "fillOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeMiterLimit
-  {:json-schema/original-name "strokeMiterLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeDashOffset
-  {:json-schema/original-name "strokeDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cornerRadius
-  {:json-schema/original-name "cornerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:style
-  {:json-schema/original-name "style", :optional true}
-  [:or string? [:vector string?]]]
- [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:opacity
-  {:json-schema/original-name "opacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:vector number?] [:ref #'ExprRef]]]
+ [:cursor {:optional true} [:ref #'Cursor]]
+ [:fillOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeMiterLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cornerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:style {:optional true} [:or string? [:vector string?]]]
+ [:strokeWidth {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:opacity {:optional true} [:or number? [:ref #'ExprRef]]]
  [:strokeJoin
-  {:json-schema/original-name "strokeJoin", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeJoin"} #'StrokeJoin]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'StrokeJoin] [:ref #'ExprRef]]]
  [:strokeCap
-  {:json-schema/original-name "strokeCap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeCap"} #'StrokeCap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+  {:optional true}
+  [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]]
 )
 
 (def UnitSpecWithFrame
   [:map
- {:closed true, :json-schema/original-name "UnitSpecWithFrame"}
- [:description
-  {:json-schema/original-name "description", :optional true}
-  string?]
- [:encoding
-  {:json-schema/original-name "encoding", :optional true}
-  [:ref #:json-schema{:original-name "Encoding"} #'Encoding]]
- [:transform
-  {:json-schema/original-name "transform", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
- [:mark
-  #:json-schema{:original-name "mark"}
-  [:ref #:json-schema{:original-name "AnyMark"} #'AnyMark]]
- [:name {:json-schema/original-name "name", :optional true} string?]
+ {:closed true}
+ [:description {:optional true} string?]
+ [:encoding {:optional true} [:ref #'Encoding]]
+ [:transform {:optional true} [:vector [:ref #'Transform]]]
+ [:mark [:ref #'AnyMark]]
+ [:name {:optional true} string?]
  [:width
-  {:json-schema/original-name "width", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "Step"} #'Step]
-   [:enum "container"]]]
- [:params
-  {:json-schema/original-name "params", :optional true}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "SelectionParameter"}
-    #'SelectionParameter]]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
- [:projection
-  {:json-schema/original-name "projection", :optional true}
-  [:ref #:json-schema{:original-name "Projection"} #'Projection]]
- [:view
-  {:json-schema/original-name "view", :optional true}
-  [:ref
-   #:json-schema{:original-name "ViewBackground"}
-   #'ViewBackground]]
+  {:optional true}
+  [:or number? [:ref #'Step] [:enum "container"]]]
+ [:params {:optional true} [:vector [:ref #'SelectionParameter]]]
+ [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
+ [:projection {:optional true} [:ref #'Projection]]
+ [:view {:optional true} [:ref #'ViewBackground]]
  [:height
-  {:json-schema/original-name "height", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "Step"} #'Step]
-   [:enum "container"]]]
- [:data
-  {:json-schema/original-name "data", :optional true}
-  [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]
+  {:optional true}
+  [:or number? [:ref #'Step] [:enum "container"]]]
+ [:data {:optional true} [:or [:ref #'Data] nil?]]]
 )
 
 (def SharedEncoding
   [:map
- {:closed true, :json-schema/original-name "SharedEncoding"}
+ {:closed true}
  [:y
-  {:json-schema/original-name "y", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-   [:impute
-    {:json-schema/original-name "impute", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "ImputeParams"} #'ImputeParams]
-     nil?]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:impute {:optional true} [:or [:ref #'ImputeParams] nil?]]
    [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     number?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:enum "width" "height"]]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StandardType"} #'StandardType]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+    {:optional true}
+    [:or number? [:ref #'ExprRef] [:enum "width" "height"]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'StandardType] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-     [:enum "binned"]]]
-   [:stack
-    {:json-schema/original-name "stack", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StackOffset"} #'StackOffset]
-     nil?
-     boolean?]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+    {:optional true}
+    [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+   [:stack {:optional true} [:or [:ref #'StackOffset] nil? boolean?]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:axis
-    {:json-schema/original-name "axis", :optional true}
-    [:or [:ref #:json-schema{:original-name "Axis"} #'Axis] nil?]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:axis {:optional true} [:or [:ref #'Axis] nil?]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:description
-  {:json-schema/original-name "description", :optional true}
+  {:optional true}
   [:map
    {:closed true}
-   [:format
-    {:json-schema/original-name "format", :optional true}
-    [:ref #:json-schema{:original-name "Format"} #'Format]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     string?
-     nil?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:formatType
-    {:json-schema/original-name "formatType", :optional true}
-    string?]
+   [:format {:optional true} [:ref #'Format]]
+   [:value {:optional true} [:or string? nil? [:ref #'ExprRef]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:ref #'StandardType]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:formatType {:optional true} string?]
    [:condition
-    {:json-schema/original-name "condition", :optional true}
+    {:optional true}
     [:or
      [:or
       [:ref
@@ -12125,10 +6370,7 @@
                       "ConditionalValueDef<(string|ExprRef)>"}
         #'ConditionalValueDef__string_ExprRef__]]]
      [:or
-      [:ref
-       #:json-schema{:original-name
-                     "ConditionalMarkPropFieldOrDatumDef"}
-       #'ConditionalMarkPropFieldOrDatumDef]
+      [:ref #'ConditionalMarkPropFieldOrDatumDef]
       [:ref
        #:json-schema{:original-name
                      "ConditionalValueDef<(string|null|ExprRef)>"}
@@ -12139,65 +6381,35 @@
                       "ConditionalValueDef<(string|null|ExprRef)>"}
         #'ConditionalValueDef__string_null_ExprRef__]]]]]
    [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-     [:enum "binned"]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+    {:optional true}
+    [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]]]
  [:strokeOpacity
-  {:json-schema/original-name "strokeOpacity", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     number?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-   [:legend
-    {:json-schema/original-name "legend", :optional true}
-    [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StandardType"} #'StandardType]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:value {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'StandardType] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:condition
-    {:json-schema/original-name "condition", :optional true}
+    {:optional true}
     [:or
      [:or
       [:ref
@@ -12210,10 +6422,7 @@
                       "ConditionalValueDef<(number|ExprRef)>"}
         #'ConditionalValueDef__number_ExprRef__]]]
      [:or
-      [:ref
-       #:json-schema{:original-name
-                     "ConditionalMarkPropFieldOrDatumDef"}
-       #'ConditionalMarkPropFieldOrDatumDef]
+      [:ref #'ConditionalMarkPropFieldOrDatumDef]
       [:ref
        #:json-schema{:original-name
                      "ConditionalValueDef<(number|ExprRef)>"}
@@ -12223,100 +6432,53 @@
         #:json-schema{:original-name
                       "ConditionalValueDef<(number|ExprRef)>"}
         #'ConditionalValueDef__number_ExprRef__]]]]]
-   [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:xError2
-  {:json-schema/original-name "xError2", :optional true}
+  {:optional true}
   [:map
    {:closed true}
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
-   [:bin {:json-schema/original-name "bin", :optional true} nil?]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:bandPosition {:optional true} number?]
+   [:bin {:optional true} nil?]
+   [:field {:optional true} [:ref #'Field]]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    number?]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:value {:optional true} number?]]]
  [:stroke
-  {:json-schema/original-name "stroke", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
    [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     string?
-     nil?]]
-   [:legend
-    {:json-schema/original-name "legend", :optional true}
-    [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StandardType"} #'StandardType]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+    {:optional true}
+    [:or [:ref #'Gradient] [:ref #'ExprRef] string? nil?]]
+   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'StandardType] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:condition
-    {:json-schema/original-name "condition", :optional true}
+    {:optional true}
     [:or
      [:or
       [:ref
@@ -12329,10 +6491,7 @@
                       "ConditionalValueDef<(Gradient|string|null|ExprRef)>"}
         #'ConditionalValueDef__Gradient_string_null_ExprRef__]]]
      [:or
-      [:ref
-       #:json-schema{:original-name
-                     "ConditionalMarkPropFieldOrDatumDef"}
-       #'ConditionalMarkPropFieldOrDatumDef]
+      [:ref #'ConditionalMarkPropFieldOrDatumDef]
       [:ref
        #:json-schema{:original-name
                      "ConditionalValueDef<(Gradient|string|null|ExprRef)>"}
@@ -12342,70 +6501,37 @@
         #:json-schema{:original-name
                       "ConditionalValueDef<(Gradient|string|null|ExprRef)>"}
         #'ConditionalValueDef__Gradient_string_null_ExprRef__]]]]]
-   [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:color
-  {:json-schema/original-name "color", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
    [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     string?
-     nil?]]
-   [:legend
-    {:json-schema/original-name "legend", :optional true}
-    [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StandardType"} #'StandardType]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+    {:optional true}
+    [:or [:ref #'Gradient] [:ref #'ExprRef] string? nil?]]
+   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'StandardType] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:condition
-    {:json-schema/original-name "condition", :optional true}
+    {:optional true}
     [:or
      [:or
       [:ref
@@ -12418,10 +6544,7 @@
                       "ConditionalValueDef<(Gradient|string|null|ExprRef)>"}
         #'ConditionalValueDef__Gradient_string_null_ExprRef__]]]
      [:or
-      [:ref
-       #:json-schema{:original-name
-                     "ConditionalMarkPropFieldOrDatumDef"}
-       #'ConditionalMarkPropFieldOrDatumDef]
+      [:ref #'ConditionalMarkPropFieldOrDatumDef]
       [:ref
        #:json-schema{:original-name
                      "ConditionalValueDef<(Gradient|string|null|ExprRef)>"}
@@ -12431,153 +6554,81 @@
         #:json-schema{:original-name
                       "ConditionalValueDef<(Gradient|string|null|ExprRef)>"}
         #'ConditionalValueDef__Gradient_string_null_ExprRef__]]]]]
-   [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:key
-  {:json-schema/original-name "key", :optional true}
+  {:optional true}
   [:map
    {:closed true}
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:bandPosition {:optional true} number?]
    [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-     [:enum "binned"]]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
+    {:optional true}
+    [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+   [:field {:optional true} [:ref #'Field]]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:ref
-     #:json-schema{:original-name "StandardType"}
-     #'StandardType]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:type {:optional true} [:ref #'StandardType]]]]
  [:longitude2
-  {:json-schema/original-name "longitude2", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
    [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     number?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:enum "width" "height"]]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:ref #:json-schema{:original-name "Type"} #'Type]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:bin {:json-schema/original-name "bin", :optional true} nil?]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+    {:optional true}
+    [:or number? [:ref #'ExprRef] [:enum "width" "height"]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:ref #'Type]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:bin {:optional true} nil?]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]]]
  [:fill
-  {:json-schema/original-name "fill", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
    [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     string?
-     nil?]]
-   [:legend
-    {:json-schema/original-name "legend", :optional true}
-    [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StandardType"} #'StandardType]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+    {:optional true}
+    [:or [:ref #'Gradient] [:ref #'ExprRef] string? nil?]]
+   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'StandardType] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:condition
-    {:json-schema/original-name "condition", :optional true}
+    {:optional true}
     [:or
      [:or
       [:ref
@@ -12590,10 +6641,7 @@
                       "ConditionalValueDef<(Gradient|string|null|ExprRef)>"}
         #'ConditionalValueDef__Gradient_string_null_ExprRef__]]]
      [:or
-      [:ref
-       #:json-schema{:original-name
-                     "ConditionalMarkPropFieldOrDatumDef"}
-       #'ConditionalMarkPropFieldOrDatumDef]
+      [:ref #'ConditionalMarkPropFieldOrDatumDef]
       [:ref
        #:json-schema{:original-name
                      "ConditionalValueDef<(Gradient|string|null|ExprRef)>"}
@@ -12603,68 +6651,35 @@
         #:json-schema{:original-name
                       "ConditionalValueDef<(Gradient|string|null|ExprRef)>"}
         #'ConditionalValueDef__Gradient_string_null_ExprRef__]]]]]
-   [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     [:vector number?]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-   [:legend
-    {:json-schema/original-name "legend", :optional true}
-    [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StandardType"} #'StandardType]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:value {:optional true} [:or [:vector number?] [:ref #'ExprRef]]]
+   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'StandardType] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:condition
-    {:json-schema/original-name "condition", :optional true}
+    {:optional true}
     [:or
      [:or
       [:ref
@@ -12677,10 +6692,7 @@
                       "ConditionalValueDef<(number[]|ExprRef)>"}
         #'ConditionalValueDef__number___ExprRef__]]]
      [:or
-      [:ref
-       #:json-schema{:original-name
-                     "ConditionalMarkPropFieldOrDatumDef"}
-       #'ConditionalMarkPropFieldOrDatumDef]
+      [:ref #'ConditionalMarkPropFieldOrDatumDef]
       [:ref
        #:json-schema{:original-name
                      "ConditionalValueDef<(number[]|ExprRef)>"}
@@ -12690,153 +6702,79 @@
         #:json-schema{:original-name
                       "ConditionalValueDef<(number[]|ExprRef)>"}
         #'ConditionalValueDef__number___ExprRef__]]]]]
-   [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:time
-  {:json-schema/original-name "time", :optional true}
+  {:optional true}
   [:map
    {:closed true}
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-   [:rescale
-    {:json-schema/original-name "rescale", :optional true}
-    boolean?]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:rescale {:optional true} boolean?]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:ref #'StandardType]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:longitude
-  {:json-schema/original-name "longitude", :optional true}
+  {:optional true}
   [:map
    {:closed true}
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
-   [:bin {:json-schema/original-name "bin", :optional true} nil?]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:bandPosition {:optional true} number?]
+   [:bin {:optional true} nil?]
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:field {:optional true} [:ref #'Field]]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "Type"} #'Type]
-     [:enum "quantitative"]]]]]
+    {:optional true}
+    [:or [:ref #'Type] [:enum "quantitative"]]]]]
  [:fillOpacity
-  {:json-schema/original-name "fillOpacity", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     number?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-   [:legend
-    {:json-schema/original-name "legend", :optional true}
-    [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StandardType"} #'StandardType]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:value {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'StandardType] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:condition
-    {:json-schema/original-name "condition", :optional true}
+    {:optional true}
     [:or
      [:or
       [:ref
@@ -12849,10 +6787,7 @@
                       "ConditionalValueDef<(number|ExprRef)>"}
         #'ConditionalValueDef__number_ExprRef__]]]
      [:or
-      [:ref
-       #:json-schema{:original-name
-                     "ConditionalMarkPropFieldOrDatumDef"}
-       #'ConditionalMarkPropFieldOrDatumDef]
+      [:ref #'ConditionalMarkPropFieldOrDatumDef]
       [:ref
        #:json-schema{:original-name
                      "ConditionalValueDef<(number|ExprRef)>"}
@@ -12862,68 +6797,35 @@
         #:json-schema{:original-name
                       "ConditionalValueDef<(number|ExprRef)>"}
         #'ConditionalValueDef__number_ExprRef__]]]]]
-   [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:angle
-  {:json-schema/original-name "angle", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     number?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-   [:legend
-    {:json-schema/original-name "legend", :optional true}
-    [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StandardType"} #'StandardType]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:value {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'StandardType] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:condition
-    {:json-schema/original-name "condition", :optional true}
+    {:optional true}
     [:or
      [:or
       [:ref
@@ -12936,10 +6838,7 @@
                       "ConditionalValueDef<(number|ExprRef)>"}
         #'ConditionalValueDef__number_ExprRef__]]]
      [:or
-      [:ref
-       #:json-schema{:original-name
-                     "ConditionalMarkPropFieldOrDatumDef"}
-       #'ConditionalMarkPropFieldOrDatumDef]
+      [:ref #'ConditionalMarkPropFieldOrDatumDef]
       [:ref
        #:json-schema{:original-name
                      "ConditionalValueDef<(number|ExprRef)>"}
@@ -12949,243 +6848,123 @@
         #:json-schema{:original-name
                       "ConditionalValueDef<(number|ExprRef)>"}
         #'ConditionalValueDef__number_ExprRef__]]]]]
-   [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:theta
-  {:json-schema/original-name "theta", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
    [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     number?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:enum "width" "height"]]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StandardType"} #'StandardType]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+    {:optional true}
+    [:or number? [:ref #'ExprRef] [:enum "width" "height"]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'StandardType] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-     [:enum "binned"]]]
-   [:stack
-    {:json-schema/original-name "stack", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StackOffset"} #'StackOffset]
-     nil?
-     boolean?]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+    {:optional true}
+    [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+   [:stack {:optional true} [:or [:ref #'StackOffset] nil? boolean?]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:radius
-  {:json-schema/original-name "radius", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
    [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     number?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:enum "width" "height"]]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StandardType"} #'StandardType]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+    {:optional true}
+    [:or number? [:ref #'ExprRef] [:enum "width" "height"]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'StandardType] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-     [:enum "binned"]]]
-   [:stack
-    {:json-schema/original-name "stack", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StackOffset"} #'StackOffset]
-     nil?
-     boolean?]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+    {:optional true}
+    [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+   [:stack {:optional true} [:or [:ref #'StackOffset] nil? boolean?]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:theta2
-  {:json-schema/original-name "theta2", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
    [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     number?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:enum "width" "height"]]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:ref #:json-schema{:original-name "Type"} #'Type]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:bin {:json-schema/original-name "bin", :optional true} nil?]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+    {:optional true}
+    [:or number? [:ref #'ExprRef] [:enum "width" "height"]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:ref #'Type]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:bin {:optional true} nil?]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]]]
  [:size
-  {:json-schema/original-name "size", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     number?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-   [:legend
-    {:json-schema/original-name "legend", :optional true}
-    [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StandardType"} #'StandardType]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:value {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'StandardType] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:condition
-    {:json-schema/original-name "condition", :optional true}
+    {:optional true}
     [:or
      [:or
       [:ref
@@ -13198,10 +6977,7 @@
                       "ConditionalValueDef<(number|ExprRef)>"}
         #'ConditionalValueDef__number_ExprRef__]]]
      [:or
-      [:ref
-       #:json-schema{:original-name
-                     "ConditionalMarkPropFieldOrDatumDef"}
-       #'ConditionalMarkPropFieldOrDatumDef]
+      [:ref #'ConditionalMarkPropFieldOrDatumDef]
       [:ref
        #:json-schema{:original-name
                      "ConditionalValueDef<(number|ExprRef)>"}
@@ -13211,98 +6987,51 @@
         #:json-schema{:original-name
                       "ConditionalValueDef<(number|ExprRef)>"}
         #'ConditionalValueDef__number_ExprRef__]]]]]
-   [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:yError
-  {:json-schema/original-name "yError", :optional true}
+  {:optional true}
   [:map
    {:closed true}
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
-   [:bin {:json-schema/original-name "bin", :optional true} nil?]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:bandPosition {:optional true} number?]
+   [:bin {:optional true} nil?]
+   [:field {:optional true} [:ref #'Field]]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    number?]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:value {:optional true} number?]]]
  [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     number?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-   [:legend
-    {:json-schema/original-name "legend", :optional true}
-    [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StandardType"} #'StandardType]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:value {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'StandardType] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:condition
-    {:json-schema/original-name "condition", :optional true}
+    {:optional true}
     [:or
      [:or
       [:ref
@@ -13315,10 +7044,7 @@
                       "ConditionalValueDef<(number|ExprRef)>"}
         #'ConditionalValueDef__number_ExprRef__]]]
      [:or
-      [:ref
-       #:json-schema{:original-name
-                     "ConditionalMarkPropFieldOrDatumDef"}
-       #'ConditionalMarkPropFieldOrDatumDef]
+      [:ref #'ConditionalMarkPropFieldOrDatumDef]
       [:ref
        #:json-schema{:original-name
                      "ConditionalValueDef<(number|ExprRef)>"}
@@ -13328,68 +7054,35 @@
         #:json-schema{:original-name
                       "ConditionalValueDef<(number|ExprRef)>"}
         #'ConditionalValueDef__number_ExprRef__]]]]]
-   [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:opacity
-  {:json-schema/original-name "opacity", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     number?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-   [:legend
-    {:json-schema/original-name "legend", :optional true}
-    [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StandardType"} #'StandardType]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:value {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'StandardType] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:condition
-    {:json-schema/original-name "condition", :optional true}
+    {:optional true}
     [:or
      [:or
       [:ref
@@ -13402,10 +7095,7 @@
                       "ConditionalValueDef<(number|ExprRef)>"}
         #'ConditionalValueDef__number_ExprRef__]]]
      [:or
-      [:ref
-       #:json-schema{:original-name
-                     "ConditionalMarkPropFieldOrDatumDef"}
-       #'ConditionalMarkPropFieldOrDatumDef]
+      [:ref #'ConditionalMarkPropFieldOrDatumDef]
       [:ref
        #:json-schema{:original-name
                      "ConditionalValueDef<(number|ExprRef)>"}
@@ -13415,69 +7105,35 @@
         #:json-schema{:original-name
                       "ConditionalValueDef<(number|ExprRef)>"}
         #'ConditionalValueDef__number_ExprRef__]]]]]
-   [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:shape
-  {:json-schema/original-name "shape", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     string?
-     nil?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-   [:legend
-    {:json-schema/original-name "legend", :optional true}
-    [:or [:ref #:json-schema{:original-name "Legend"} #'Legend] nil?]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "TypeForShape"} #'TypeForShape]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:value {:optional true} [:or string? nil? [:ref #'ExprRef]]]
+   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'TypeForShape] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:condition
-    {:json-schema/original-name "condition", :optional true}
+    {:optional true}
     [:or
      [:or
       [:ref
@@ -13503,58 +7159,28 @@
         #:json-schema{:original-name
                       "ConditionalValueDef<(string|null|ExprRef)>"}
         #'ConditionalValueDef__string_null_ExprRef__]]]]]
-   [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:url
-  {:json-schema/original-name "url", :optional true}
+  {:optional true}
   [:map
    {:closed true}
-   [:format
-    {:json-schema/original-name "format", :optional true}
-    [:ref #:json-schema{:original-name "Format"} #'Format]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     string?
-     nil?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:formatType
-    {:json-schema/original-name "formatType", :optional true}
-    string?]
+   [:format {:optional true} [:ref #'Format]]
+   [:value {:optional true} [:or string? nil? [:ref #'ExprRef]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:ref #'StandardType]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:formatType {:optional true} string?]
    [:condition
-    {:json-schema/original-name "condition", :optional true}
+    {:optional true}
     [:or
      [:or
       [:ref
@@ -13567,10 +7193,7 @@
                       "ConditionalValueDef<(string|ExprRef)>"}
         #'ConditionalValueDef__string_ExprRef__]]]
      [:or
-      [:ref
-       #:json-schema{:original-name
-                     "ConditionalMarkPropFieldOrDatumDef"}
-       #'ConditionalMarkPropFieldOrDatumDef]
+      [:ref #'ConditionalMarkPropFieldOrDatumDef]
       [:ref
        #:json-schema{:original-name
                      "ConditionalValueDef<(string|null|ExprRef)>"}
@@ -13581,474 +7204,255 @@
                       "ConditionalValueDef<(string|null|ExprRef)>"}
         #'ConditionalValueDef__string_null_ExprRef__]]]]]
    [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-     [:enum "binned"]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+    {:optional true}
+    [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]]]
  [:latitude
-  {:json-schema/original-name "latitude", :optional true}
+  {:optional true}
   [:map
    {:closed true}
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
-   [:bin {:json-schema/original-name "bin", :optional true} nil?]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:bandPosition {:optional true} number?]
+   [:bin {:optional true} nil?]
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:field {:optional true} [:ref #'Field]]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "Type"} #'Type]
-     [:enum "quantitative"]]]]]
+    {:optional true}
+    [:or [:ref #'Type] [:enum "quantitative"]]]]]
  [:order
-  {:json-schema/original-name "order", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "OrderFieldDef"} #'OrderFieldDef]
-   [:ref #:json-schema{:original-name "OrderValueDef"} #'OrderValueDef]
-   [:ref #:json-schema{:original-name "OrderOnlyDef"} #'OrderOnlyDef]
-   [:vector
-    [:ref
-     #:json-schema{:original-name "OrderFieldDef"}
-     #'OrderFieldDef]]]]
+   [:ref #'OrderFieldDef]
+   [:ref #'OrderValueDef]
+   [:ref #'OrderOnlyDef]
+   [:vector [:ref #'OrderFieldDef]]]]
  [:xError
-  {:json-schema/original-name "xError", :optional true}
+  {:optional true}
   [:map
    {:closed true}
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
-   [:bin {:json-schema/original-name "bin", :optional true} nil?]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:bandPosition {:optional true} number?]
+   [:bin {:optional true} nil?]
+   [:field {:optional true} [:ref #'Field]]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    number?]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:value {:optional true} number?]]]
  [:yError2
-  {:json-schema/original-name "yError2", :optional true}
+  {:optional true}
   [:map
    {:closed true}
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
-   [:bin {:json-schema/original-name "bin", :optional true} nil?]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:bandPosition {:optional true} number?]
+   [:bin {:optional true} nil?]
+   [:field {:optional true} [:ref #'Field]]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    number?]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:value {:optional true} number?]]]
  [:yOffset
-  {:json-schema/original-name "yOffset", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    number?]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StandardType"} #'StandardType]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:value {:optional true} number?]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'StandardType] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:x
-  {:json-schema/original-name "x", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-   [:impute
-    {:json-schema/original-name "impute", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "ImputeParams"} #'ImputeParams]
-     nil?]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:impute {:optional true} [:or [:ref #'ImputeParams] nil?]]
    [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     number?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:enum "width" "height"]]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StandardType"} #'StandardType]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+    {:optional true}
+    [:or number? [:ref #'ExprRef] [:enum "width" "height"]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'StandardType] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-     [:enum "binned"]]]
-   [:stack
-    {:json-schema/original-name "stack", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StackOffset"} #'StackOffset]
-     nil?
-     boolean?]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+    {:optional true}
+    [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+   [:stack {:optional true} [:or [:ref #'StackOffset] nil? boolean?]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:axis
-    {:json-schema/original-name "axis", :optional true}
-    [:or [:ref #:json-schema{:original-name "Axis"} #'Axis] nil?]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:axis {:optional true} [:or [:ref #'Axis] nil?]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:y2
-  {:json-schema/original-name "y2", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
    [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     number?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:enum "width" "height"]]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:ref #:json-schema{:original-name "Type"} #'Type]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:bin {:json-schema/original-name "bin", :optional true} nil?]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+    {:optional true}
+    [:or number? [:ref #'ExprRef] [:enum "width" "height"]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:ref #'Type]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:bin {:optional true} nil?]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]]]
  [:radius2
-  {:json-schema/original-name "radius2", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
    [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     number?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:enum "width" "height"]]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:ref #:json-schema{:original-name "Type"} #'Type]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:bin {:json-schema/original-name "bin", :optional true} nil?]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+    {:optional true}
+    [:or number? [:ref #'ExprRef] [:enum "width" "height"]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:ref #'Type]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:bin {:optional true} nil?]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]]]
  [:x2
-  {:json-schema/original-name "x2", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
    [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     number?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:enum "width" "height"]]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:ref #:json-schema{:original-name "Type"} #'Type]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:bin {:json-schema/original-name "bin", :optional true} nil?]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+    {:optional true}
+    [:or number? [:ref #'ExprRef] [:enum "width" "height"]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:ref #'Type]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:bin {:optional true} nil?]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]]]
  [:latitude2
-  {:json-schema/original-name "latitude2", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
    [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     number?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:enum "width" "height"]]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:ref #:json-schema{:original-name "Type"} #'Type]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:bin {:json-schema/original-name "bin", :optional true} nil?]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+    {:optional true}
+    [:or number? [:ref #'ExprRef] [:enum "width" "height"]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:ref #'Type]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:bin {:optional true} nil?]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]]]
  [:href
-  {:json-schema/original-name "href", :optional true}
+  {:optional true}
   [:map
    {:closed true}
-   [:format
-    {:json-schema/original-name "format", :optional true}
-    [:ref #:json-schema{:original-name "Format"} #'Format]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     string?
-     nil?
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:formatType
-    {:json-schema/original-name "formatType", :optional true}
-    string?]
+   [:format {:optional true} [:ref #'Format]]
+   [:value {:optional true} [:or string? nil? [:ref #'ExprRef]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:ref #'StandardType]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:formatType {:optional true} string?]
    [:condition
-    {:json-schema/original-name "condition", :optional true}
+    {:optional true}
     [:or
      [:or
       [:ref
@@ -14061,10 +7465,7 @@
                       "ConditionalValueDef<(string|ExprRef)>"}
         #'ConditionalValueDef__string_ExprRef__]]]
      [:or
-      [:ref
-       #:json-schema{:original-name
-                     "ConditionalMarkPropFieldOrDatumDef"}
-       #'ConditionalMarkPropFieldOrDatumDef]
+      [:ref #'ConditionalMarkPropFieldOrDatumDef]
       [:ref
        #:json-schema{:original-name
                      "ConditionalValueDef<(string|null|ExprRef)>"}
@@ -14075,79 +7476,42 @@
                       "ConditionalValueDef<(string|null|ExprRef)>"}
         #'ConditionalValueDef__string_null_ExprRef__]]]]]
    [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-     [:enum "binned"]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+    {:optional true}
+    [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]]]
  [:tooltip
-  {:json-schema/original-name "tooltip", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "StringFieldDefWithCondition"}
-    #'StringFieldDefWithCondition]
-   [:ref
-    #:json-schema{:original-name "StringValueDefWithCondition"}
-    #'StringValueDefWithCondition]
-   [:vector
-    [:ref
-     #:json-schema{:original-name "StringFieldDef"}
-     #'StringFieldDef]]
+   [:ref #'StringFieldDefWithCondition]
+   [:ref #'StringValueDefWithCondition]
+   [:vector [:ref #'StringFieldDef]]
    nil?]]
  [:text
-  {:json-schema/original-name "text", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:format
-    {:json-schema/original-name "format", :optional true}
-    [:ref #:json-schema{:original-name "Format"} #'Format]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "Text"} #'Text]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StandardType"} #'StandardType]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:formatType
-    {:json-schema/original-name "formatType", :optional true}
-    string?]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:format {:optional true} [:ref #'Format]]
+   [:value {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'StandardType] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:formatType {:optional true} string?]
    [:condition
-    {:json-schema/original-name "condition", :optional true}
+    {:optional true}
     [:or
      [:or
       [:ref
@@ -14160,9 +7524,7 @@
                       "ConditionalValueDef<(Text|ExprRef)>"}
         #'ConditionalValueDef__Text_ExprRef__]]]
      [:or
-      [:ref
-       #:json-schema{:original-name "ConditionalStringFieldDef"}
-       #'ConditionalStringFieldDef]
+      [:ref #'ConditionalStringFieldDef]
       [:ref
        #:json-schema{:original-name
                      "ConditionalValueDef<(Text|ExprRef)>"}
@@ -14173,536 +7535,254 @@
                       "ConditionalValueDef<(Text|ExprRef)>"}
         #'ConditionalValueDef__Text_ExprRef__]]]]]
    [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]
-     [:enum "binned"]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+    {:optional true}
+    [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]]]
  [:xOffset
-  {:json-schema/original-name "xOffset", :optional true}
+  {:optional true}
   [:map
    {:closed true}
    [:datum
-    {:json-schema/original-name "datum", :optional true}
+    {:optional true}
     [:or
-     [:ref
-      #:json-schema{:original-name "PrimitiveValue"}
-      #'PrimitiveValue]
-     [:ref #:json-schema{:original-name "DateTime"} #'DateTime]
-     [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-     [:ref #:json-schema{:original-name "RepeatRef"} #'RepeatRef]]]
-   [:scale
-    {:json-schema/original-name "scale", :optional true}
-    [:or [:ref #:json-schema{:original-name "Scale"} #'Scale] nil?]]
-   [:value
-    {:json-schema/original-name "value", :optional true}
-    number?]
-   [:field
-    {:json-schema/original-name "field", :optional true}
-    [:ref #:json-schema{:original-name "Field"} #'Field]]
-   [:type
-    {:json-schema/original-name "type", :optional true}
-    [:or
-     [:ref #:json-schema{:original-name "StandardType"} #'StandardType]
-     [:ref #:json-schema{:original-name "Type"} #'Type]]]
-   [:title
-    {:json-schema/original-name "title", :optional true}
-    [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
-   [:bin
-    {:json-schema/original-name "bin", :optional true}
-    [:or
-     boolean?
-     nil?
-     [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
-   [:bandPosition
-    {:json-schema/original-name "bandPosition", :optional true}
-    number?]
+     [:ref #'PrimitiveValue]
+     [:ref #'DateTime]
+     [:ref #'ExprRef]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:value {:optional true} number?]
+   [:field {:optional true} [:ref #'Field]]
+   [:type {:optional true} [:or [:ref #'StandardType] [:ref #'Type]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+   [:bandPosition {:optional true} number?]
    [:timeUnit
-    {:json-schema/original-name "timeUnit", :optional true}
+    {:optional true}
     [:or
-     [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-     [:ref
-      #:json-schema{:original-name "BinnedTimeUnit"}
-      #'BinnedTimeUnit]
-     [:ref
-      #:json-schema{:original-name "TimeUnitParams"}
-      #'TimeUnitParams]]]
-   [:aggregate
-    {:json-schema/original-name "aggregate", :optional true}
-    [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
-   [:sort
-    {:json-schema/original-name "sort", :optional true}
-    [:ref #:json-schema{:original-name "Sort"} #'Sort]]]]
+     [:ref #'TimeUnit]
+     [:ref #'BinnedTimeUnit]
+     [:ref #'TimeUnitParams]]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:sort {:optional true} [:ref #'Sort]]]]
  [:detail
-  {:json-schema/original-name "detail", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "FieldDefWithoutScale"}
-    #'FieldDefWithoutScale]
-   [:vector
-    [:ref
-     #:json-schema{:original-name "FieldDefWithoutScale"}
-     #'FieldDefWithoutScale]]]]]
+   [:ref #'FieldDefWithoutScale]
+   [:vector [:ref #'FieldDefWithoutScale]]]]]
 )
 
 (def GenericUnitSpec_Encoding_AnyMark_
   [:map
  {:closed true,
   :json-schema/original-name "GenericUnitSpec<Encoding,AnyMark>"}
- [:description
-  {:json-schema/original-name "description", :optional true}
-  string?]
- [:encoding
-  {:json-schema/original-name "encoding", :optional true}
-  [:ref #:json-schema{:original-name "Encoding"} #'Encoding]]
- [:transform
-  {:json-schema/original-name "transform", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
- [:mark
-  #:json-schema{:original-name "mark"}
-  [:ref #:json-schema{:original-name "AnyMark"} #'AnyMark]]
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:params
-  {:json-schema/original-name "params", :optional true}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "SelectionParameter"}
-    #'SelectionParameter]]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
- [:projection
-  {:json-schema/original-name "projection", :optional true}
-  [:ref #:json-schema{:original-name "Projection"} #'Projection]]
- [:data
-  {:json-schema/original-name "data", :optional true}
-  [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]
+ [:description {:optional true} string?]
+ [:encoding {:optional true} [:ref #'Encoding]]
+ [:transform {:optional true} [:vector [:ref #'Transform]]]
+ [:mark [:ref #'AnyMark]]
+ [:name {:optional true} string?]
+ [:params {:optional true} [:vector [:ref #'SelectionParameter]]]
+ [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
+ [:projection {:optional true} [:ref #'Projection]]
+ [:data {:optional true} [:or [:ref #'Data] nil?]]]
 )
 
 (def UnitSpec
   [:ref
- #:json-schema{:original-name "UnitSpec"}
+ #:json-schema{:original-name "GenericUnitSpec<Encoding,AnyMark>"}
  #'GenericUnitSpec_Encoding_AnyMark_]
 )
 
 (def LayerSpec
   [:map
- {:closed true, :json-schema/original-name "LayerSpec"}
- [:description
-  {:json-schema/original-name "description", :optional true}
-  string?]
- [:encoding
-  {:json-schema/original-name "encoding", :optional true}
-  [:ref
-   #:json-schema{:original-name "SharedEncoding"}
-   #'SharedEncoding]]
- [:transform
-  {:json-schema/original-name "transform", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
- [:name {:json-schema/original-name "name", :optional true} string?]
+ {:closed true}
+ [:description {:optional true} string?]
+ [:encoding {:optional true} [:ref #'SharedEncoding]]
+ [:transform {:optional true} [:vector [:ref #'Transform]]]
+ [:name {:optional true} string?]
  [:width
-  {:json-schema/original-name "width", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "Step"} #'Step]
-   [:enum "container"]]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
- [:layer
-  #:json-schema{:original-name "layer"}
-  [:vector
-   [:or
-    [:ref #:json-schema{:original-name "LayerSpec"} #'LayerSpec]
-    [:ref #:json-schema{:original-name "UnitSpec"} #'UnitSpec]]]]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref #:json-schema{:original-name "Resolve"} #'Resolve]]
- [:projection
-  {:json-schema/original-name "projection", :optional true}
-  [:ref #:json-schema{:original-name "Projection"} #'Projection]]
- [:view
-  {:json-schema/original-name "view", :optional true}
-  [:ref
-   #:json-schema{:original-name "ViewBackground"}
-   #'ViewBackground]]
+  {:optional true}
+  [:or number? [:ref #'Step] [:enum "container"]]]
+ [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
+ [:layer [:vector [:or [:ref #'LayerSpec] [:ref #'UnitSpec]]]]
+ [:resolve {:optional true} [:ref #'Resolve]]
+ [:projection {:optional true} [:ref #'Projection]]
+ [:view {:optional true} [:ref #'ViewBackground]]
  [:height
-  {:json-schema/original-name "height", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "Step"} #'Step]
-   [:enum "container"]]]
- [:data
-  {:json-schema/original-name "data", :optional true}
-  [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]
+  {:optional true}
+  [:or number? [:ref #'Step] [:enum "container"]]]
+ [:data {:optional true} [:or [:ref #'Data] nil?]]]
 )
 
 (def LayerRepeatMapping
   [:map
- {:closed true, :json-schema/original-name "LayerRepeatMapping"}
- [:column
-  {:json-schema/original-name "column", :optional true}
-  [:vector string?]]
- [:layer #:json-schema{:original-name "layer"} [:vector string?]]
- [:row
-  {:json-schema/original-name "row", :optional true}
-  [:vector string?]]]
+ {:closed true}
+ [:column {:optional true} [:vector string?]]
+ [:layer [:vector string?]]
+ [:row {:optional true} [:vector string?]]]
 )
 
 (def LayerRepeatSpec
   [:map
- {:closed true, :json-schema/original-name "LayerRepeatSpec"}
- [:description
-  {:json-schema/original-name "description", :optional true}
-  string?]
+ {:closed true}
+ [:description {:optional true} string?]
  [:align
-  {:json-schema/original-name "align", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "LayoutAlign"} #'LayoutAlign]
+   [:ref #'LayoutAlign]
    [:ref
     #:json-schema{:original-name "RowCol<LayoutAlign>"}
     #'RowCol_LayoutAlign_]]]
- [:transform
-  {:json-schema/original-name "transform", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
- [:columns
-  {:json-schema/original-name "columns", :optional true}
-  number?]
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:bounds
-  {:json-schema/original-name "bounds", :optional true}
-  [:enum "full" "flush"]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
+ [:transform {:optional true} [:vector [:ref #'Transform]]]
+ [:columns {:optional true} number?]
+ [:name {:optional true} string?]
+ [:bounds {:optional true} [:enum "full" "flush"]]
+ [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
  [:center
-  {:json-schema/original-name "center", :optional true}
+  {:optional true}
   [:or
    boolean?
    [:ref
     #:json-schema{:original-name "RowCol<boolean>"}
     #'RowCol_boolean_]]]
- [:spec
-  #:json-schema{:original-name "spec"}
-  [:or
-   [:ref #:json-schema{:original-name "LayerSpec"} #'LayerSpec]
-   [:ref
-    #:json-schema{:original-name "UnitSpecWithFrame"}
-    #'UnitSpecWithFrame]]]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref #:json-schema{:original-name "Resolve"} #'Resolve]]
- [:repeat
-  #:json-schema{:original-name "repeat"}
-  [:ref
-   #:json-schema{:original-name "LayerRepeatMapping"}
-   #'LayerRepeatMapping]]
+ [:spec [:or [:ref #'LayerSpec] [:ref #'UnitSpecWithFrame]]]
+ [:resolve {:optional true} [:ref #'Resolve]]
+ [:repeat [:ref #'LayerRepeatMapping]]
  [:spacing
-  {:json-schema/original-name "spacing", :optional true}
+  {:optional true}
   [:or
    number?
    [:ref
     #:json-schema{:original-name "RowCol<number>"}
     #'RowCol_number_]]]
- [:data
-  {:json-schema/original-name "data", :optional true}
-  [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]
+ [:data {:optional true} [:or [:ref #'Data] nil?]]]
 )
 
 (def RepeatSpec
-  [:or
- #:json-schema{:original-name "RepeatSpec"}
- [:ref
-  #:json-schema{:original-name "NonLayerRepeatSpec"}
-  #'NonLayerRepeatSpec]
- [:ref
-  #:json-schema{:original-name "LayerRepeatSpec"}
-  #'LayerRepeatSpec]]
+  [:or [:ref #'NonLayerRepeatSpec] [:ref #'LayerRepeatSpec]]
 )
 
 (def Header
   [:map
- {:closed true, :json-schema/original-name "Header"}
- [:labelLimit
-  {:json-schema/original-name "labelLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labels
-  {:json-schema/original-name "labels", :optional true}
-  boolean?]
- [:titleFontSize
-  {:json-schema/original-name "titleFontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:format
-  {:json-schema/original-name "format", :optional true}
-  [:ref #:json-schema{:original-name "Format"} #'Format]]
+ {:closed true}
+ [:labelLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labels {:optional true} boolean?]
+ [:titleFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:format {:optional true} [:ref #'Format]]
  [:labelBaseline
-  {:json-schema/original-name "labelBaseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
  [:titleFontStyle
-  {:json-schema/original-name "titleFontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleLimit
-  {:json-schema/original-name "titleLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleAlign
-  {:json-schema/original-name "titleAlign", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelPadding
-  {:json-schema/original-name "labelPadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelLineHeight
-  {:json-schema/original-name "labelLineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
+ [:titleLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:titleAlign {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
+ [:labelPadding {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labelLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
  [:titleBaseline
-  {:json-schema/original-name "titleBaseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleAngle
-  {:json-schema/original-name "titleAngle", :optional true}
-  number?]
- [:titleLineHeight
-  {:json-schema/original-name "titleLineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:ref #:json-schema{:original-name "Orient"} #'Orient]]
- [:titleAnchor
-  {:json-schema/original-name "titleAnchor", :optional true}
-  [:ref #:json-schema{:original-name "TitleAnchor"} #'TitleAnchor]]
- [:labelColor
-  {:json-schema/original-name "labelColor", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:labelAngle
-  {:json-schema/original-name "labelAngle", :optional true}
-  number?]
- [:titleFont
-  {:json-schema/original-name "titleFont", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelExpr
-  {:json-schema/original-name "labelExpr", :optional true}
-  string?]
- [:titleOrient
-  {:json-schema/original-name "titleOrient", :optional true}
-  [:ref #:json-schema{:original-name "Orient"} #'Orient]]
- [:formatType
-  {:json-schema/original-name "formatType", :optional true}
-  string?]
- [:titleColor
-  {:json-schema/original-name "titleColor", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titlePadding
-  {:json-schema/original-name "titlePadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelAnchor
-  {:json-schema/original-name "labelAnchor", :optional true}
-  [:ref #:json-schema{:original-name "TitleAnchor"} #'TitleAnchor]]
- [:labelFont
-  {:json-schema/original-name "labelFont", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelOrient
-  {:json-schema/original-name "labelOrient", :optional true}
-  [:ref #:json-schema{:original-name "Orient"} #'Orient]]
- [:labelAlign
-  {:json-schema/original-name "labelAlign", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
+ [:titleAngle {:optional true} number?]
+ [:titleLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:orient {:optional true} [:ref #'Orient]]
+ [:titleAnchor {:optional true} [:ref #'TitleAnchor]]
+ [:labelColor {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:labelAngle {:optional true} number?]
+ [:titleFont {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:labelExpr {:optional true} string?]
+ [:titleOrient {:optional true} [:ref #'Orient]]
+ [:formatType {:optional true} string?]
+ [:titleColor {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
+ [:titlePadding {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labelAnchor {:optional true} [:ref #'TitleAnchor]]
+ [:labelFont {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:labelOrient {:optional true} [:ref #'Orient]]
+ [:labelAlign {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
  [:labelFontWeight
-  {:json-schema/original-name "labelFontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
  [:labelFontStyle
-  {:json-schema/original-name "labelFontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelFontSize
-  {:json-schema/original-name "labelFontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
+ [:labelFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
  [:titleFontWeight
-  {:json-schema/original-name "titleFontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]]
 )
 
 (def FacetFieldDef
   [:map
- {:closed true, :json-schema/original-name "FacetFieldDef"}
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
- [:header
-  {:json-schema/original-name "header", :optional true}
-  [:or [:ref #:json-schema{:original-name "Header"} #'Header] nil?]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ {:closed true}
+ [:field {:optional true} [:ref #'Field]]
+ [:type {:optional true} [:ref #'StandardType]]
+ [:header {:optional true} [:or [:ref #'Header] nil?]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+ [:bandPosition {:optional true} number?]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:aggregate {:optional true} [:ref #'Aggregate]]
  [:sort
-  {:json-schema/original-name "sort", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "SortArray"} #'SortArray]
-   [:ref #:json-schema{:original-name "SortOrder"} #'SortOrder]
-   [:ref
-    #:json-schema{:original-name "EncodingSortField"}
-    #'EncodingSortField]
+   [:ref #'SortArray]
+   [:ref #'SortOrder]
+   [:ref #'EncodingSortField]
    nil?]]]
 )
 
 (def FacetEncodingFieldDef
   [:map
- {:closed true, :json-schema/original-name "FacetEncodingFieldDef"}
+ {:closed true}
  [:align
-  {:json-schema/original-name "align", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "LayoutAlign"} #'LayoutAlign]
+   [:ref #'LayoutAlign]
    [:ref
     #:json-schema{:original-name "RowCol<LayoutAlign>"}
     #'RowCol_LayoutAlign_]]]
- [:columns
-  {:json-schema/original-name "columns", :optional true}
-  number?]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
- [:header
-  {:json-schema/original-name "header", :optional true}
-  [:or [:ref #:json-schema{:original-name "Header"} #'Header] nil?]]
- [:bounds
-  {:json-schema/original-name "bounds", :optional true}
-  [:enum "full" "flush"]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
+ [:columns {:optional true} number?]
+ [:field {:optional true} [:ref #'Field]]
+ [:type {:optional true} [:ref #'StandardType]]
+ [:header {:optional true} [:or [:ref #'Header] nil?]]
+ [:bounds {:optional true} [:enum "full" "flush"]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
  [:center
-  {:json-schema/original-name "center", :optional true}
+  {:optional true}
   [:or
    boolean?
    [:ref
     #:json-schema{:original-name "RowCol<boolean>"}
     #'RowCol_boolean_]]]
- [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+ [:bandPosition {:optional true} number?]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:aggregate {:optional true} [:ref #'Aggregate]]
  [:sort
-  {:json-schema/original-name "sort", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "SortArray"} #'SortArray]
-   [:ref #:json-schema{:original-name "SortOrder"} #'SortOrder]
-   [:ref
-    #:json-schema{:original-name "EncodingSortField"}
-    #'EncodingSortField]
+   [:ref #'SortArray]
+   [:ref #'SortOrder]
+   [:ref #'EncodingSortField]
    nil?]]
  [:spacing
-  {:json-schema/original-name "spacing", :optional true}
+  {:optional true}
   [:or
    number?
    [:ref
@@ -14712,479 +7792,238 @@
 
 (def RowColumnEncodingFieldDef
   [:map
- {:closed true, :json-schema/original-name "RowColumnEncodingFieldDef"}
- [:align
-  {:json-schema/original-name "align", :optional true}
-  [:ref #:json-schema{:original-name "LayoutAlign"} #'LayoutAlign]]
- [:field
-  {:json-schema/original-name "field", :optional true}
-  [:ref #:json-schema{:original-name "Field"} #'Field]]
- [:type
-  {:json-schema/original-name "type", :optional true}
-  [:ref #:json-schema{:original-name "StandardType"} #'StandardType]]
- [:header
-  {:json-schema/original-name "header", :optional true}
-  [:or [:ref #:json-schema{:original-name "Header"} #'Header] nil?]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or [:ref #:json-schema{:original-name "Text"} #'Text] nil?]]
- [:center
-  {:json-schema/original-name "center", :optional true}
-  boolean?]
- [:bin
-  {:json-schema/original-name "bin", :optional true}
-  [:or
-   boolean?
-   nil?
-   [:ref #:json-schema{:original-name "BinParams"} #'BinParams]]]
- [:bandPosition
-  {:json-schema/original-name "bandPosition", :optional true}
-  number?]
+ {:closed true}
+ [:align {:optional true} [:ref #'LayoutAlign]]
+ [:field {:optional true} [:ref #'Field]]
+ [:type {:optional true} [:ref #'StandardType]]
+ [:header {:optional true} [:or [:ref #'Header] nil?]]
+ [:title {:optional true} [:or [:ref #'Text] nil?]]
+ [:center {:optional true} boolean?]
+ [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+ [:bandPosition {:optional true} number?]
  [:timeUnit
-  {:json-schema/original-name "timeUnit", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "TimeUnit"} #'TimeUnit]
-   [:ref
-    #:json-schema{:original-name "BinnedTimeUnit"}
-    #'BinnedTimeUnit]
-   [:ref
-    #:json-schema{:original-name "TimeUnitParams"}
-    #'TimeUnitParams]]]
- [:aggregate
-  {:json-schema/original-name "aggregate", :optional true}
-  [:ref #:json-schema{:original-name "Aggregate"} #'Aggregate]]
+   [:ref #'TimeUnit]
+   [:ref #'BinnedTimeUnit]
+   [:ref #'TimeUnitParams]]]
+ [:aggregate {:optional true} [:ref #'Aggregate]]
  [:sort
-  {:json-schema/original-name "sort", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "SortArray"} #'SortArray]
-   [:ref #:json-schema{:original-name "SortOrder"} #'SortOrder]
-   [:ref
-    #:json-schema{:original-name "EncodingSortField"}
-    #'EncodingSortField]
+   [:ref #'SortArray]
+   [:ref #'SortOrder]
+   [:ref #'EncodingSortField]
    nil?]]
- [:spacing
-  {:json-schema/original-name "spacing", :optional true}
-  number?]]
+ [:spacing {:optional true} number?]]
 )
 
 (def FacetedEncoding
   [:map
- {:closed true, :json-schema/original-name "FacetedEncoding"}
- [:y
-  {:json-schema/original-name "y", :optional true}
-  [:ref #:json-schema{:original-name "PositionDef"} #'PositionDef]]
+ {:closed true}
+ [:y {:optional true} [:ref #'PositionDef]]
  [:description
-  {:json-schema/original-name "description", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "StringFieldDefWithCondition"}
-    #'StringFieldDefWithCondition]
-   [:ref
-    #:json-schema{:original-name "StringValueDefWithCondition"}
-    #'StringValueDefWithCondition]]]
- [:strokeOpacity
-  {:json-schema/original-name "strokeOpacity", :optional true}
-  [:ref
-   #:json-schema{:original-name "NumericMarkPropDef"}
-   #'NumericMarkPropDef]]
+   [:ref #'StringFieldDefWithCondition]
+   [:ref #'StringValueDefWithCondition]]]
+ [:strokeOpacity {:optional true} [:ref #'NumericMarkPropDef]]
  [:xError2
-  {:json-schema/original-name "xError2", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "SecondaryFieldDef"}
-    #'SecondaryFieldDef]
+   [:ref #'SecondaryFieldDef]
    [:ref
     #:json-schema{:original-name "ValueDef<number>"}
     #'ValueDef_number_]]]
- [:stroke
-  {:json-schema/original-name "stroke", :optional true}
-  [:ref #:json-schema{:original-name "ColorDef"} #'ColorDef]]
- [:color
-  {:json-schema/original-name "color", :optional true}
-  [:ref #:json-schema{:original-name "ColorDef"} #'ColorDef]]
- [:key
-  {:json-schema/original-name "key", :optional true}
-  [:ref
-   #:json-schema{:original-name "FieldDefWithoutScale"}
-   #'FieldDefWithoutScale]]
- [:longitude2
-  {:json-schema/original-name "longitude2", :optional true}
-  [:ref #:json-schema{:original-name "Position2Def"} #'Position2Def]]
- [:fill
-  {:json-schema/original-name "fill", :optional true}
-  [:ref #:json-schema{:original-name "ColorDef"} #'ColorDef]]
- [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
-  [:ref
-   #:json-schema{:original-name "NumericArrayMarkPropDef"}
-   #'NumericArrayMarkPropDef]]
- [:time
-  {:json-schema/original-name "time", :optional true}
-  [:ref #:json-schema{:original-name "TimeDef"} #'TimeDef]]
- [:facet
-  {:json-schema/original-name "facet", :optional true}
-  [:ref
-   #:json-schema{:original-name "FacetEncodingFieldDef"}
-   #'FacetEncodingFieldDef]]
- [:longitude
-  {:json-schema/original-name "longitude", :optional true}
-  [:ref #:json-schema{:original-name "LatLongDef"} #'LatLongDef]]
- [:fillOpacity
-  {:json-schema/original-name "fillOpacity", :optional true}
-  [:ref
-   #:json-schema{:original-name "NumericMarkPropDef"}
-   #'NumericMarkPropDef]]
- [:angle
-  {:json-schema/original-name "angle", :optional true}
-  [:ref
-   #:json-schema{:original-name "NumericMarkPropDef"}
-   #'NumericMarkPropDef]]
- [:theta
-  {:json-schema/original-name "theta", :optional true}
-  [:ref #:json-schema{:original-name "PolarDef"} #'PolarDef]]
- [:radius
-  {:json-schema/original-name "radius", :optional true}
-  [:ref #:json-schema{:original-name "PolarDef"} #'PolarDef]]
- [:theta2
-  {:json-schema/original-name "theta2", :optional true}
-  [:ref #:json-schema{:original-name "Position2Def"} #'Position2Def]]
- [:size
-  {:json-schema/original-name "size", :optional true}
-  [:ref
-   #:json-schema{:original-name "NumericMarkPropDef"}
-   #'NumericMarkPropDef]]
- [:column
-  {:json-schema/original-name "column", :optional true}
-  [:ref
-   #:json-schema{:original-name "RowColumnEncodingFieldDef"}
-   #'RowColumnEncodingFieldDef]]
+ [:stroke {:optional true} [:ref #'ColorDef]]
+ [:color {:optional true} [:ref #'ColorDef]]
+ [:key {:optional true} [:ref #'FieldDefWithoutScale]]
+ [:longitude2 {:optional true} [:ref #'Position2Def]]
+ [:fill {:optional true} [:ref #'ColorDef]]
+ [:strokeDash {:optional true} [:ref #'NumericArrayMarkPropDef]]
+ [:time {:optional true} [:ref #'TimeDef]]
+ [:facet {:optional true} [:ref #'FacetEncodingFieldDef]]
+ [:longitude {:optional true} [:ref #'LatLongDef]]
+ [:fillOpacity {:optional true} [:ref #'NumericMarkPropDef]]
+ [:angle {:optional true} [:ref #'NumericMarkPropDef]]
+ [:theta {:optional true} [:ref #'PolarDef]]
+ [:radius {:optional true} [:ref #'PolarDef]]
+ [:theta2 {:optional true} [:ref #'Position2Def]]
+ [:size {:optional true} [:ref #'NumericMarkPropDef]]
+ [:column {:optional true} [:ref #'RowColumnEncodingFieldDef]]
  [:yError
-  {:json-schema/original-name "yError", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "SecondaryFieldDef"}
-    #'SecondaryFieldDef]
+   [:ref #'SecondaryFieldDef]
    [:ref
     #:json-schema{:original-name "ValueDef<number>"}
     #'ValueDef_number_]]]
- [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
-  [:ref
-   #:json-schema{:original-name "NumericMarkPropDef"}
-   #'NumericMarkPropDef]]
- [:opacity
-  {:json-schema/original-name "opacity", :optional true}
-  [:ref
-   #:json-schema{:original-name "NumericMarkPropDef"}
-   #'NumericMarkPropDef]]
- [:shape
-  {:json-schema/original-name "shape", :optional true}
-  [:ref #:json-schema{:original-name "ShapeDef"} #'ShapeDef]]
+ [:strokeWidth {:optional true} [:ref #'NumericMarkPropDef]]
+ [:opacity {:optional true} [:ref #'NumericMarkPropDef]]
+ [:shape {:optional true} [:ref #'ShapeDef]]
  [:url
-  {:json-schema/original-name "url", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "StringFieldDefWithCondition"}
-    #'StringFieldDefWithCondition]
-   [:ref
-    #:json-schema{:original-name "StringValueDefWithCondition"}
-    #'StringValueDefWithCondition]]]
- [:latitude
-  {:json-schema/original-name "latitude", :optional true}
-  [:ref #:json-schema{:original-name "LatLongDef"} #'LatLongDef]]
+   [:ref #'StringFieldDefWithCondition]
+   [:ref #'StringValueDefWithCondition]]]
+ [:latitude {:optional true} [:ref #'LatLongDef]]
  [:order
-  {:json-schema/original-name "order", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "OrderFieldDef"} #'OrderFieldDef]
-   [:ref #:json-schema{:original-name "OrderValueDef"} #'OrderValueDef]
-   [:ref #:json-schema{:original-name "OrderOnlyDef"} #'OrderOnlyDef]
-   [:vector
-    [:ref
-     #:json-schema{:original-name "OrderFieldDef"}
-     #'OrderFieldDef]]]]
+   [:ref #'OrderFieldDef]
+   [:ref #'OrderValueDef]
+   [:ref #'OrderOnlyDef]
+   [:vector [:ref #'OrderFieldDef]]]]
  [:xError
-  {:json-schema/original-name "xError", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "SecondaryFieldDef"}
-    #'SecondaryFieldDef]
+   [:ref #'SecondaryFieldDef]
    [:ref
     #:json-schema{:original-name "ValueDef<number>"}
     #'ValueDef_number_]]]
  [:yError2
-  {:json-schema/original-name "yError2", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "SecondaryFieldDef"}
-    #'SecondaryFieldDef]
+   [:ref #'SecondaryFieldDef]
    [:ref
     #:json-schema{:original-name "ValueDef<number>"}
     #'ValueDef_number_]]]
- [:yOffset
-  {:json-schema/original-name "yOffset", :optional true}
-  [:ref #:json-schema{:original-name "OffsetDef"} #'OffsetDef]]
- [:x
-  {:json-schema/original-name "x", :optional true}
-  [:ref #:json-schema{:original-name "PositionDef"} #'PositionDef]]
- [:y2
-  {:json-schema/original-name "y2", :optional true}
-  [:ref #:json-schema{:original-name "Position2Def"} #'Position2Def]]
- [:radius2
-  {:json-schema/original-name "radius2", :optional true}
-  [:ref #:json-schema{:original-name "Position2Def"} #'Position2Def]]
- [:x2
-  {:json-schema/original-name "x2", :optional true}
-  [:ref #:json-schema{:original-name "Position2Def"} #'Position2Def]]
- [:latitude2
-  {:json-schema/original-name "latitude2", :optional true}
-  [:ref #:json-schema{:original-name "Position2Def"} #'Position2Def]]
+ [:yOffset {:optional true} [:ref #'OffsetDef]]
+ [:x {:optional true} [:ref #'PositionDef]]
+ [:y2 {:optional true} [:ref #'Position2Def]]
+ [:radius2 {:optional true} [:ref #'Position2Def]]
+ [:x2 {:optional true} [:ref #'Position2Def]]
+ [:latitude2 {:optional true} [:ref #'Position2Def]]
  [:href
-  {:json-schema/original-name "href", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "StringFieldDefWithCondition"}
-    #'StringFieldDefWithCondition]
-   [:ref
-    #:json-schema{:original-name "StringValueDefWithCondition"}
-    #'StringValueDefWithCondition]]]
+   [:ref #'StringFieldDefWithCondition]
+   [:ref #'StringValueDefWithCondition]]]
  [:tooltip
-  {:json-schema/original-name "tooltip", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "StringFieldDefWithCondition"}
-    #'StringFieldDefWithCondition]
-   [:ref
-    #:json-schema{:original-name "StringValueDefWithCondition"}
-    #'StringValueDefWithCondition]
-   [:vector
-    [:ref
-     #:json-schema{:original-name "StringFieldDef"}
-     #'StringFieldDef]]
+   [:ref #'StringFieldDefWithCondition]
+   [:ref #'StringValueDefWithCondition]
+   [:vector [:ref #'StringFieldDef]]
    nil?]]
- [:row
-  {:json-schema/original-name "row", :optional true}
-  [:ref
-   #:json-schema{:original-name "RowColumnEncodingFieldDef"}
-   #'RowColumnEncodingFieldDef]]
- [:text
-  {:json-schema/original-name "text", :optional true}
-  [:ref #:json-schema{:original-name "TextDef"} #'TextDef]]
- [:xOffset
-  {:json-schema/original-name "xOffset", :optional true}
-  [:ref #:json-schema{:original-name "OffsetDef"} #'OffsetDef]]
+ [:row {:optional true} [:ref #'RowColumnEncodingFieldDef]]
+ [:text {:optional true} [:ref #'TextDef]]
+ [:xOffset {:optional true} [:ref #'OffsetDef]]
  [:detail
-  {:json-schema/original-name "detail", :optional true}
+  {:optional true}
   [:or
-   [:ref
-    #:json-schema{:original-name "FieldDefWithoutScale"}
-    #'FieldDefWithoutScale]
-   [:vector
-    [:ref
-     #:json-schema{:original-name "FieldDefWithoutScale"}
-     #'FieldDefWithoutScale]]]]]
+   [:ref #'FieldDefWithoutScale]
+   [:vector [:ref #'FieldDefWithoutScale]]]]]
 )
 
 (def FacetedUnitSpec
   [:map
- {:closed true, :json-schema/original-name "FacetedUnitSpec"}
- [:description
-  {:json-schema/original-name "description", :optional true}
-  string?]
- [:encoding
-  {:json-schema/original-name "encoding", :optional true}
-  [:ref
-   #:json-schema{:original-name "FacetedEncoding"}
-   #'FacetedEncoding]]
+ {:closed true}
+ [:description {:optional true} string?]
+ [:encoding {:optional true} [:ref #'FacetedEncoding]]
  [:align
-  {:json-schema/original-name "align", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "LayoutAlign"} #'LayoutAlign]
+   [:ref #'LayoutAlign]
    [:ref
     #:json-schema{:original-name "RowCol<LayoutAlign>"}
     #'RowCol_LayoutAlign_]]]
- [:transform
-  {:json-schema/original-name "transform", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
- [:mark
-  #:json-schema{:original-name "mark"}
-  [:ref #:json-schema{:original-name "AnyMark"} #'AnyMark]]
- [:name {:json-schema/original-name "name", :optional true} string?]
+ [:transform {:optional true} [:vector [:ref #'Transform]]]
+ [:mark [:ref #'AnyMark]]
+ [:name {:optional true} string?]
  [:width
-  {:json-schema/original-name "width", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "Step"} #'Step]
-   [:enum "container"]]]
- [:params
-  {:json-schema/original-name "params", :optional true}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "SelectionParameter"}
-    #'SelectionParameter]]]
- [:bounds
-  {:json-schema/original-name "bounds", :optional true}
-  [:enum "full" "flush"]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
+  {:optional true}
+  [:or number? [:ref #'Step] [:enum "container"]]]
+ [:params {:optional true} [:vector [:ref #'SelectionParameter]]]
+ [:bounds {:optional true} [:enum "full" "flush"]]
+ [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
  [:center
-  {:json-schema/original-name "center", :optional true}
+  {:optional true}
   [:or
    boolean?
    [:ref
     #:json-schema{:original-name "RowCol<boolean>"}
     #'RowCol_boolean_]]]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref #:json-schema{:original-name "Resolve"} #'Resolve]]
- [:projection
-  {:json-schema/original-name "projection", :optional true}
-  [:ref #:json-schema{:original-name "Projection"} #'Projection]]
- [:view
-  {:json-schema/original-name "view", :optional true}
-  [:ref
-   #:json-schema{:original-name "ViewBackground"}
-   #'ViewBackground]]
+ [:resolve {:optional true} [:ref #'Resolve]]
+ [:projection {:optional true} [:ref #'Projection]]
+ [:view {:optional true} [:ref #'ViewBackground]]
  [:height
-  {:json-schema/original-name "height", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "Step"} #'Step]
-   [:enum "container"]]]
+  {:optional true}
+  [:or number? [:ref #'Step] [:enum "container"]]]
  [:spacing
-  {:json-schema/original-name "spacing", :optional true}
+  {:optional true}
   [:or
    number?
    [:ref
     #:json-schema{:original-name "RowCol<number>"}
     #'RowCol_number_]]]
- [:data
-  {:json-schema/original-name "data", :optional true}
-  [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]
+ [:data {:optional true} [:or [:ref #'Data] nil?]]]
 )
 
 (def FacetMapping
   [:map
- {:closed true, :json-schema/original-name "FacetMapping"}
- [:column
-  {:json-schema/original-name "column", :optional true}
-  [:ref #:json-schema{:original-name "FacetFieldDef"} #'FacetFieldDef]]
- [:row
-  {:json-schema/original-name "row", :optional true}
-  [:ref #:json-schema{:original-name "FacetFieldDef"} #'FacetFieldDef]]]
+ {:closed true}
+ [:column {:optional true} [:ref #'FacetFieldDef]]
+ [:row {:optional true} [:ref #'FacetFieldDef]]]
 )
 
 (def FacetSpec
   [:map
- {:closed true, :json-schema/original-name "FacetSpec"}
- [:description
-  {:json-schema/original-name "description", :optional true}
-  string?]
+ {:closed true}
+ [:description {:optional true} string?]
  [:align
-  {:json-schema/original-name "align", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "LayoutAlign"} #'LayoutAlign]
+   [:ref #'LayoutAlign]
    [:ref
     #:json-schema{:original-name "RowCol<LayoutAlign>"}
     #'RowCol_LayoutAlign_]]]
- [:transform
-  {:json-schema/original-name "transform", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
- [:columns
-  {:json-schema/original-name "columns", :optional true}
-  number?]
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:facet
-  #:json-schema{:original-name "facet"}
-  [:or
-   [:ref #:json-schema{:original-name "FacetFieldDef"} #'FacetFieldDef]
-   [:ref #:json-schema{:original-name "FacetMapping"} #'FacetMapping]]]
- [:bounds
-  {:json-schema/original-name "bounds", :optional true}
-  [:enum "full" "flush"]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
+ [:transform {:optional true} [:vector [:ref #'Transform]]]
+ [:columns {:optional true} number?]
+ [:name {:optional true} string?]
+ [:facet [:or [:ref #'FacetFieldDef] [:ref #'FacetMapping]]]
+ [:bounds {:optional true} [:enum "full" "flush"]]
+ [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
  [:center
-  {:json-schema/original-name "center", :optional true}
+  {:optional true}
   [:or
    boolean?
    [:ref
     #:json-schema{:original-name "RowCol<boolean>"}
     #'RowCol_boolean_]]]
- [:spec
-  #:json-schema{:original-name "spec"}
-  [:or
-   [:ref #:json-schema{:original-name "LayerSpec"} #'LayerSpec]
-   [:ref
-    #:json-schema{:original-name "FacetedUnitSpec"}
-    #'FacetedUnitSpec]]]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref #:json-schema{:original-name "Resolve"} #'Resolve]]
+ [:spec [:or [:ref #'LayerSpec] [:ref #'FacetedUnitSpec]]]
+ [:resolve {:optional true} [:ref #'Resolve]]
  [:spacing
-  {:json-schema/original-name "spacing", :optional true}
+  {:optional true}
   [:or
    number?
    [:ref
     #:json-schema{:original-name "RowCol<number>"}
     #'RowCol_number_]]]
- [:data
-  {:json-schema/original-name "data", :optional true}
-  [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]
+ [:data {:optional true} [:or [:ref #'Data] nil?]]]
 )
 
 (def VConcatSpec_GenericSpec_
   [:map
  {:closed true, :json-schema/original-name "VConcatSpec<GenericSpec>"}
- [:description
-  {:json-schema/original-name "description", :optional true}
-  string?]
- [:transform
-  {:json-schema/original-name "transform", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:bounds
-  {:json-schema/original-name "bounds", :optional true}
-  [:enum "full" "flush"]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
- [:center
-  {:json-schema/original-name "center", :optional true}
-  boolean?]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref #:json-schema{:original-name "Resolve"} #'Resolve]]
- [:vconcat
-  #:json-schema{:original-name "vconcat"}
-  [:vector [:ref #:json-schema{:original-name "Spec"} #'Spec]]]
- [:spacing
-  {:json-schema/original-name "spacing", :optional true}
-  number?]
- [:data
-  {:json-schema/original-name "data", :optional true}
-  [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]
+ [:description {:optional true} string?]
+ [:transform {:optional true} [:vector [:ref #'Transform]]]
+ [:name {:optional true} string?]
+ [:bounds {:optional true} [:enum "full" "flush"]]
+ [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
+ [:center {:optional true} boolean?]
+ [:resolve {:optional true} [:ref #'Resolve]]
+ [:vconcat [:vector [:ref #'Spec]]]
+ [:spacing {:optional true} number?]
+ [:data {:optional true} [:or [:ref #'Data] nil?]]]
 )
 
 (def Spec
   [:or
- #:json-schema{:original-name "Spec"}
- [:ref
-  #:json-schema{:original-name "FacetedUnitSpec"}
-  #'FacetedUnitSpec]
- [:ref #:json-schema{:original-name "LayerSpec"} #'LayerSpec]
- [:ref #:json-schema{:original-name "RepeatSpec"} #'RepeatSpec]
- [:ref #:json-schema{:original-name "FacetSpec"} #'FacetSpec]
+ [:ref #'FacetedUnitSpec]
+ [:ref #'LayerSpec]
+ [:ref #'RepeatSpec]
+ [:ref #'FacetSpec]
  [:ref
   #:json-schema{:original-name "ConcatSpec<GenericSpec>"}
   #'ConcatSpec_GenericSpec_]
@@ -15199,881 +8038,372 @@
 (def ConcatSpec_GenericSpec_
   [:map
  {:closed true, :json-schema/original-name "ConcatSpec<GenericSpec>"}
- [:description
-  {:json-schema/original-name "description", :optional true}
-  string?]
+ [:description {:optional true} string?]
  [:align
-  {:json-schema/original-name "align", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "LayoutAlign"} #'LayoutAlign]
+   [:ref #'LayoutAlign]
    [:ref
     #:json-schema{:original-name "RowCol<LayoutAlign>"}
     #'RowCol_LayoutAlign_]]]
- [:transform
-  {:json-schema/original-name "transform", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
- [:concat
-  #:json-schema{:original-name "concat"}
-  [:vector [:ref #:json-schema{:original-name "Spec"} #'Spec]]]
- [:columns
-  {:json-schema/original-name "columns", :optional true}
-  number?]
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:bounds
-  {:json-schema/original-name "bounds", :optional true}
-  [:enum "full" "flush"]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
+ [:transform {:optional true} [:vector [:ref #'Transform]]]
+ [:concat [:vector [:ref #'Spec]]]
+ [:columns {:optional true} number?]
+ [:name {:optional true} string?]
+ [:bounds {:optional true} [:enum "full" "flush"]]
+ [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
  [:center
-  {:json-schema/original-name "center", :optional true}
+  {:optional true}
   [:or
    boolean?
    [:ref
     #:json-schema{:original-name "RowCol<boolean>"}
     #'RowCol_boolean_]]]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref #:json-schema{:original-name "Resolve"} #'Resolve]]
+ [:resolve {:optional true} [:ref #'Resolve]]
  [:spacing
-  {:json-schema/original-name "spacing", :optional true}
+  {:optional true}
   [:or
    number?
    [:ref
     #:json-schema{:original-name "RowCol<number>"}
     #'RowCol_number_]]]
- [:data
-  {:json-schema/original-name "data", :optional true}
-  [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]
+ [:data {:optional true} [:or [:ref #'Data] nil?]]]
 )
 
 (def RangeRawArray
-  [:vector #:json-schema{:original-name "RangeRawArray"} number?]
+  [:vector number?]
 )
 
 (def RangeRaw
-  [:vector
- #:json-schema{:original-name "RangeRaw"}
- [:or
-  nil?
-  boolean?
-  string?
-  number?
-  [:ref #:json-schema{:original-name "RangeRawArray"} #'RangeRawArray]]]
+  [:vector [:or nil? boolean? string? number? [:ref #'RangeRawArray]]]
 )
 
 (def RangeScheme
   [:or
- #:json-schema{:original-name "RangeScheme"}
- [:ref #:json-schema{:original-name "RangeEnum"} #'RangeEnum]
- [:ref #:json-schema{:original-name "RangeRaw"} #'RangeRaw]
+ [:ref #'RangeEnum]
+ [:ref #'RangeRaw]
  [:map
   {:closed true}
-  [:count {:json-schema/original-name "count", :optional true} number?]
-  [:extent
-   {:json-schema/original-name "extent", :optional true}
-   [:vector number?]]
-  [:scheme
-   #:json-schema{:original-name "scheme"}
-   [:or
-    string?
-    [:vector string?]
-    [:ref #:json-schema{:original-name "ColorScheme"} #'ColorScheme]]]]]
+  [:count {:optional true} number?]
+  [:extent {:optional true} [:vector number?]]
+  [:scheme [:or string? [:vector string?] [:ref #'ColorScheme]]]]]
 )
 
 (def RangeConfig
   [:map
- {:closed false, :json-schema/original-name "RangeConfig"}
+ {:closed false}
  [:category
-  {:json-schema/original-name "category", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "RangeScheme"} #'RangeScheme]
-   [:vector [:ref #:json-schema{:original-name "Color"} #'Color]]]]
+  {:optional true}
+  [:or [:ref #'RangeScheme] [:vector [:ref #'Color]]]]
  [:diverging
-  {:json-schema/original-name "diverging", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "RangeScheme"} #'RangeScheme]
-   [:vector [:ref #:json-schema{:original-name "Color"} #'Color]]]]
+  {:optional true}
+  [:or [:ref #'RangeScheme] [:vector [:ref #'Color]]]]
  [:heatmap
-  {:json-schema/original-name "heatmap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "RangeScheme"} #'RangeScheme]
-   [:vector [:ref #:json-schema{:original-name "Color"} #'Color]]]]
+  {:optional true}
+  [:or [:ref #'RangeScheme] [:vector [:ref #'Color]]]]
  [:ordinal
-  {:json-schema/original-name "ordinal", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "RangeScheme"} #'RangeScheme]
-   [:vector [:ref #:json-schema{:original-name "Color"} #'Color]]]]
+  {:optional true}
+  [:or [:ref #'RangeScheme] [:vector [:ref #'Color]]]]
  [:ramp
-  {:json-schema/original-name "ramp", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "RangeScheme"} #'RangeScheme]
-   [:vector [:ref #:json-schema{:original-name "Color"} #'Color]]]]
- [:symbol
-  {:json-schema/original-name "symbol", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "SymbolShape"} #'SymbolShape]]]]
+  {:optional true}
+  [:or [:ref #'RangeScheme] [:vector [:ref #'Color]]]]
+ [:symbol {:optional true} [:vector [:ref #'SymbolShape]]]]
 )
 
 (def LegendConfig
   [:map
- {:closed true, :json-schema/original-name "LegendConfig"}
- [:titleOpacity
-  {:json-schema/original-name "titleOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:description
-  {:json-schema/original-name "description", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:disable
-  {:json-schema/original-name "disable", :optional true}
-  boolean?]
- [:labelLimit
-  {:json-schema/original-name "labelLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+ {:closed true}
+ [:titleOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:description {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:disable {:optional true} boolean?]
+ [:labelLimit {:optional true} [:or number? [:ref #'ExprRef]]]
  [:symbolDash
-  {:json-schema/original-name "symbolDash", :optional true}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:vector number?] [:ref #'ExprRef]]]
  [:gridAlign
-  {:json-schema/original-name "gridAlign", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "LayoutAlign"} #'LayoutAlign]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:symbolSize
-  {:json-schema/original-name "symbolSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'LayoutAlign] [:ref #'ExprRef]]]
+ [:symbolSize {:optional true} [:or number? [:ref #'ExprRef]]]
  [:gradientDirection
-  {:json-schema/original-name "gradientDirection", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Orientation"} #'Orientation]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleFontSize
-  {:json-schema/original-name "titleFontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:gradientOpacity
-  {:json-schema/original-name "gradientOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelSeparation
-  {:json-schema/original-name "labelSeparation", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Orientation] [:ref #'ExprRef]]]
+ [:titleFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:gradientOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labelSeparation {:optional true} [:or number? [:ref #'ExprRef]]]
  [:labelBaseline
-  {:json-schema/original-name "labelBaseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
  [:titleFontStyle
-  {:json-schema/original-name "titleFontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleLimit
-  {:json-schema/original-name "titleLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleAlign
-  {:json-schema/original-name "titleAlign", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
+ [:titleLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:titleAlign {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
  [:labelOverlap
-  {:json-schema/original-name "labelOverlap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "LabelOverlap"} #'LabelOverlap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:gradientStrokeWidth
-  {:json-schema/original-name "gradientStrokeWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:gradientThickness
-  {:json-schema/original-name "gradientThickness", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:offset
-  {:json-schema/original-name "offset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:layout
-  {:json-schema/original-name "layout", :optional true}
-  [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]
- [:labelOpacity
-  {:json-schema/original-name "labelOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:columns
-  {:json-schema/original-name "columns", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelPadding
-  {:json-schema/original-name "labelPadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:columnPadding
-  {:json-schema/original-name "columnPadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:clipHeight
-  {:json-schema/original-name "clipHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'LabelOverlap] [:ref #'ExprRef]]]
+ [:gradientStrokeWidth {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:gradientThickness {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:offset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:layout {:optional true} [:ref #'ExprRef]]
+ [:labelOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:columns {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labelPadding {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:columnPadding {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:clipHeight {:optional true} [:or number? [:ref #'ExprRef]]]
  [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:gradientVerticalMaxLength
-  {:json-schema/original-name "gradientVerticalMaxLength",
-   :optional true}
-  number?]
+  {:optional true}
+  [:or [:vector number?] [:ref #'ExprRef]]]
+ [:gradientVerticalMaxLength {:optional true} number?]
  [:titleBaseline
-  {:json-schema/original-name "titleBaseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:symbolDashOffset
-  {:json-schema/original-name "symbolDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:unselectedOpacity
-  {:json-schema/original-name "unselectedOpacity", :optional true}
-  number?]
- [:labelOffset
-  {:json-schema/original-name "labelOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleLineHeight
-  {:json-schema/original-name "titleLineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:ref #:json-schema{:original-name "LegendOrient"} #'LegendOrient]]
- [:gradientLabelOffset
-  {:json-schema/original-name "gradientLabelOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cornerRadius
-  {:json-schema/original-name "cornerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
+ [:symbolDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:unselectedOpacity {:optional true} number?]
+ [:labelOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:titleLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:orient {:optional true} [:ref #'LegendOrient]]
+ [:gradientLabelOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:cornerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
  [:titleAnchor
-  {:json-schema/original-name "titleAnchor", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TitleAnchor"} #'TitleAnchor]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TitleAnchor] [:ref #'ExprRef]]]
  [:gradientStrokeColor
-  {:json-schema/original-name "gradientStrokeColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
  [:labelColor
-  {:json-schema/original-name "labelColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:title {:json-schema/original-name "title", :optional true} nil?]
- [:titleFont
-  {:json-schema/original-name "titleFont", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:title {:optional true} nil?]
+ [:titleFont {:optional true} [:or string? [:ref #'ExprRef]]]
  [:symbolFillColor
-  {:json-schema/original-name "symbolFillColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:gradientVerticalMinLength
-  {:json-schema/original-name "gradientVerticalMinLength",
-   :optional true}
-  number?]
- [:titleOrient
-  {:json-schema/original-name "titleOrient", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Orient"} #'Orient]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:gradientVerticalMinLength {:optional true} number?]
+ [:titleOrient {:optional true} [:or [:ref #'Orient] [:ref #'ExprRef]]]
  [:tickCount
-  {:json-schema/original-name "tickCount", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TickCount"} #'TickCount]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TickCount] [:ref #'ExprRef]]]
  [:symbolDirection
-  {:json-schema/original-name "symbolDirection", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Orientation"} #'Orientation]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'Orientation] [:ref #'ExprRef]]]
  [:titleColor
-  {:json-schema/original-name "titleColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:symbolOffset
-  {:json-schema/original-name "symbolOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:gradientHorizontalMaxLength
-  {:json-schema/original-name "gradientHorizontalMaxLength",
-   :optional true}
-  number?]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:symbolOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:gradientHorizontalMaxLength {:optional true} number?]
  [:symbolBaseFillColor
-  {:json-schema/original-name "symbolBaseFillColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:legendX
-  {:json-schema/original-name "legendX", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:aria
-  {:json-schema/original-name "aria", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:symbolOpacity
-  {:json-schema/original-name "symbolOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titlePadding
-  {:json-schema/original-name "titlePadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:gradientLength
-  {:json-schema/original-name "gradientLength", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:padding
-  {:json-schema/original-name "padding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelFont
-  {:json-schema/original-name "labelFont", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:legendX {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:aria {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:symbolOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeWidth {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:titlePadding {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:gradientLength {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:padding {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labelFont {:optional true} [:or string? [:ref #'ExprRef]]]
  [:strokeColor
-  {:json-schema/original-name "strokeColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:gradientLabelLimit
-  {:json-schema/original-name "gradientLabelLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:gradientLabelLimit {:optional true} [:or number? [:ref #'ExprRef]]]
  [:symbolStrokeColor
-  {:json-schema/original-name "symbolStrokeColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:rowPadding
-  {:json-schema/original-name "rowPadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelAlign
-  {:json-schema/original-name "labelAlign", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:rowPadding {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labelAlign {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
  [:symbolType
-  {:json-schema/original-name "symbolType", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "SymbolShape"} #'SymbolShape]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'SymbolShape] [:ref #'ExprRef]]]
  [:labelFontWeight
-  {:json-schema/original-name "labelFontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
  [:symbolBaseStrokeColor
-  {:json-schema/original-name "symbolBaseStrokeColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
  [:labelFontStyle
-  {:json-schema/original-name "labelFontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:gradientHorizontalMinLength
-  {:json-schema/original-name "gradientHorizontalMinLength",
-   :optional true}
-  number?]
- [:labelFontSize
-  {:json-schema/original-name "labelFontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
+ [:gradientHorizontalMinLength {:optional true} number?]
+ [:labelFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
  [:fillColor
-  {:json-schema/original-name "fillColor", :optional true}
-  [:or
-   [:or nil? [:ref #:json-schema{:original-name "Color"} #'Color]]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:zindex
-  {:json-schema/original-name "zindex", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:direction
-  {:json-schema/original-name "direction", :optional true}
-  [:ref #:json-schema{:original-name "Orientation"} #'Orientation]]
- [:symbolStrokeWidth
-  {:json-schema/original-name "symbolStrokeWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]]]
+ [:zindex {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:direction {:optional true} [:ref #'Orientation]]
+ [:symbolStrokeWidth {:optional true} [:or number? [:ref #'ExprRef]]]
  [:titleFontWeight
-  {:json-schema/original-name "titleFontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:legendY
-  {:json-schema/original-name "legendY", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:symbolLimit
-  {:json-schema/original-name "symbolLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
+ [:legendY {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:symbolLimit {:optional true} [:or number? [:ref #'ExprRef]]]]
 )
 
 (def IntervalSelectionConfigWithoutType
   [:map
- {:closed true,
-  :json-schema/original-name "IntervalSelectionConfigWithoutType"}
- [:clear
-  {:json-schema/original-name "clear", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Stream"} #'Stream]
-   string?
-   boolean?]]
- [:encodings
-  {:json-schema/original-name "encodings", :optional true}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "SingleDefUnitChannel"}
-    #'SingleDefUnitChannel]]]
- [:fields
-  {:json-schema/original-name "fields", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:mark
-  {:json-schema/original-name "mark", :optional true}
-  [:ref #:json-schema{:original-name "BrushConfig"} #'BrushConfig]]
- [:on
-  {:json-schema/original-name "on", :optional true}
-  [:or [:ref #:json-schema{:original-name "Stream"} #'Stream] string?]]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref
-   #:json-schema{:original-name "SelectionResolution"}
-   #'SelectionResolution]]
- [:translate
-  {:json-schema/original-name "translate", :optional true}
-  [:or string? boolean?]]
- [:zoom
-  {:json-schema/original-name "zoom", :optional true}
-  [:or string? boolean?]]]
+ {:closed true}
+ [:clear {:optional true} [:or [:ref #'Stream] string? boolean?]]
+ [:encodings {:optional true} [:vector [:ref #'SingleDefUnitChannel]]]
+ [:fields {:optional true} [:vector [:ref #'FieldName]]]
+ [:mark {:optional true} [:ref #'BrushConfig]]
+ [:on {:optional true} [:or [:ref #'Stream] string?]]
+ [:resolve {:optional true} [:ref #'SelectionResolution]]
+ [:translate {:optional true} [:or string? boolean?]]
+ [:zoom {:optional true} [:or string? boolean?]]]
 )
 
 (def PointSelectionConfigWithoutType
   [:map
- {:closed true,
-  :json-schema/original-name "PointSelectionConfigWithoutType"}
- [:clear
-  {:json-schema/original-name "clear", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Stream"} #'Stream]
-   string?
-   boolean?]]
- [:encodings
-  {:json-schema/original-name "encodings", :optional true}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "SingleDefUnitChannel"}
-    #'SingleDefUnitChannel]]]
- [:fields
-  {:json-schema/original-name "fields", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "FieldName"} #'FieldName]]]
- [:nearest
-  {:json-schema/original-name "nearest", :optional true}
-  boolean?]
- [:on
-  {:json-schema/original-name "on", :optional true}
-  [:or [:ref #:json-schema{:original-name "Stream"} #'Stream] string?]]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref
-   #:json-schema{:original-name "SelectionResolution"}
-   #'SelectionResolution]]
- [:toggle
-  {:json-schema/original-name "toggle", :optional true}
-  [:or string? boolean?]]]
+ {:closed true}
+ [:clear {:optional true} [:or [:ref #'Stream] string? boolean?]]
+ [:encodings {:optional true} [:vector [:ref #'SingleDefUnitChannel]]]
+ [:fields {:optional true} [:vector [:ref #'FieldName]]]
+ [:nearest {:optional true} boolean?]
+ [:on {:optional true} [:or [:ref #'Stream] string?]]
+ [:resolve {:optional true} [:ref #'SelectionResolution]]
+ [:toggle {:optional true} [:or string? boolean?]]]
 )
 
 (def SelectionConfig
   [:map
- {:closed true, :json-schema/original-name "SelectionConfig"}
+ {:closed true}
  [:interval
-  {:json-schema/original-name "interval", :optional true}
-  [:ref
-   #:json-schema{:original-name "IntervalSelectionConfigWithoutType"}
-   #'IntervalSelectionConfigWithoutType]]
- [:point
-  {:json-schema/original-name "point", :optional true}
-  [:ref
-   #:json-schema{:original-name "PointSelectionConfigWithoutType"}
-   #'PointSelectionConfigWithoutType]]]
+  {:optional true}
+  [:ref #'IntervalSelectionConfigWithoutType]]
+ [:point {:optional true} [:ref #'PointSelectionConfigWithoutType]]]
 )
 
 (def ProjectionConfig
-  [:ref #:json-schema{:original-name "ProjectionConfig"} #'Projection]
+  [:ref #'Projection]
 )
 
 (def TopLevelSelectionParameter
   [:map
- {:closed true,
-  :json-schema/original-name "TopLevelSelectionParameter"}
+ {:closed true}
  [:bind
-  {:json-schema/original-name "bind", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "Binding"} #'Binding]
-   [:ref #:json-schema{:original-name "LegendBinding"} #'LegendBinding]
+   [:ref #'Binding]
+   [:ref #'LegendBinding]
    [:map-of any? any?]
    [:enum "scales"]]]
- [:name
-  #:json-schema{:original-name "name"}
-  [:ref #:json-schema{:original-name "ParameterName"} #'ParameterName]]
+ [:name [:ref #'ParameterName]]
  [:select
-  #:json-schema{:original-name "select"}
   [:or
-   [:ref #:json-schema{:original-name "SelectionType"} #'SelectionType]
-   [:ref
-    #:json-schema{:original-name "PointSelectionConfig"}
-    #'PointSelectionConfig]
-   [:ref
-    #:json-schema{:original-name "IntervalSelectionConfig"}
-    #'IntervalSelectionConfig]]]
+   [:ref #'SelectionType]
+   [:ref #'PointSelectionConfig]
+   [:ref #'IntervalSelectionConfig]]]
  [:value
-  {:json-schema/original-name "value", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "SelectionInit"} #'SelectionInit]
-   [:ref
-    #:json-schema{:original-name "SelectionInitIntervalMapping"}
-    #'SelectionInitIntervalMapping]
-   [:vector
-    [:ref
-     #:json-schema{:original-name "SelectionInitMapping"}
-     #'SelectionInitMapping]]]]
- [:views
-  {:json-schema/original-name "views", :optional true}
-  [:vector string?]]]
+   [:ref #'SelectionInit]
+   [:ref #'SelectionInitIntervalMapping]
+   [:vector [:ref #'SelectionInitMapping]]]]
+ [:views {:optional true} [:vector string?]]]
 )
 
 (def VariableParameter
   [:map
- {:closed true, :json-schema/original-name "VariableParameter"}
- [:bind
-  {:json-schema/original-name "bind", :optional true}
-  [:ref #:json-schema{:original-name "Binding"} #'Binding]]
- [:expr
-  {:json-schema/original-name "expr", :optional true}
-  [:ref #:json-schema{:original-name "Expr"} #'Expr]]
- [:name
-  #:json-schema{:original-name "name"}
-  [:ref #:json-schema{:original-name "ParameterName"} #'ParameterName]]
- [:react {:json-schema/original-name "react", :optional true} boolean?]
- [:value {:json-schema/original-name "value", :optional true} any?]]
+ {:closed true}
+ [:bind {:optional true} [:ref #'Binding]]
+ [:expr {:optional true} [:ref #'Expr]]
+ [:name [:ref #'ParameterName]]
+ [:react {:optional true} boolean?]
+ [:value {:optional true} any?]]
 )
 
 (def TopLevelParameter
-  [:or
- #:json-schema{:original-name "TopLevelParameter"}
- [:ref
-  #:json-schema{:original-name "VariableParameter"}
-  #'VariableParameter]
- [:ref
-  #:json-schema{:original-name "TopLevelSelectionParameter"}
-  #'TopLevelSelectionParameter]]
+  [:or [:ref #'VariableParameter] [:ref #'TopLevelSelectionParameter]]
 )
 
 (def HeaderConfig
   [:map
- {:closed true, :json-schema/original-name "HeaderConfig"}
- [:labelLimit
-  {:json-schema/original-name "labelLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labels
-  {:json-schema/original-name "labels", :optional true}
-  boolean?]
- [:titleFontSize
-  {:json-schema/original-name "titleFontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:format
-  {:json-schema/original-name "format", :optional true}
-  [:ref #:json-schema{:original-name "Format"} #'Format]]
+ {:closed true}
+ [:labelLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labels {:optional true} boolean?]
+ [:titleFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:format {:optional true} [:ref #'Format]]
  [:labelBaseline
-  {:json-schema/original-name "labelBaseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
  [:titleFontStyle
-  {:json-schema/original-name "titleFontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleLimit
-  {:json-schema/original-name "titleLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleAlign
-  {:json-schema/original-name "titleAlign", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelPadding
-  {:json-schema/original-name "labelPadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelLineHeight
-  {:json-schema/original-name "labelLineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
+ [:titleLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:titleAlign {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
+ [:labelPadding {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labelLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
  [:titleBaseline
-  {:json-schema/original-name "titleBaseline", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "TextBaseline"} #'TextBaseline]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titleAngle
-  {:json-schema/original-name "titleAngle", :optional true}
-  number?]
- [:titleLineHeight
-  {:json-schema/original-name "titleLineHeight", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:orient
-  {:json-schema/original-name "orient", :optional true}
-  [:ref #:json-schema{:original-name "Orient"} #'Orient]]
- [:titleAnchor
-  {:json-schema/original-name "titleAnchor", :optional true}
-  [:ref #:json-schema{:original-name "TitleAnchor"} #'TitleAnchor]]
- [:labelColor
-  {:json-schema/original-name "labelColor", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:title {:json-schema/original-name "title", :optional true} nil?]
- [:labelAngle
-  {:json-schema/original-name "labelAngle", :optional true}
-  number?]
- [:titleFont
-  {:json-schema/original-name "titleFont", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelExpr
-  {:json-schema/original-name "labelExpr", :optional true}
-  string?]
- [:titleOrient
-  {:json-schema/original-name "titleOrient", :optional true}
-  [:ref #:json-schema{:original-name "Orient"} #'Orient]]
- [:formatType
-  {:json-schema/original-name "formatType", :optional true}
-  string?]
- [:titleColor
-  {:json-schema/original-name "titleColor", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:titlePadding
-  {:json-schema/original-name "titlePadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelAnchor
-  {:json-schema/original-name "labelAnchor", :optional true}
-  [:ref #:json-schema{:original-name "TitleAnchor"} #'TitleAnchor]]
- [:labelFont
-  {:json-schema/original-name "labelFont", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelOrient
-  {:json-schema/original-name "labelOrient", :optional true}
-  [:ref #:json-schema{:original-name "Orient"} #'Orient]]
- [:labelAlign
-  {:json-schema/original-name "labelAlign", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Align"} #'Align]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'TextBaseline] [:ref #'ExprRef]]]
+ [:titleAngle {:optional true} number?]
+ [:titleLineHeight {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:orient {:optional true} [:ref #'Orient]]
+ [:titleAnchor {:optional true} [:ref #'TitleAnchor]]
+ [:labelColor {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
+ [:title {:optional true} nil?]
+ [:labelAngle {:optional true} number?]
+ [:titleFont {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:labelExpr {:optional true} string?]
+ [:titleOrient {:optional true} [:ref #'Orient]]
+ [:formatType {:optional true} string?]
+ [:titleColor {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
+ [:titlePadding {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:labelAnchor {:optional true} [:ref #'TitleAnchor]]
+ [:labelFont {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:labelOrient {:optional true} [:ref #'Orient]]
+ [:labelAlign {:optional true} [:or [:ref #'Align] [:ref #'ExprRef]]]
  [:labelFontWeight
-  {:json-schema/original-name "labelFontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
  [:labelFontStyle
-  {:json-schema/original-name "labelFontStyle", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontStyle"} #'FontStyle]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:labelFontSize
-  {:json-schema/original-name "labelFontSize", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'FontStyle] [:ref #'ExprRef]]]
+ [:labelFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
  [:titleFontWeight
-  {:json-schema/original-name "titleFontWeight", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "FontWeight"} #'FontWeight]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+  {:optional true}
+  [:or [:ref #'FontWeight] [:ref #'ExprRef]]]]
 )
 
 (def ErrorBarConfig
   [:map
- {:closed true, :json-schema/original-name "ErrorBarConfig"}
- [:extent
-  {:json-schema/original-name "extent", :optional true}
-  [:ref
-   #:json-schema{:original-name "ErrorBarExtent"}
-   #'ErrorBarExtent]]
- [:rule
-  {:json-schema/original-name "rule", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]
- [:size {:json-schema/original-name "size", :optional true} number?]
- [:thickness
-  {:json-schema/original-name "thickness", :optional true}
-  number?]
- [:ticks
-  {:json-schema/original-name "ticks", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]]
+ {:closed true}
+ [:extent {:optional true} [:ref #'ErrorBarExtent]]
+ [:rule {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
+ [:size {:optional true} number?]
+ [:thickness {:optional true} number?]
+ [:ticks {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]]
 )
 
 (def ErrorBandConfig
   [:map
- {:closed true, :json-schema/original-name "ErrorBandConfig"}
- [:band
-  {:json-schema/original-name "band", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]
- [:borders
-  {:json-schema/original-name "borders", :optional true}
-  [:or
-   boolean?
-   [:ref
-    #:json-schema{:original-name "AnyMarkConfig"}
-    #'AnyMarkConfig]]]
- [:extent
-  {:json-schema/original-name "extent", :optional true}
-  [:ref
-   #:json-schema{:original-name "ErrorBarExtent"}
-   #'ErrorBarExtent]]
- [:interpolate
-  {:json-schema/original-name "interpolate", :optional true}
-  [:ref #:json-schema{:original-name "Interpolate"} #'Interpolate]]
- [:tension
-  {:json-schema/original-name "tension", :optional true}
-  number?]]
+ {:closed true}
+ [:band {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
+ [:borders {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
+ [:extent {:optional true} [:ref #'ErrorBarExtent]]
+ [:interpolate {:optional true} [:ref #'Interpolate]]
+ [:tension {:optional true} number?]]
 )
 
 (def Padding
   [:or
- #:json-schema{:original-name "Padding"}
  number?
  [:map
   {:closed true}
-  [:bottom
-   {:json-schema/original-name "bottom", :optional true}
-   number?]
-  [:left {:json-schema/original-name "left", :optional true} number?]
-  [:right {:json-schema/original-name "right", :optional true} number?]
-  [:top {:json-schema/original-name "top", :optional true} number?]]]
+  [:bottom {:optional true} number?]
+  [:left {:optional true} number?]
+  [:right {:optional true} number?]
+  [:top {:optional true} number?]]]
 )
 
 (def FormatConfig
   [:map
- {:closed true, :json-schema/original-name "FormatConfig"}
- [:normalizedNumberFormat
-  {:json-schema/original-name "normalizedNumberFormat", :optional true}
-  string?]
- [:normalizedNumberFormatType
-  {:json-schema/original-name "normalizedNumberFormatType",
-   :optional true}
-  string?]
- [:numberFormat
-  {:json-schema/original-name "numberFormat", :optional true}
-  string?]
- [:numberFormatType
-  {:json-schema/original-name "numberFormatType", :optional true}
-  string?]
- [:timeFormat
-  {:json-schema/original-name "timeFormat", :optional true}
-  string?]
- [:timeFormatType
-  {:json-schema/original-name "timeFormatType", :optional true}
-  string?]]
+ {:closed true}
+ [:normalizedNumberFormat {:optional true} string?]
+ [:normalizedNumberFormatType {:optional true} string?]
+ [:numberFormat {:optional true} string?]
+ [:numberFormatType {:optional true} string?]
+ [:timeFormat {:optional true} string?]
+ [:timeFormatType {:optional true} string?]]
 )
 
 (def Vector2_string_
@@ -16090,35 +8420,30 @@
 
 (def TimeLocale
   [:map
- {:closed true, :json-schema/original-name "TimeLocale"}
- [:date #:json-schema{:original-name "date"} string?]
- [:dateTime #:json-schema{:original-name "dateTime"} string?]
+ {:closed true}
+ [:date string?]
+ [:dateTime string?]
  [:days
-  #:json-schema{:original-name "days"}
   [:ref
    #:json-schema{:original-name "Vector7<string>"}
    #'Vector7_string_]]
  [:months
-  #:json-schema{:original-name "months"}
   [:ref
    #:json-schema{:original-name "Vector12<string>"}
    #'Vector12_string_]]
  [:periods
-  #:json-schema{:original-name "periods"}
   [:ref
    #:json-schema{:original-name "Vector2<string>"}
    #'Vector2_string_]]
  [:shortDays
-  #:json-schema{:original-name "shortDays"}
   [:ref
    #:json-schema{:original-name "Vector7<string>"}
    #'Vector7_string_]]
  [:shortMonths
-  #:json-schema{:original-name "shortMonths"}
   [:ref
    #:json-schema{:original-name "Vector12<string>"}
    #'Vector12_string_]]
- [:time #:json-schema{:original-name "time"} string?]]
+ [:time string?]]
 )
 
 (def Vector10_string_
@@ -16127,190 +8452,87 @@
 
 (def NumberLocale
   [:map
- {:closed true, :json-schema/original-name "NumberLocale"}
+ {:closed true}
  [:currency
-  #:json-schema{:original-name "currency"}
   [:ref
    #:json-schema{:original-name "Vector2<string>"}
    #'Vector2_string_]]
- [:decimal #:json-schema{:original-name "decimal"} string?]
- [:grouping #:json-schema{:original-name "grouping"} [:vector number?]]
- [:minus {:json-schema/original-name "minus", :optional true} string?]
- [:nan {:json-schema/original-name "nan", :optional true} string?]
+ [:decimal string?]
+ [:grouping [:vector number?]]
+ [:minus {:optional true} string?]
+ [:nan {:optional true} string?]
  [:numerals
-  {:json-schema/original-name "numerals", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "Vector10<string>"}
    #'Vector10_string_]]
- [:percent
-  {:json-schema/original-name "percent", :optional true}
-  string?]
- [:thousands #:json-schema{:original-name "thousands"} string?]]
+ [:percent {:optional true} string?]
+ [:thousands string?]]
 )
 
 (def Locale
   [:map
- {:closed true, :json-schema/original-name "Locale"}
- [:number
-  {:json-schema/original-name "number", :optional true}
-  [:ref #:json-schema{:original-name "NumberLocale"} #'NumberLocale]]
- [:time
-  {:json-schema/original-name "time", :optional true}
-  [:ref #:json-schema{:original-name "TimeLocale"} #'TimeLocale]]]
+ {:closed true}
+ [:number {:optional true} [:ref #'NumberLocale]]
+ [:time {:optional true} [:ref #'TimeLocale]]]
 )
 
 (def ViewConfig
   [:map
- {:closed true, :json-schema/original-name "ViewConfig"}
+ {:closed true}
  [:discreteHeight
-  {:json-schema/original-name "discreteHeight", :optional true}
-  [:or
-   number?
-   [:map
-    {:closed true}
-    [:step #:json-schema{:original-name "step"} number?]]]]
- [:strokeOpacity
-  {:json-schema/original-name "strokeOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:stroke
-  {:json-schema/original-name "stroke", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
- [:clip {:json-schema/original-name "clip", :optional true} boolean?]
+  {:optional true}
+  [:or number? [:map {:closed true} [:step number?]]]]
+ [:strokeOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:stroke {:optional true} [:or [:ref #'Color] [:ref #'ExprRef] nil?]]
+ [:clip {:optional true} boolean?]
  [:discreteWidth
-  {:json-schema/original-name "discreteWidth", :optional true}
-  [:or
-   number?
-   [:map
-    {:closed true}
-    [:step #:json-schema{:original-name "step"} number?]]]]
- [:fill
-  {:json-schema/original-name "fill", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]
-   nil?]]
+  {:optional true}
+  [:or number? [:map {:closed true} [:step number?]]]]
+ [:fill {:optional true} [:or [:ref #'Color] [:ref #'ExprRef] nil?]]
  [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
-  [:or
-   [:vector number?]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:cursor
-  {:json-schema/original-name "cursor", :optional true}
-  [:ref #:json-schema{:original-name "Cursor"} #'Cursor]]
- [:fillOpacity
-  {:json-schema/original-name "fillOpacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeMiterLimit
-  {:json-schema/original-name "strokeMiterLimit", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:strokeDashOffset
-  {:json-schema/original-name "strokeDashOffset", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:continuousWidth
-  {:json-schema/original-name "continuousWidth", :optional true}
-  number?]
- [:cornerRadius
-  {:json-schema/original-name "cornerRadius", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:continuousHeight
-  {:json-schema/original-name "continuousHeight", :optional true}
-  number?]
- [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:opacity
-  {:json-schema/original-name "opacity", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:vector number?] [:ref #'ExprRef]]]
+ [:cursor {:optional true} [:ref #'Cursor]]
+ [:fillOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeMiterLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:strokeDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:continuousWidth {:optional true} number?]
+ [:cornerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:continuousHeight {:optional true} number?]
+ [:strokeWidth {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:opacity {:optional true} [:or number? [:ref #'ExprRef]]]
  [:strokeJoin
-  {:json-schema/original-name "strokeJoin", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeJoin"} #'StrokeJoin]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or [:ref #'StrokeJoin] [:ref #'ExprRef]]]
  [:strokeCap
-  {:json-schema/original-name "strokeCap", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "StrokeCap"} #'StrokeCap]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:step {:json-schema/original-name "step", :optional true} number?]]
+  {:optional true}
+  [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
+ [:step {:optional true} number?]]
 )
 
 (def StyleConfigIndex
   [:map
- {:closed false, :json-schema/original-name "StyleConfigIndex"}
- [:tick
-  {:json-schema/original-name "tick", :optional true}
-  [:ref #:json-schema{:original-name "TickConfig"} #'TickConfig]]
- [:geoshape
-  {:json-schema/original-name "geoshape", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]
- [:group-title
-  {:json-schema/original-name "group-title", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]
- [:arc
-  {:json-schema/original-name "arc", :optional true}
-  [:ref #:json-schema{:original-name "RectConfig"} #'RectConfig]]
- [:mark
-  {:json-schema/original-name "mark", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]
- [:bar
-  {:json-schema/original-name "bar", :optional true}
-  [:ref #:json-schema{:original-name "BarConfig"} #'BarConfig]]
- [:rule
-  {:json-schema/original-name "rule", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]
- [:guide-label
-  {:json-schema/original-name "guide-label", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]
- [:circle
-  {:json-schema/original-name "circle", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]
- [:trail
-  {:json-schema/original-name "trail", :optional true}
-  [:ref #:json-schema{:original-name "LineConfig"} #'LineConfig]]
- [:line
-  {:json-schema/original-name "line", :optional true}
-  [:ref #:json-schema{:original-name "LineConfig"} #'LineConfig]]
- [:square
-  {:json-schema/original-name "square", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]
- [:image
-  {:json-schema/original-name "image", :optional true}
-  [:ref #:json-schema{:original-name "RectConfig"} #'RectConfig]]
- [:point
-  {:json-schema/original-name "point", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]
- [:area
-  {:json-schema/original-name "area", :optional true}
-  [:ref #:json-schema{:original-name "AreaConfig"} #'AreaConfig]]
- [:group-subtitle
-  {:json-schema/original-name "group-subtitle", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]
- [:guide-title
-  {:json-schema/original-name "guide-title", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]
- [:rect
-  {:json-schema/original-name "rect", :optional true}
-  [:ref #:json-schema{:original-name "RectConfig"} #'RectConfig]]
- [:text
-  {:json-schema/original-name "text", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]]
+ {:closed false}
+ [:tick {:optional true} [:ref #'TickConfig]]
+ [:geoshape {:optional true} [:ref #'MarkConfig]]
+ [:group-title {:optional true} [:ref #'MarkConfig]]
+ [:arc {:optional true} [:ref #'RectConfig]]
+ [:mark {:optional true} [:ref #'MarkConfig]]
+ [:bar {:optional true} [:ref #'BarConfig]]
+ [:rule {:optional true} [:ref #'MarkConfig]]
+ [:guide-label {:optional true} [:ref #'MarkConfig]]
+ [:circle {:optional true} [:ref #'MarkConfig]]
+ [:trail {:optional true} [:ref #'LineConfig]]
+ [:line {:optional true} [:ref #'LineConfig]]
+ [:square {:optional true} [:ref #'MarkConfig]]
+ [:image {:optional true} [:ref #'RectConfig]]
+ [:point {:optional true} [:ref #'MarkConfig]]
+ [:area {:optional true} [:ref #'AreaConfig]]
+ [:group-subtitle {:optional true} [:ref #'MarkConfig]]
+ [:guide-title {:optional true} [:ref #'MarkConfig]]
+ [:rect {:optional true} [:ref #'RectConfig]]
+ [:text {:optional true} [:ref #'MarkConfig]]]
 )
 
 (def ScaleInvalidDataShowAsValue__strokeWidth__
@@ -16318,7 +8540,7 @@
  {:closed true,
   :json-schema/original-name
   "ScaleInvalidDataShowAsValue<\"strokeWidth\">"}
- [:value {:json-schema/original-name "value", :optional true} number?]]
+ [:value {:optional true} number?]]
 )
 
 (def ScaleInvalidDataShowAs__strokeWidth__
@@ -16336,7 +8558,7 @@
   [:map
  {:closed true,
   :json-schema/original-name "ScaleInvalidDataShowAsValue<\"angle\">"}
- [:value {:json-schema/original-name "value", :optional true} number?]]
+ [:value {:optional true} number?]]
 )
 
 (def ScaleInvalidDataShowAs__angle__
@@ -16353,7 +8575,7 @@
   [:map
  {:closed true,
   :json-schema/original-name "ScaleInvalidDataShowAsValue<\"radius\">"}
- [:value {:json-schema/original-name "value", :optional true} number?]]
+ [:value {:optional true} number?]]
 )
 
 (def ScaleInvalidDataShowAs__radius__
@@ -16371,7 +8593,7 @@
  {:closed true,
   :json-schema/original-name
   "ScaleInvalidDataShowAsValue<\"strokeOpacity\">"}
- [:value {:json-schema/original-name "value", :optional true} number?]]
+ [:value {:optional true} number?]]
 )
 
 (def ScaleInvalidDataShowAs__strokeOpacity__
@@ -16390,7 +8612,7 @@
  {:closed true,
   :json-schema/original-name
   "ScaleInvalidDataShowAsValue<\"yOffset\">"}
- [:value {:json-schema/original-name "value", :optional true} number?]]
+ [:value {:optional true} number?]]
 )
 
 (def ScaleInvalidDataShowAs__yOffset__
@@ -16407,12 +8629,7 @@
   [:map
  {:closed true,
   :json-schema/original-name "ScaleInvalidDataShowAsValue<\"fill\">"}
- [:value
-  {:json-schema/original-name "value", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   nil?]]]
+ [:value {:optional true} [:or [:ref #'Color] [:ref #'Gradient] nil?]]]
 )
 
 (def ScaleInvalidDataShowAs__fill__
@@ -16428,7 +8645,7 @@
   [:map
  {:closed true,
   :json-schema/original-name "ScaleInvalidDataShowAsValue<\"theta\">"}
- [:value {:json-schema/original-name "value", :optional true} number?]]
+ [:value {:optional true} number?]]
 )
 
 (def ScaleInvalidDataShowAs__theta__
@@ -16445,7 +8662,7 @@
   [:map
  {:closed true,
   :json-schema/original-name "ScaleInvalidDataShowAsValue<\"time\">"}
- [:value {:json-schema/original-name "value", :optional true} number?]]
+ [:value {:optional true} number?]]
 )
 
 (def ScaleInvalidDataShowAs__time__
@@ -16461,11 +8678,7 @@
   [:map
  {:closed true,
   :json-schema/original-name "ScaleInvalidDataShowAsValue<\"color\">"}
- [:value
-  {:json-schema/original-name "value", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]]]]
+ [:value {:optional true} [:or [:ref #'Color] [:ref #'Gradient]]]]
 )
 
 (def ScaleInvalidDataShowAs__color__
@@ -16482,7 +8695,7 @@
   [:map
  {:closed true,
   :json-schema/original-name "ScaleInvalidDataShowAsValue<\"size\">"}
- [:value {:json-schema/original-name "value", :optional true} number?]]
+ [:value {:optional true} number?]]
 )
 
 (def ScaleInvalidDataShowAs__size__
@@ -16498,11 +8711,7 @@
   [:map
  {:closed true,
   :json-schema/original-name "ScaleInvalidDataShowAsValue<\"shape\">"}
- [:value
-  {:json-schema/original-name "value", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "SymbolShape"} #'SymbolShape]
-   string?]]]
+ [:value {:optional true} [:or [:ref #'SymbolShape] string?]]]
 )
 
 (def ScaleInvalidDataShowAs__shape__
@@ -16519,12 +8728,7 @@
   [:map
  {:closed true,
   :json-schema/original-name "ScaleInvalidDataShowAsValue<\"stroke\">"}
- [:value
-  {:json-schema/original-name "value", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "Gradient"} #'Gradient]
-   nil?]]]
+ [:value {:optional true} [:or [:ref #'Color] [:ref #'Gradient] nil?]]]
 )
 
 (def ScaleInvalidDataShowAs__stroke__
@@ -16542,7 +8746,7 @@
  {:closed true,
   :json-schema/original-name
   "ScaleInvalidDataShowAsValue<\"xOffset\">"}
- [:value {:json-schema/original-name "value", :optional true} number?]]
+ [:value {:optional true} number?]]
 )
 
 (def ScaleInvalidDataShowAs__xOffset__
@@ -16560,9 +8764,7 @@
  {:closed true,
   :json-schema/original-name
   "ScaleInvalidDataShowAsValue<\"strokeDash\">"}
- [:value
-  {:json-schema/original-name "value", :optional true}
-  [:vector number?]]]
+ [:value {:optional true} [:vector number?]]]
 )
 
 (def ScaleInvalidDataShowAs__strokeDash__
@@ -16579,9 +8781,7 @@
   [:map
  {:closed true,
   :json-schema/original-name "ScaleInvalidDataShowAsValue<\"y\">"}
- [:value
-  {:json-schema/original-name "value", :optional true}
-  [:or number? [:enum "height"]]]]
+ [:value {:optional true} [:or number? [:enum "height"]]]]
 )
 
 (def ScaleInvalidDataShowAs__y__
@@ -16597,9 +8797,7 @@
   [:map
  {:closed true,
   :json-schema/original-name "ScaleInvalidDataShowAsValue<\"x\">"}
- [:value
-  {:json-schema/original-name "value", :optional true}
-  [:or number? [:enum "width"]]]]
+ [:value {:optional true} [:or number? [:enum "width"]]]]
 )
 
 (def ScaleInvalidDataShowAs__x__
@@ -16616,7 +8814,7 @@
  {:closed true,
   :json-schema/original-name
   "ScaleInvalidDataShowAsValue<\"fillOpacity\">"}
- [:value {:json-schema/original-name "value", :optional true} number?]]
+ [:value {:optional true} number?]]
 )
 
 (def ScaleInvalidDataShowAs__fillOpacity__
@@ -16635,7 +8833,7 @@
  {:closed true,
   :json-schema/original-name
   "ScaleInvalidDataShowAsValue<\"opacity\">"}
- [:value {:json-schema/original-name "value", :optional true} number?]]
+ [:value {:optional true} number?]]
 )
 
 (def ScaleInvalidDataShowAs__opacity__
@@ -16650,98 +8848,98 @@
 
 (def ScaleInvalidDataConfig
   [:map
- {:closed true, :json-schema/original-name "ScaleInvalidDataConfig"}
+ {:closed true}
  [:y
-  {:json-schema/original-name "y", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "ScaleInvalidDataShowAs<\"y\">"}
    #'ScaleInvalidDataShowAs__y__]]
  [:strokeOpacity
-  {:json-schema/original-name "strokeOpacity", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name
                  "ScaleInvalidDataShowAs<\"strokeOpacity\">"}
    #'ScaleInvalidDataShowAs__strokeOpacity__]]
  [:stroke
-  {:json-schema/original-name "stroke", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "ScaleInvalidDataShowAs<\"stroke\">"}
    #'ScaleInvalidDataShowAs__stroke__]]
  [:color
-  {:json-schema/original-name "color", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "ScaleInvalidDataShowAs<\"color\">"}
    #'ScaleInvalidDataShowAs__color__]]
  [:fill
-  {:json-schema/original-name "fill", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "ScaleInvalidDataShowAs<\"fill\">"}
    #'ScaleInvalidDataShowAs__fill__]]
  [:strokeDash
-  {:json-schema/original-name "strokeDash", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name
                  "ScaleInvalidDataShowAs<\"strokeDash\">"}
    #'ScaleInvalidDataShowAs__strokeDash__]]
  [:time
-  {:json-schema/original-name "time", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "ScaleInvalidDataShowAs<\"time\">"}
    #'ScaleInvalidDataShowAs__time__]]
  [:fillOpacity
-  {:json-schema/original-name "fillOpacity", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name
                  "ScaleInvalidDataShowAs<\"fillOpacity\">"}
    #'ScaleInvalidDataShowAs__fillOpacity__]]
  [:angle
-  {:json-schema/original-name "angle", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "ScaleInvalidDataShowAs<\"angle\">"}
    #'ScaleInvalidDataShowAs__angle__]]
  [:theta
-  {:json-schema/original-name "theta", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "ScaleInvalidDataShowAs<\"theta\">"}
    #'ScaleInvalidDataShowAs__theta__]]
  [:radius
-  {:json-schema/original-name "radius", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "ScaleInvalidDataShowAs<\"radius\">"}
    #'ScaleInvalidDataShowAs__radius__]]
  [:size
-  {:json-schema/original-name "size", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "ScaleInvalidDataShowAs<\"size\">"}
    #'ScaleInvalidDataShowAs__size__]]
  [:strokeWidth
-  {:json-schema/original-name "strokeWidth", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name
                  "ScaleInvalidDataShowAs<\"strokeWidth\">"}
    #'ScaleInvalidDataShowAs__strokeWidth__]]
  [:opacity
-  {:json-schema/original-name "opacity", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "ScaleInvalidDataShowAs<\"opacity\">"}
    #'ScaleInvalidDataShowAs__opacity__]]
  [:shape
-  {:json-schema/original-name "shape", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "ScaleInvalidDataShowAs<\"shape\">"}
    #'ScaleInvalidDataShowAs__shape__]]
  [:yOffset
-  {:json-schema/original-name "yOffset", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "ScaleInvalidDataShowAs<\"yOffset\">"}
    #'ScaleInvalidDataShowAs__yOffset__]]
  [:x
-  {:json-schema/original-name "x", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "ScaleInvalidDataShowAs<\"x\">"}
    #'ScaleInvalidDataShowAs__x__]]
  [:xOffset
-  {:json-schema/original-name "xOffset", :optional true}
+  {:optional true}
   [:ref
    #:json-schema{:original-name "ScaleInvalidDataShowAs<\"xOffset\">"}
    #'ScaleInvalidDataShowAs__xOffset__]]]
@@ -16749,381 +8947,133 @@
 
 (def ScaleConfig
   [:map
- {:closed true, :json-schema/original-name "ScaleConfig"}
- [:zero {:json-schema/original-name "zero", :optional true} boolean?]
- [:bandPaddingInner
-  {:json-schema/original-name "bandPaddingInner", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:barBandPaddingInner
-  {:json-schema/original-name "barBandPaddingInner", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:xReverse
-  {:json-schema/original-name "xReverse", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:maxOpacity
-  {:json-schema/original-name "maxOpacity", :optional true}
-  number?]
- [:quantizeCount
-  {:json-schema/original-name "quantizeCount", :optional true}
-  number?]
+ {:closed true}
+ [:zero {:optional true} boolean?]
+ [:bandPaddingInner {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:barBandPaddingInner {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:xReverse {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:maxOpacity {:optional true} number?]
+ [:quantizeCount {:optional true} number?]
  [:rectBandPaddingInner
-  {:json-schema/original-name "rectBandPaddingInner", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:continuousPadding
-  {:json-schema/original-name "continuousPadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:continuousPadding {:optional true} [:or number? [:ref #'ExprRef]]]
  [:bandWithNestedOffsetPaddingOuter
-  {:json-schema/original-name "bandWithNestedOffsetPaddingOuter",
-   :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:quantileCount
-  {:json-schema/original-name "quantileCount", :optional true}
-  number?]
- [:useUnaggregatedDomain
-  {:json-schema/original-name "useUnaggregatedDomain", :optional true}
-  boolean?]
- [:invalid
-  {:json-schema/original-name "invalid", :optional true}
-  [:ref
-   #:json-schema{:original-name "ScaleInvalidDataConfig"}
-   #'ScaleInvalidDataConfig]]
- [:maxBandSize
-  {:json-schema/original-name "maxBandSize", :optional true}
-  number?]
- [:bandPaddingOuter
-  {:json-schema/original-name "bandPaddingOuter", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:minSize
-  {:json-schema/original-name "minSize", :optional true}
-  number?]
- [:animationDuration
-  {:json-schema/original-name "animationDuration", :optional true}
-  number?]
- [:round
-  {:json-schema/original-name "round", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:quantileCount {:optional true} number?]
+ [:useUnaggregatedDomain {:optional true} boolean?]
+ [:invalid {:optional true} [:ref #'ScaleInvalidDataConfig]]
+ [:maxBandSize {:optional true} number?]
+ [:bandPaddingOuter {:optional true} [:or number? [:ref #'ExprRef]]]
+ [:minSize {:optional true} number?]
+ [:animationDuration {:optional true} number?]
+ [:round {:optional true} [:or boolean? [:ref #'ExprRef]]]
  [:offsetBandPaddingInner
-  {:json-schema/original-name "offsetBandPaddingInner", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
  [:tickBandPaddingInner
-  {:json-schema/original-name "tickBandPaddingInner", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:minFontSize
-  {:json-schema/original-name "minFontSize", :optional true}
-  number?]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:minFontSize {:optional true} number?]
  [:offsetBandPaddingOuter
-  {:json-schema/original-name "offsetBandPaddingOuter", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:minBandSize
-  {:json-schema/original-name "minBandSize", :optional true}
-  number?]
- [:maxStrokeWidth
-  {:json-schema/original-name "maxStrokeWidth", :optional true}
-  number?]
- [:maxFontSize
-  {:json-schema/original-name "maxFontSize", :optional true}
-  number?]
- [:minOpacity
-  {:json-schema/original-name "minOpacity", :optional true}
-  number?]
- [:maxSize
-  {:json-schema/original-name "maxSize", :optional true}
-  number?]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:minBandSize {:optional true} number?]
+ [:maxStrokeWidth {:optional true} number?]
+ [:maxFontSize {:optional true} number?]
+ [:minOpacity {:optional true} number?]
+ [:maxSize {:optional true} number?]
  [:bandWithNestedOffsetPaddingInner
-  {:json-schema/original-name "bandWithNestedOffsetPaddingInner",
-   :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:clamp
-  {:json-schema/original-name "clamp", :optional true}
-  [:or
-   boolean?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:framesPerSecond
-  {:json-schema/original-name "framesPerSecond", :optional true}
-  number?]
- [:minStrokeWidth
-  {:json-schema/original-name "minStrokeWidth", :optional true}
-  number?]
- [:pointPadding
-  {:json-schema/original-name "pointPadding", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]]
+  {:optional true}
+  [:or number? [:ref #'ExprRef]]]
+ [:clamp {:optional true} [:or boolean? [:ref #'ExprRef]]]
+ [:framesPerSecond {:optional true} number?]
+ [:minStrokeWidth {:optional true} number?]
+ [:pointPadding {:optional true} [:or number? [:ref #'ExprRef]]]]
 )
 
 (def TitleConfig
-  [:ref
- #:json-schema{:original-name "TitleConfig"}
- #'BaseTitleNoValueRefs]
+  [:ref #'BaseTitleNoValueRefs]
 )
 
 (def Config
   [:map
- {:closed true, :json-schema/original-name "Config"}
- [:tick
-  {:json-schema/original-name "tick", :optional true}
-  [:ref #:json-schema{:original-name "TickConfig"} #'TickConfig]]
- [:axisTemporal
-  {:json-schema/original-name "axisTemporal", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
+ {:closed true}
+ [:tick {:optional true} [:ref #'TickConfig]]
+ [:axisTemporal {:optional true} [:ref #'AxisConfig]]
  [:autosize
-  {:json-schema/original-name "autosize", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "AutosizeType"} #'AutosizeType]
-   [:ref
-    #:json-schema{:original-name "AutoSizeParams"}
-    #'AutoSizeParams]]]
- [:headerColumn
-  {:json-schema/original-name "headerColumn", :optional true}
-  [:ref #:json-schema{:original-name "HeaderConfig"} #'HeaderConfig]]
- [:normalizedNumberFormat
-  {:json-schema/original-name "normalizedNumberFormat", :optional true}
-  string?]
- [:axisTop
-  {:json-schema/original-name "axisTop", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:tooltipFormat
-  {:json-schema/original-name "tooltipFormat", :optional true}
-  [:ref #:json-schema{:original-name "FormatConfig"} #'FormatConfig]]
- [:headerRow
-  {:json-schema/original-name "headerRow", :optional true}
-  [:ref #:json-schema{:original-name "HeaderConfig"} #'HeaderConfig]]
- [:axisLeft
-  {:json-schema/original-name "axisLeft", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:geoshape
-  {:json-schema/original-name "geoshape", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]
- [:errorbar
-  {:json-schema/original-name "errorbar", :optional true}
-  [:ref
-   #:json-schema{:original-name "ErrorBarConfig"}
-   #'ErrorBarConfig]]
- [:axisY
-  {:json-schema/original-name "axisY", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:arc
-  {:json-schema/original-name "arc", :optional true}
-  [:ref #:json-schema{:original-name "RectConfig"} #'RectConfig]]
- [:axisYBand
-  {:json-schema/original-name "axisYBand", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:scale
-  {:json-schema/original-name "scale", :optional true}
-  [:ref #:json-schema{:original-name "ScaleConfig"} #'ScaleConfig]]
- [:locale
-  {:json-schema/original-name "locale", :optional true}
-  [:ref #:json-schema{:original-name "Locale"} #'Locale]]
- [:mark
-  {:json-schema/original-name "mark", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]
- [:bar
-  {:json-schema/original-name "bar", :optional true}
-  [:ref #:json-schema{:original-name "BarConfig"} #'BarConfig]]
- [:concat
-  {:json-schema/original-name "concat", :optional true}
-  [:ref
-   #:json-schema{:original-name "CompositionConfig"}
-   #'CompositionConfig]]
- [:axisQuantitative
-  {:json-schema/original-name "axisQuantitative", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:axisXBand
-  {:json-schema/original-name "axisXBand", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:countTitle
-  {:json-schema/original-name "countTitle", :optional true}
-  string?]
- [:rule
-  {:json-schema/original-name "rule", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]
- [:axisYDiscrete
-  {:json-schema/original-name "axisYDiscrete", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:facet
-  {:json-schema/original-name "facet", :optional true}
-  [:ref
-   #:json-schema{:original-name "CompositionConfig"}
-   #'CompositionConfig]]
- [:circle
-  {:json-schema/original-name "circle", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]
- [:axisBottom
-  {:json-schema/original-name "axisBottom", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:background
-  {:json-schema/original-name "background", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:params
-  {:json-schema/original-name "params", :optional true}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "TopLevelParameter"}
-    #'TopLevelParameter]]]
- [:legend
-  {:json-schema/original-name "legend", :optional true}
-  [:ref #:json-schema{:original-name "LegendConfig"} #'LegendConfig]]
- [:timeFormatType
-  {:json-schema/original-name "timeFormatType", :optional true}
-  string?]
- [:lineBreak
-  {:json-schema/original-name "lineBreak", :optional true}
-  [:or
-   string?
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:axisBand
-  {:json-schema/original-name "axisBand", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:header
-  {:json-schema/original-name "header", :optional true}
-  [:ref #:json-schema{:original-name "HeaderConfig"} #'HeaderConfig]]
- [:font {:json-schema/original-name "font", :optional true} string?]
- [:trail
-  {:json-schema/original-name "trail", :optional true}
-  [:ref #:json-schema{:original-name "LineConfig"} #'LineConfig]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:ref #:json-schema{:original-name "TitleConfig"} #'TitleConfig]]
- [:axisX
-  {:json-schema/original-name "axisX", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:fieldTitle
-  {:json-schema/original-name "fieldTitle", :optional true}
-  [:enum "verbal" "functional" "plain"]]
- [:axisPoint
-  {:json-schema/original-name "axisPoint", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:axisYTemporal
-  {:json-schema/original-name "axisYTemporal", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:numberFormat
-  {:json-schema/original-name "numberFormat", :optional true}
-  string?]
- [:normalizedNumberFormatType
-  {:json-schema/original-name "normalizedNumberFormatType",
-   :optional true}
-  string?]
- [:style
-  {:json-schema/original-name "style", :optional true}
-  [:ref
-   #:json-schema{:original-name "StyleConfigIndex"}
-   #'StyleConfigIndex]]
- [:axisYQuantitative
-  {:json-schema/original-name "axisYQuantitative", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:axisXTemporal
-  {:json-schema/original-name "axisXTemporal", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:axisRight
-  {:json-schema/original-name "axisRight", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:errorband
-  {:json-schema/original-name "errorband", :optional true}
-  [:ref
-   #:json-schema{:original-name "ErrorBandConfig"}
-   #'ErrorBandConfig]]
- [:axisXQuantitative
-  {:json-schema/original-name "axisXQuantitative", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:axisXPoint
-  {:json-schema/original-name "axisXPoint", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:aria {:json-schema/original-name "aria", :optional true} boolean?]
- [:line
-  {:json-schema/original-name "line", :optional true}
-  [:ref #:json-schema{:original-name "LineConfig"} #'LineConfig]]
- [:axisXDiscrete
-  {:json-schema/original-name "axisXDiscrete", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:square
-  {:json-schema/original-name "square", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]
- [:padding
-  {:json-schema/original-name "padding", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Padding"} #'Padding]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:customFormatTypes
-  {:json-schema/original-name "customFormatTypes", :optional true}
-  boolean?]
- [:image
-  {:json-schema/original-name "image", :optional true}
-  [:ref #:json-schema{:original-name "RectConfig"} #'RectConfig]]
- [:point
-  {:json-schema/original-name "point", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]
- [:area
-  {:json-schema/original-name "area", :optional true}
-  [:ref #:json-schema{:original-name "AreaConfig"} #'AreaConfig]]
- [:headerFacet
-  {:json-schema/original-name "headerFacet", :optional true}
-  [:ref #:json-schema{:original-name "HeaderConfig"} #'HeaderConfig]]
- [:axis
-  {:json-schema/original-name "axis", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:axisYPoint
-  {:json-schema/original-name "axisYPoint", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:selection
-  {:json-schema/original-name "selection", :optional true}
-  [:ref
-   #:json-schema{:original-name "SelectionConfig"}
-   #'SelectionConfig]]
- [:rect
-  {:json-schema/original-name "rect", :optional true}
-  [:ref #:json-schema{:original-name "RectConfig"} #'RectConfig]]
- [:timeFormat
-  {:json-schema/original-name "timeFormat", :optional true}
-  string?]
- [:projection
-  {:json-schema/original-name "projection", :optional true}
-  [:ref
-   #:json-schema{:original-name "ProjectionConfig"}
-   #'ProjectionConfig]]
- [:boxplot
-  {:json-schema/original-name "boxplot", :optional true}
-  [:ref #:json-schema{:original-name "BoxPlotConfig"} #'BoxPlotConfig]]
- [:view
-  {:json-schema/original-name "view", :optional true}
-  [:ref #:json-schema{:original-name "ViewConfig"} #'ViewConfig]]
- [:range
-  {:json-schema/original-name "range", :optional true}
-  [:ref #:json-schema{:original-name "RangeConfig"} #'RangeConfig]]
- [:numberFormatType
-  {:json-schema/original-name "numberFormatType", :optional true}
-  string?]
- [:axisDiscrete
-  {:json-schema/original-name "axisDiscrete", :optional true}
-  [:ref #:json-schema{:original-name "AxisConfig"} #'AxisConfig]]
- [:text
-  {:json-schema/original-name "text", :optional true}
-  [:ref #:json-schema{:original-name "MarkConfig"} #'MarkConfig]]]
+  {:optional true}
+  [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
+ [:headerColumn {:optional true} [:ref #'HeaderConfig]]
+ [:normalizedNumberFormat {:optional true} string?]
+ [:axisTop {:optional true} [:ref #'AxisConfig]]
+ [:tooltipFormat {:optional true} [:ref #'FormatConfig]]
+ [:headerRow {:optional true} [:ref #'HeaderConfig]]
+ [:axisLeft {:optional true} [:ref #'AxisConfig]]
+ [:geoshape {:optional true} [:ref #'MarkConfig]]
+ [:errorbar {:optional true} [:ref #'ErrorBarConfig]]
+ [:axisY {:optional true} [:ref #'AxisConfig]]
+ [:arc {:optional true} [:ref #'RectConfig]]
+ [:axisYBand {:optional true} [:ref #'AxisConfig]]
+ [:scale {:optional true} [:ref #'ScaleConfig]]
+ [:locale {:optional true} [:ref #'Locale]]
+ [:mark {:optional true} [:ref #'MarkConfig]]
+ [:bar {:optional true} [:ref #'BarConfig]]
+ [:concat {:optional true} [:ref #'CompositionConfig]]
+ [:axisQuantitative {:optional true} [:ref #'AxisConfig]]
+ [:axisXBand {:optional true} [:ref #'AxisConfig]]
+ [:countTitle {:optional true} string?]
+ [:rule {:optional true} [:ref #'MarkConfig]]
+ [:axisYDiscrete {:optional true} [:ref #'AxisConfig]]
+ [:facet {:optional true} [:ref #'CompositionConfig]]
+ [:circle {:optional true} [:ref #'MarkConfig]]
+ [:axisBottom {:optional true} [:ref #'AxisConfig]]
+ [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
+ [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
+ [:legend {:optional true} [:ref #'LegendConfig]]
+ [:timeFormatType {:optional true} string?]
+ [:lineBreak {:optional true} [:or string? [:ref #'ExprRef]]]
+ [:axisBand {:optional true} [:ref #'AxisConfig]]
+ [:header {:optional true} [:ref #'HeaderConfig]]
+ [:font {:optional true} string?]
+ [:trail {:optional true} [:ref #'LineConfig]]
+ [:title {:optional true} [:ref #'TitleConfig]]
+ [:axisX {:optional true} [:ref #'AxisConfig]]
+ [:fieldTitle {:optional true} [:enum "verbal" "functional" "plain"]]
+ [:axisPoint {:optional true} [:ref #'AxisConfig]]
+ [:axisYTemporal {:optional true} [:ref #'AxisConfig]]
+ [:numberFormat {:optional true} string?]
+ [:normalizedNumberFormatType {:optional true} string?]
+ [:style {:optional true} [:ref #'StyleConfigIndex]]
+ [:axisYQuantitative {:optional true} [:ref #'AxisConfig]]
+ [:axisXTemporal {:optional true} [:ref #'AxisConfig]]
+ [:axisRight {:optional true} [:ref #'AxisConfig]]
+ [:errorband {:optional true} [:ref #'ErrorBandConfig]]
+ [:axisXQuantitative {:optional true} [:ref #'AxisConfig]]
+ [:axisXPoint {:optional true} [:ref #'AxisConfig]]
+ [:aria {:optional true} boolean?]
+ [:line {:optional true} [:ref #'LineConfig]]
+ [:axisXDiscrete {:optional true} [:ref #'AxisConfig]]
+ [:square {:optional true} [:ref #'MarkConfig]]
+ [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
+ [:customFormatTypes {:optional true} boolean?]
+ [:image {:optional true} [:ref #'RectConfig]]
+ [:point {:optional true} [:ref #'MarkConfig]]
+ [:area {:optional true} [:ref #'AreaConfig]]
+ [:headerFacet {:optional true} [:ref #'HeaderConfig]]
+ [:axis {:optional true} [:ref #'AxisConfig]]
+ [:axisYPoint {:optional true} [:ref #'AxisConfig]]
+ [:selection {:optional true} [:ref #'SelectionConfig]]
+ [:rect {:optional true} [:ref #'RectConfig]]
+ [:timeFormat {:optional true} string?]
+ [:projection {:optional true} [:ref #'ProjectionConfig]]
+ [:boxplot {:optional true} [:ref #'BoxPlotConfig]]
+ [:view {:optional true} [:ref #'ViewConfig]]
+ [:range {:optional true} [:ref #'RangeConfig]]
+ [:numberFormatType {:optional true} string?]
+ [:axisDiscrete {:optional true} [:ref #'AxisConfig]]
+ [:text {:optional true} [:ref #'MarkConfig]]]
 )
 
 (def Dict_InlineDataset_
@@ -17131,17 +9081,19 @@
 )
 
 (def Datasets
-  [:ref #:json-schema{:original-name "Datasets"} #'Dict_InlineDataset_]
+  [:ref
+ #:json-schema{:original-name "Dict<InlineDataset>"}
+ #'Dict_InlineDataset_]
 )
 
 (def ParseValue
-  [:or #:json-schema{:original-name "ParseValue"} string? nil?]
+  [:or string? nil?]
 )
 
 (def Vector2_DateTime_
   [:vector
  #:json-schema{:original-name "Vector2<DateTime>"}
- [:ref #:json-schema{:original-name "DateTime"} #'DateTime]]
+ [:ref #'DateTime]]
 )
 
 (def Vector2_boolean_
@@ -17150,7 +9102,6 @@
 
 (def SelectionInitInterval
   [:or
- #:json-schema{:original-name "SelectionInitInterval"}
  [:ref
   #:json-schema{:original-name "Vector2<boolean>"}
   #'Vector2_boolean_]
@@ -17167,765 +9118,331 @@
 
 (def TopLevelConcatSpec
   [:map
- {:closed true, :json-schema/original-name "TopLevelConcatSpec"}
- [:description
-  {:json-schema/original-name "description", :optional true}
-  string?]
+ {:closed true}
+ [:description {:optional true} string?]
  [:autosize
-  {:json-schema/original-name "autosize", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "AutosizeType"} #'AutosizeType]
-   [:ref
-    #:json-schema{:original-name "AutoSizeParams"}
-    #'AutoSizeParams]]]
+  {:optional true}
+  [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
  [:align
-  {:json-schema/original-name "align", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "LayoutAlign"} #'LayoutAlign]
+   [:ref #'LayoutAlign]
    [:ref
     #:json-schema{:original-name "RowCol<LayoutAlign>"}
     #'RowCol_LayoutAlign_]]]
- [:datasets
-  {:json-schema/original-name "datasets", :optional true}
-  [:ref #:json-schema{:original-name "Datasets"} #'Datasets]]
- [:transform
-  {:json-schema/original-name "transform", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
- [:usermeta
-  {:json-schema/original-name "usermeta", :optional true}
-  [:ref #:json-schema{:original-name "Dict"} #'Dict]]
- [:config
-  {:json-schema/original-name "config", :optional true}
-  [:ref #:json-schema{:original-name "Config"} #'Config]]
- [:concat
-  #:json-schema{:original-name "concat"}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "NonNormalizedSpec"}
-    #'NonNormalizedSpec]]]
- [:columns
-  {:json-schema/original-name "columns", :optional true}
-  number?]
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:background
-  {:json-schema/original-name "background", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:params
-  {:json-schema/original-name "params", :optional true}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "TopLevelParameter"}
-    #'TopLevelParameter]]]
- [:bounds
-  {:json-schema/original-name "bounds", :optional true}
-  [:enum "full" "flush"]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
+ [:datasets {:optional true} [:ref #'Datasets]]
+ [:transform {:optional true} [:vector [:ref #'Transform]]]
+ [:usermeta {:optional true} [:ref #'Dict]]
+ [:config {:optional true} [:ref #'Config]]
+ [:concat [:vector [:ref #'NonNormalizedSpec]]]
+ [:columns {:optional true} number?]
+ [:name {:optional true} string?]
+ [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
+ [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
+ [:bounds {:optional true} [:enum "full" "flush"]]
+ [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
  [:center
-  {:json-schema/original-name "center", :optional true}
+  {:optional true}
   [:or
    boolean?
    [:ref
     #:json-schema{:original-name "RowCol<boolean>"}
     #'RowCol_boolean_]]]
- [:padding
-  {:json-schema/original-name "padding", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Padding"} #'Padding]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref #:json-schema{:original-name "Resolve"} #'Resolve]]
- [:$schema
-  {:json-schema/original-name "$schema", :optional true}
-  string?]
+ [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
+ [:resolve {:optional true} [:ref #'Resolve]]
+ [:$schema {:optional true} string?]
  [:spacing
-  {:json-schema/original-name "spacing", :optional true}
+  {:optional true}
   [:or
    number?
    [:ref
     #:json-schema{:original-name "RowCol<number>"}
     #'RowCol_number_]]]
- [:data
-  {:json-schema/original-name "data", :optional true}
-  [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]
+ [:data {:optional true} [:or [:ref #'Data] nil?]]]
 )
 
 (def TopLevelFacetSpec
   [:map
- {:closed true, :json-schema/original-name "TopLevelFacetSpec"}
- [:description
-  {:json-schema/original-name "description", :optional true}
-  string?]
+ {:closed true}
+ [:description {:optional true} string?]
  [:autosize
-  {:json-schema/original-name "autosize", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "AutosizeType"} #'AutosizeType]
-   [:ref
-    #:json-schema{:original-name "AutoSizeParams"}
-    #'AutoSizeParams]]]
+  {:optional true}
+  [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
  [:align
-  {:json-schema/original-name "align", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "LayoutAlign"} #'LayoutAlign]
+   [:ref #'LayoutAlign]
    [:ref
     #:json-schema{:original-name "RowCol<LayoutAlign>"}
     #'RowCol_LayoutAlign_]]]
- [:datasets
-  {:json-schema/original-name "datasets", :optional true}
-  [:ref #:json-schema{:original-name "Datasets"} #'Datasets]]
- [:transform
-  {:json-schema/original-name "transform", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
- [:usermeta
-  {:json-schema/original-name "usermeta", :optional true}
-  [:ref #:json-schema{:original-name "Dict"} #'Dict]]
- [:config
-  {:json-schema/original-name "config", :optional true}
-  [:ref #:json-schema{:original-name "Config"} #'Config]]
- [:columns
-  {:json-schema/original-name "columns", :optional true}
-  number?]
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:facet
-  #:json-schema{:original-name "facet"}
-  [:or
-   [:ref #:json-schema{:original-name "FacetFieldDef"} #'FacetFieldDef]
-   [:ref #:json-schema{:original-name "FacetMapping"} #'FacetMapping]]]
- [:background
-  {:json-schema/original-name "background", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:params
-  {:json-schema/original-name "params", :optional true}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "TopLevelParameter"}
-    #'TopLevelParameter]]]
- [:bounds
-  {:json-schema/original-name "bounds", :optional true}
-  [:enum "full" "flush"]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
+ [:datasets {:optional true} [:ref #'Datasets]]
+ [:transform {:optional true} [:vector [:ref #'Transform]]]
+ [:usermeta {:optional true} [:ref #'Dict]]
+ [:config {:optional true} [:ref #'Config]]
+ [:columns {:optional true} number?]
+ [:name {:optional true} string?]
+ [:facet [:or [:ref #'FacetFieldDef] [:ref #'FacetMapping]]]
+ [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
+ [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
+ [:bounds {:optional true} [:enum "full" "flush"]]
+ [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
  [:center
-  {:json-schema/original-name "center", :optional true}
+  {:optional true}
   [:or
    boolean?
    [:ref
     #:json-schema{:original-name "RowCol<boolean>"}
     #'RowCol_boolean_]]]
- [:spec
-  #:json-schema{:original-name "spec"}
-  [:or
-   [:ref #:json-schema{:original-name "LayerSpec"} #'LayerSpec]
-   [:ref
-    #:json-schema{:original-name "UnitSpecWithFrame"}
-    #'UnitSpecWithFrame]]]
- [:padding
-  {:json-schema/original-name "padding", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Padding"} #'Padding]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref #:json-schema{:original-name "Resolve"} #'Resolve]]
- [:$schema
-  {:json-schema/original-name "$schema", :optional true}
-  string?]
+ [:spec [:or [:ref #'LayerSpec] [:ref #'UnitSpecWithFrame]]]
+ [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
+ [:resolve {:optional true} [:ref #'Resolve]]
+ [:$schema {:optional true} string?]
  [:spacing
-  {:json-schema/original-name "spacing", :optional true}
+  {:optional true}
   [:or
    number?
    [:ref
     #:json-schema{:original-name "RowCol<number>"}
     #'RowCol_number_]]]
- [:data
-  #:json-schema{:original-name "data"}
-  [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]
+ [:data [:or [:ref #'Data] nil?]]]
 )
 
 (def TopLevelHConcatSpec
   [:map
- {:closed true, :json-schema/original-name "TopLevelHConcatSpec"}
- [:description
-  {:json-schema/original-name "description", :optional true}
-  string?]
+ {:closed true}
+ [:description {:optional true} string?]
  [:autosize
-  {:json-schema/original-name "autosize", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "AutosizeType"} #'AutosizeType]
-   [:ref
-    #:json-schema{:original-name "AutoSizeParams"}
-    #'AutoSizeParams]]]
- [:datasets
-  {:json-schema/original-name "datasets", :optional true}
-  [:ref #:json-schema{:original-name "Datasets"} #'Datasets]]
- [:transform
-  {:json-schema/original-name "transform", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
- [:hconcat
-  #:json-schema{:original-name "hconcat"}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "NonNormalizedSpec"}
-    #'NonNormalizedSpec]]]
- [:usermeta
-  {:json-schema/original-name "usermeta", :optional true}
-  [:ref #:json-schema{:original-name "Dict"} #'Dict]]
- [:config
-  {:json-schema/original-name "config", :optional true}
-  [:ref #:json-schema{:original-name "Config"} #'Config]]
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:background
-  {:json-schema/original-name "background", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:params
-  {:json-schema/original-name "params", :optional true}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "TopLevelParameter"}
-    #'TopLevelParameter]]]
- [:bounds
-  {:json-schema/original-name "bounds", :optional true}
-  [:enum "full" "flush"]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
- [:center
-  {:json-schema/original-name "center", :optional true}
-  boolean?]
- [:padding
-  {:json-schema/original-name "padding", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Padding"} #'Padding]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref #:json-schema{:original-name "Resolve"} #'Resolve]]
- [:$schema
-  {:json-schema/original-name "$schema", :optional true}
-  string?]
- [:spacing
-  {:json-schema/original-name "spacing", :optional true}
-  number?]
- [:data
-  {:json-schema/original-name "data", :optional true}
-  [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]
+  {:optional true}
+  [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
+ [:datasets {:optional true} [:ref #'Datasets]]
+ [:transform {:optional true} [:vector [:ref #'Transform]]]
+ [:hconcat [:vector [:ref #'NonNormalizedSpec]]]
+ [:usermeta {:optional true} [:ref #'Dict]]
+ [:config {:optional true} [:ref #'Config]]
+ [:name {:optional true} string?]
+ [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
+ [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
+ [:bounds {:optional true} [:enum "full" "flush"]]
+ [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
+ [:center {:optional true} boolean?]
+ [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
+ [:resolve {:optional true} [:ref #'Resolve]]
+ [:$schema {:optional true} string?]
+ [:spacing {:optional true} number?]
+ [:data {:optional true} [:or [:ref #'Data] nil?]]]
 )
 
 (def TopLevelLayerSpec
   [:map
- {:closed true, :json-schema/original-name "TopLevelLayerSpec"}
- [:description
-  {:json-schema/original-name "description", :optional true}
-  string?]
- [:encoding
-  {:json-schema/original-name "encoding", :optional true}
-  [:ref
-   #:json-schema{:original-name "SharedEncoding"}
-   #'SharedEncoding]]
+ {:closed true}
+ [:description {:optional true} string?]
+ [:encoding {:optional true} [:ref #'SharedEncoding]]
  [:autosize
-  {:json-schema/original-name "autosize", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "AutosizeType"} #'AutosizeType]
-   [:ref
-    #:json-schema{:original-name "AutoSizeParams"}
-    #'AutoSizeParams]]]
- [:datasets
-  {:json-schema/original-name "datasets", :optional true}
-  [:ref #:json-schema{:original-name "Datasets"} #'Datasets]]
- [:transform
-  {:json-schema/original-name "transform", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
- [:usermeta
-  {:json-schema/original-name "usermeta", :optional true}
-  [:ref #:json-schema{:original-name "Dict"} #'Dict]]
- [:config
-  {:json-schema/original-name "config", :optional true}
-  [:ref #:json-schema{:original-name "Config"} #'Config]]
- [:name {:json-schema/original-name "name", :optional true} string?]
+  {:optional true}
+  [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
+ [:datasets {:optional true} [:ref #'Datasets]]
+ [:transform {:optional true} [:vector [:ref #'Transform]]]
+ [:usermeta {:optional true} [:ref #'Dict]]
+ [:config {:optional true} [:ref #'Config]]
+ [:name {:optional true} string?]
  [:width
-  {:json-schema/original-name "width", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "Step"} #'Step]
-   [:enum "container"]]]
- [:background
-  {:json-schema/original-name "background", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:params
-  {:json-schema/original-name "params", :optional true}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "TopLevelParameter"}
-    #'TopLevelParameter]]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
- [:layer
-  #:json-schema{:original-name "layer"}
-  [:vector
-   [:or
-    [:ref #:json-schema{:original-name "LayerSpec"} #'LayerSpec]
-    [:ref #:json-schema{:original-name "UnitSpec"} #'UnitSpec]]]]
- [:padding
-  {:json-schema/original-name "padding", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Padding"} #'Padding]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref #:json-schema{:original-name "Resolve"} #'Resolve]]
- [:$schema
-  {:json-schema/original-name "$schema", :optional true}
-  string?]
- [:projection
-  {:json-schema/original-name "projection", :optional true}
-  [:ref #:json-schema{:original-name "Projection"} #'Projection]]
- [:view
-  {:json-schema/original-name "view", :optional true}
-  [:ref
-   #:json-schema{:original-name "ViewBackground"}
-   #'ViewBackground]]
+  {:optional true}
+  [:or number? [:ref #'Step] [:enum "container"]]]
+ [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
+ [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
+ [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
+ [:layer [:vector [:or [:ref #'LayerSpec] [:ref #'UnitSpec]]]]
+ [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
+ [:resolve {:optional true} [:ref #'Resolve]]
+ [:$schema {:optional true} string?]
+ [:projection {:optional true} [:ref #'Projection]]
+ [:view {:optional true} [:ref #'ViewBackground]]
  [:height
-  {:json-schema/original-name "height", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "Step"} #'Step]
-   [:enum "container"]]]
- [:data
-  {:json-schema/original-name "data", :optional true}
-  [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]
+  {:optional true}
+  [:or number? [:ref #'Step] [:enum "container"]]]
+ [:data {:optional true} [:or [:ref #'Data] nil?]]]
 )
 
 (def TopLevelRepeatSpec
   [:or
- #:json-schema{:original-name "TopLevelRepeatSpec"}
  [:map
   {:closed true}
-  [:description
-   {:json-schema/original-name "description", :optional true}
-   string?]
+  [:description {:optional true} string?]
   [:autosize
-   {:json-schema/original-name "autosize", :optional true}
-   [:or
-    [:ref #:json-schema{:original-name "AutosizeType"} #'AutosizeType]
-    [:ref
-     #:json-schema{:original-name "AutoSizeParams"}
-     #'AutoSizeParams]]]
+   {:optional true}
+   [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
   [:align
-   {:json-schema/original-name "align", :optional true}
+   {:optional true}
    [:or
-    [:ref #:json-schema{:original-name "LayoutAlign"} #'LayoutAlign]
+    [:ref #'LayoutAlign]
     [:ref
      #:json-schema{:original-name "RowCol<LayoutAlign>"}
      #'RowCol_LayoutAlign_]]]
-  [:datasets
-   {:json-schema/original-name "datasets", :optional true}
-   [:ref #:json-schema{:original-name "Datasets"} #'Datasets]]
-  [:transform
-   {:json-schema/original-name "transform", :optional true}
-   [:vector
-    [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
-  [:usermeta
-   {:json-schema/original-name "usermeta", :optional true}
-   [:ref #:json-schema{:original-name "Dict"} #'Dict]]
-  [:config
-   {:json-schema/original-name "config", :optional true}
-   [:ref #:json-schema{:original-name "Config"} #'Config]]
-  [:columns
-   {:json-schema/original-name "columns", :optional true}
-   number?]
-  [:name {:json-schema/original-name "name", :optional true} string?]
-  [:background
-   {:json-schema/original-name "background", :optional true}
-   [:or
-    [:ref #:json-schema{:original-name "Color"} #'Color]
-    [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-  [:params
-   {:json-schema/original-name "params", :optional true}
-   [:vector
-    [:ref
-     #:json-schema{:original-name "TopLevelParameter"}
-     #'TopLevelParameter]]]
-  [:bounds
-   {:json-schema/original-name "bounds", :optional true}
-   [:enum "full" "flush"]]
-  [:title
-   {:json-schema/original-name "title", :optional true}
-   [:or
-    [:ref #:json-schema{:original-name "Text"} #'Text]
-    [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
+  [:datasets {:optional true} [:ref #'Datasets]]
+  [:transform {:optional true} [:vector [:ref #'Transform]]]
+  [:usermeta {:optional true} [:ref #'Dict]]
+  [:config {:optional true} [:ref #'Config]]
+  [:columns {:optional true} number?]
+  [:name {:optional true} string?]
+  [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
+  [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
+  [:bounds {:optional true} [:enum "full" "flush"]]
+  [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
   [:center
-   {:json-schema/original-name "center", :optional true}
+   {:optional true}
    [:or
     boolean?
     [:ref
      #:json-schema{:original-name "RowCol<boolean>"}
      #'RowCol_boolean_]]]
-  [:spec
-   #:json-schema{:original-name "spec"}
-   [:ref
-    #:json-schema{:original-name "NonNormalizedSpec"}
-    #'NonNormalizedSpec]]
-  [:padding
-   {:json-schema/original-name "padding", :optional true}
-   [:or
-    [:ref #:json-schema{:original-name "Padding"} #'Padding]
-    [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-  [:resolve
-   {:json-schema/original-name "resolve", :optional true}
-   [:ref #:json-schema{:original-name "Resolve"} #'Resolve]]
-  [:repeat
-   #:json-schema{:original-name "repeat"}
-   [:or
-    [:vector string?]
-    [:ref
-     #:json-schema{:original-name "RepeatMapping"}
-     #'RepeatMapping]]]
-  [:$schema
-   {:json-schema/original-name "$schema", :optional true}
-   string?]
+  [:spec [:ref #'NonNormalizedSpec]]
+  [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
+  [:resolve {:optional true} [:ref #'Resolve]]
+  [:repeat [:or [:vector string?] [:ref #'RepeatMapping]]]
+  [:$schema {:optional true} string?]
   [:spacing
-   {:json-schema/original-name "spacing", :optional true}
+   {:optional true}
    [:or
     number?
     [:ref
      #:json-schema{:original-name "RowCol<number>"}
      #'RowCol_number_]]]
-  [:data
-   {:json-schema/original-name "data", :optional true}
-   [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]
+  [:data {:optional true} [:or [:ref #'Data] nil?]]]
  [:map
   {:closed true}
-  [:description
-   {:json-schema/original-name "description", :optional true}
-   string?]
+  [:description {:optional true} string?]
   [:autosize
-   {:json-schema/original-name "autosize", :optional true}
-   [:or
-    [:ref #:json-schema{:original-name "AutosizeType"} #'AutosizeType]
-    [:ref
-     #:json-schema{:original-name "AutoSizeParams"}
-     #'AutoSizeParams]]]
+   {:optional true}
+   [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
   [:align
-   {:json-schema/original-name "align", :optional true}
+   {:optional true}
    [:or
-    [:ref #:json-schema{:original-name "LayoutAlign"} #'LayoutAlign]
+    [:ref #'LayoutAlign]
     [:ref
      #:json-schema{:original-name "RowCol<LayoutAlign>"}
      #'RowCol_LayoutAlign_]]]
-  [:datasets
-   {:json-schema/original-name "datasets", :optional true}
-   [:ref #:json-schema{:original-name "Datasets"} #'Datasets]]
-  [:transform
-   {:json-schema/original-name "transform", :optional true}
-   [:vector
-    [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
-  [:usermeta
-   {:json-schema/original-name "usermeta", :optional true}
-   [:ref #:json-schema{:original-name "Dict"} #'Dict]]
-  [:config
-   {:json-schema/original-name "config", :optional true}
-   [:ref #:json-schema{:original-name "Config"} #'Config]]
-  [:columns
-   {:json-schema/original-name "columns", :optional true}
-   number?]
-  [:name {:json-schema/original-name "name", :optional true} string?]
-  [:background
-   {:json-schema/original-name "background", :optional true}
-   [:or
-    [:ref #:json-schema{:original-name "Color"} #'Color]
-    [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-  [:params
-   {:json-schema/original-name "params", :optional true}
-   [:vector
-    [:ref
-     #:json-schema{:original-name "TopLevelParameter"}
-     #'TopLevelParameter]]]
-  [:bounds
-   {:json-schema/original-name "bounds", :optional true}
-   [:enum "full" "flush"]]
-  [:title
-   {:json-schema/original-name "title", :optional true}
-   [:or
-    [:ref #:json-schema{:original-name "Text"} #'Text]
-    [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
+  [:datasets {:optional true} [:ref #'Datasets]]
+  [:transform {:optional true} [:vector [:ref #'Transform]]]
+  [:usermeta {:optional true} [:ref #'Dict]]
+  [:config {:optional true} [:ref #'Config]]
+  [:columns {:optional true} number?]
+  [:name {:optional true} string?]
+  [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
+  [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
+  [:bounds {:optional true} [:enum "full" "flush"]]
+  [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
   [:center
-   {:json-schema/original-name "center", :optional true}
+   {:optional true}
    [:or
     boolean?
     [:ref
      #:json-schema{:original-name "RowCol<boolean>"}
      #'RowCol_boolean_]]]
-  [:spec
-   #:json-schema{:original-name "spec"}
-   [:or
-    [:ref #:json-schema{:original-name "LayerSpec"} #'LayerSpec]
-    [:ref
-     #:json-schema{:original-name "UnitSpecWithFrame"}
-     #'UnitSpecWithFrame]]]
-  [:padding
-   {:json-schema/original-name "padding", :optional true}
-   [:or
-    [:ref #:json-schema{:original-name "Padding"} #'Padding]
-    [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
-  [:resolve
-   {:json-schema/original-name "resolve", :optional true}
-   [:ref #:json-schema{:original-name "Resolve"} #'Resolve]]
-  [:repeat
-   #:json-schema{:original-name "repeat"}
-   [:ref
-    #:json-schema{:original-name "LayerRepeatMapping"}
-    #'LayerRepeatMapping]]
-  [:$schema
-   {:json-schema/original-name "$schema", :optional true}
-   string?]
+  [:spec [:or [:ref #'LayerSpec] [:ref #'UnitSpecWithFrame]]]
+  [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
+  [:resolve {:optional true} [:ref #'Resolve]]
+  [:repeat [:ref #'LayerRepeatMapping]]
+  [:$schema {:optional true} string?]
   [:spacing
-   {:json-schema/original-name "spacing", :optional true}
+   {:optional true}
    [:or
     number?
     [:ref
      #:json-schema{:original-name "RowCol<number>"}
      #'RowCol_number_]]]
-  [:data
-   {:json-schema/original-name "data", :optional true}
-   [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]]
+  [:data {:optional true} [:or [:ref #'Data] nil?]]]]
 )
 
 (def TopLevelVConcatSpec
   [:map
- {:closed true, :json-schema/original-name "TopLevelVConcatSpec"}
- [:description
-  {:json-schema/original-name "description", :optional true}
-  string?]
+ {:closed true}
+ [:description {:optional true} string?]
  [:autosize
-  {:json-schema/original-name "autosize", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "AutosizeType"} #'AutosizeType]
-   [:ref
-    #:json-schema{:original-name "AutoSizeParams"}
-    #'AutoSizeParams]]]
- [:datasets
-  {:json-schema/original-name "datasets", :optional true}
-  [:ref #:json-schema{:original-name "Datasets"} #'Datasets]]
- [:transform
-  {:json-schema/original-name "transform", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
- [:usermeta
-  {:json-schema/original-name "usermeta", :optional true}
-  [:ref #:json-schema{:original-name "Dict"} #'Dict]]
- [:config
-  {:json-schema/original-name "config", :optional true}
-  [:ref #:json-schema{:original-name "Config"} #'Config]]
- [:name {:json-schema/original-name "name", :optional true} string?]
- [:background
-  {:json-schema/original-name "background", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:params
-  {:json-schema/original-name "params", :optional true}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "TopLevelParameter"}
-    #'TopLevelParameter]]]
- [:bounds
-  {:json-schema/original-name "bounds", :optional true}
-  [:enum "full" "flush"]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
- [:center
-  {:json-schema/original-name "center", :optional true}
-  boolean?]
- [:padding
-  {:json-schema/original-name "padding", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Padding"} #'Padding]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref #:json-schema{:original-name "Resolve"} #'Resolve]]
- [:$schema
-  {:json-schema/original-name "$schema", :optional true}
-  string?]
- [:vconcat
-  #:json-schema{:original-name "vconcat"}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "NonNormalizedSpec"}
-    #'NonNormalizedSpec]]]
- [:spacing
-  {:json-schema/original-name "spacing", :optional true}
-  number?]
- [:data
-  {:json-schema/original-name "data", :optional true}
-  [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]
+  {:optional true}
+  [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
+ [:datasets {:optional true} [:ref #'Datasets]]
+ [:transform {:optional true} [:vector [:ref #'Transform]]]
+ [:usermeta {:optional true} [:ref #'Dict]]
+ [:config {:optional true} [:ref #'Config]]
+ [:name {:optional true} string?]
+ [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
+ [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
+ [:bounds {:optional true} [:enum "full" "flush"]]
+ [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
+ [:center {:optional true} boolean?]
+ [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
+ [:resolve {:optional true} [:ref #'Resolve]]
+ [:$schema {:optional true} string?]
+ [:vconcat [:vector [:ref #'NonNormalizedSpec]]]
+ [:spacing {:optional true} number?]
+ [:data {:optional true} [:or [:ref #'Data] nil?]]]
 )
 
 (def TopLevelUnitSpec
   [:map
- {:closed true, :json-schema/original-name "TopLevelUnitSpec"}
- [:description
-  {:json-schema/original-name "description", :optional true}
-  string?]
- [:encoding
-  {:json-schema/original-name "encoding", :optional true}
-  [:ref
-   #:json-schema{:original-name "FacetedEncoding"}
-   #'FacetedEncoding]]
+ {:closed true}
+ [:description {:optional true} string?]
+ [:encoding {:optional true} [:ref #'FacetedEncoding]]
  [:autosize
-  {:json-schema/original-name "autosize", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "AutosizeType"} #'AutosizeType]
-   [:ref
-    #:json-schema{:original-name "AutoSizeParams"}
-    #'AutoSizeParams]]]
+  {:optional true}
+  [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
  [:align
-  {:json-schema/original-name "align", :optional true}
+  {:optional true}
   [:or
-   [:ref #:json-schema{:original-name "LayoutAlign"} #'LayoutAlign]
+   [:ref #'LayoutAlign]
    [:ref
     #:json-schema{:original-name "RowCol<LayoutAlign>"}
     #'RowCol_LayoutAlign_]]]
- [:datasets
-  {:json-schema/original-name "datasets", :optional true}
-  [:ref #:json-schema{:original-name "Datasets"} #'Datasets]]
- [:transform
-  {:json-schema/original-name "transform", :optional true}
-  [:vector
-   [:ref #:json-schema{:original-name "Transform"} #'Transform]]]
- [:usermeta
-  {:json-schema/original-name "usermeta", :optional true}
-  [:ref #:json-schema{:original-name "Dict"} #'Dict]]
- [:config
-  {:json-schema/original-name "config", :optional true}
-  [:ref #:json-schema{:original-name "Config"} #'Config]]
- [:mark
-  #:json-schema{:original-name "mark"}
-  [:ref #:json-schema{:original-name "AnyMark"} #'AnyMark]]
- [:name {:json-schema/original-name "name", :optional true} string?]
+ [:datasets {:optional true} [:ref #'Datasets]]
+ [:transform {:optional true} [:vector [:ref #'Transform]]]
+ [:usermeta {:optional true} [:ref #'Dict]]
+ [:config {:optional true} [:ref #'Config]]
+ [:mark [:ref #'AnyMark]]
+ [:name {:optional true} string?]
  [:width
-  {:json-schema/original-name "width", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "Step"} #'Step]
-   [:enum "container"]]]
- [:background
-  {:json-schema/original-name "background", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Color"} #'Color]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:params
-  {:json-schema/original-name "params", :optional true}
-  [:vector
-   [:ref
-    #:json-schema{:original-name "TopLevelParameter"}
-    #'TopLevelParameter]]]
- [:bounds
-  {:json-schema/original-name "bounds", :optional true}
-  [:enum "full" "flush"]]
- [:title
-  {:json-schema/original-name "title", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Text"} #'Text]
-   [:ref #:json-schema{:original-name "TitleParams"} #'TitleParams]]]
+  {:optional true}
+  [:or number? [:ref #'Step] [:enum "container"]]]
+ [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
+ [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
+ [:bounds {:optional true} [:enum "full" "flush"]]
+ [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
  [:center
-  {:json-schema/original-name "center", :optional true}
+  {:optional true}
   [:or
    boolean?
    [:ref
     #:json-schema{:original-name "RowCol<boolean>"}
     #'RowCol_boolean_]]]
- [:padding
-  {:json-schema/original-name "padding", :optional true}
-  [:or
-   [:ref #:json-schema{:original-name "Padding"} #'Padding]
-   [:ref #:json-schema{:original-name "ExprRef"} #'ExprRef]]]
- [:resolve
-  {:json-schema/original-name "resolve", :optional true}
-  [:ref #:json-schema{:original-name "Resolve"} #'Resolve]]
- [:$schema
-  {:json-schema/original-name "$schema", :optional true}
-  string?]
- [:projection
-  {:json-schema/original-name "projection", :optional true}
-  [:ref #:json-schema{:original-name "Projection"} #'Projection]]
- [:view
-  {:json-schema/original-name "view", :optional true}
-  [:ref
-   #:json-schema{:original-name "ViewBackground"}
-   #'ViewBackground]]
+ [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
+ [:resolve {:optional true} [:ref #'Resolve]]
+ [:$schema {:optional true} string?]
+ [:projection {:optional true} [:ref #'Projection]]
+ [:view {:optional true} [:ref #'ViewBackground]]
  [:height
-  {:json-schema/original-name "height", :optional true}
-  [:or
-   number?
-   [:ref #:json-schema{:original-name "Step"} #'Step]
-   [:enum "container"]]]
+  {:optional true}
+  [:or number? [:ref #'Step] [:enum "container"]]]
  [:spacing
-  {:json-schema/original-name "spacing", :optional true}
+  {:optional true}
   [:or
    number?
    [:ref
     #:json-schema{:original-name "RowCol<number>"}
     #'RowCol_number_]]]
- [:data
-  #:json-schema{:original-name "data"}
-  [:or [:ref #:json-schema{:original-name "Data"} #'Data] nil?]]]
+ [:data [:or [:ref #'Data] nil?]]]
 )
 
 (def TopLevelSpec
   [:or
- #:json-schema{:original-name "TopLevelSpec"}
- [:ref
-  #:json-schema{:original-name "TopLevelUnitSpec"}
-  #'TopLevelUnitSpec]
- [:ref
-  #:json-schema{:original-name "TopLevelFacetSpec"}
-  #'TopLevelFacetSpec]
- [:ref
-  #:json-schema{:original-name "TopLevelLayerSpec"}
-  #'TopLevelLayerSpec]
- [:ref
-  #:json-schema{:original-name "TopLevelRepeatSpec"}
-  #'TopLevelRepeatSpec]
- [:ref
-  #:json-schema{:original-name "TopLevelConcatSpec"}
-  #'TopLevelConcatSpec]
- [:ref
-  #:json-schema{:original-name "TopLevelVConcatSpec"}
-  #'TopLevelVConcatSpec]
- [:ref
-  #:json-schema{:original-name "TopLevelHConcatSpec"}
-  #'TopLevelHConcatSpec]]
+ [:ref #'TopLevelUnitSpec]
+ [:ref #'TopLevelFacetSpec]
+ [:ref #'TopLevelLayerSpec]
+ [:ref #'TopLevelRepeatSpec]
+ [:ref #'TopLevelConcatSpec]
+ [:ref #'TopLevelVConcatSpec]
+ [:ref #'TopLevelHConcatSpec]]
 )
 
 ;; Top Level Schema
 (def schema
-  [:ref #:json-schema{:original-name "TopLevelSpec"} #'TopLevelSpec]
+  [:ref #'TopLevelSpec]
 )
