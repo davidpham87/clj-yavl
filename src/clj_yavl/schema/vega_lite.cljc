@@ -2,60 +2,98 @@
   (:require [malli.core :as m]
             [clj-yavl.schema.vega-lite.primitives :as primitives]))
 (declare PredicateComposition Spec Stream Geometry ConcatSpec_GenericSpec_)
+
 (def FieldName primitives/FieldName)
+
 (def ArgminDef [:map {:closed true} [:argmin [:ref #'FieldName]]])
+
 (def NonArgAggregateOp primitives/NonArgAggregateOp)
+
 (def ArgmaxDef [:map {:closed true} [:argmax [:ref #'FieldName]]])
+
 (def Aggregate
   [:or [:ref #'NonArgAggregateOp] [:ref #'ArgmaxDef] [:ref #'ArgminDef]])
+
 (def AggregateOp primitives/AggregateOp)
+
 (def AggregatedFieldDef
   [:map {:closed true} [:as [:ref #'FieldName]]
    [:field {:optional true} [:ref #'FieldName]] [:op [:ref #'AggregateOp]]])
+
 (def AggregateTransform
   [:map {:closed true} [:aggregate [:vector [:ref #'AggregatedFieldDef]]]
    [:groupby {:optional true} [:vector [:ref #'FieldName]]]])
+
 (def Align primitives/Align)
+
 (def SortByChannel primitives/SortByChannel)
+
 (def SortByChannelDesc primitives/SortByChannelDesc)
+
 (def SortOrder primitives/SortOrder)
+
 (def AllSortString
   [:or [:ref #'SortOrder] [:ref #'SortByChannel] [:ref #'SortByChannelDesc]])
+
 (def StrokeJoin primitives/StrokeJoin)
+
 (def FontStyle primitives/FontStyle)
+
 (def ColorName primitives/ColorName)
+
 (def HexColor primitives/HexColor)
+
 (def Color [:or [:ref #'ColorName] [:ref #'HexColor] string?])
+
 (def GradientStop
   [:map {:closed true} [:color [:ref #'Color]] [:offset number?]])
+
 (def RadialGradient
   [:map {:closed true} [:stops [:vector [:ref #'GradientStop]]]
    [:y1 {:optional true} number?] [:r2 {:optional true} number?]
    [:r1 {:optional true} number?] [:id {:optional true} string?]
    [:gradient [:= "radial"]] [:x1 {:optional true} number?]
    [:y2 {:optional true} number?] [:x2 {:optional true} number?]])
+
 (def LinearGradient
   [:map {:closed true} [:gradient [:= "linear"]] [:id {:optional true} string?]
    [:stops [:vector [:ref #'GradientStop]]] [:x1 {:optional true} number?]
    [:x2 {:optional true} number?] [:y1 {:optional true} number?]
    [:y2 {:optional true} number?]])
+
 (def Gradient [:or [:ref #'LinearGradient] [:ref #'RadialGradient]])
+
 (def Blend primitives/Blend)
+
 (def Cursor primitives/Cursor)
+
 (def TextDirection primitives/TextDirection)
+
 (def Orientation primitives/Orientation)
+
 (def Interpolate primitives/Interpolate)
+
 (def Baseline primitives/Baseline)
+
 (def TextBaseline
   [:or [:ref #'Baseline] [:enum "alphabetic" "line-top" "line-bottom"]])
+
 (def TooltipContent primitives/TooltipContent)
+
 (def StrokeCap primitives/StrokeCap)
+
 (def SymbolShape primitives/SymbolShape)
+
 (def FontWeight primitives/FontWeight)
+
 (def URI primitives/URI)
+
 (def MarkInvalidDataMode primitives/MarkInvalidDataMode)
+
 (def Text primitives/Text)
+
 (def ExprRef primitives/ExprRef)
+
 (def OverlayMarkDef
   [:map {:closed true}
    [:y {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
@@ -144,8 +182,11 @@
    [:height {:optional true} [:or number? [:ref #'ExprRef]]]
    [:text {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]
    [:xOffset {:optional true} [:or number? [:ref #'ExprRef]]]])
+
 (def RelativeBandSize primitives/RelativeBandSize)
+
 (def Mark primitives/Mark)
+
 (def MarkDef
   [:map {:closed true}
    [:y {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
@@ -244,10 +285,15 @@
     [:or number? [:ref #'ExprRef] [:ref #'RelativeBandSize]]]
    [:text {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]
    [:xOffset {:optional true} [:or number? [:ref #'ExprRef]]]])
+
 (def ErrorBar primitives/ErrorBar)
+
 (def ErrorBand primitives/ErrorBand)
+
 (def BoxPlot primitives/BoxPlot)
+
 (def CompositeMark [:or [:ref #'BoxPlot] [:ref #'ErrorBar] [:ref #'ErrorBand]])
+
 (def LineConfig
   [:map {:closed true}
    [:y {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
@@ -328,6 +374,7 @@
    [:strokeOffset {:optional true} [:or number? [:ref #'ExprRef]]]
    [:height {:optional true} [:or number? [:ref #'ExprRef]]]
    [:text {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]])
+
 (def RectConfig
   [:map {:closed true}
    [:y {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
@@ -410,6 +457,7 @@
    [:strokeOffset {:optional true} [:or number? [:ref #'ExprRef]]]
    [:height {:optional true} [:or number? [:ref #'ExprRef]]]
    [:text {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]])
+
 (def TickConfig
   [:map {:closed true}
    [:y {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
@@ -494,6 +542,7 @@
    [:strokeOffset {:optional true} [:or number? [:ref #'ExprRef]]]
    [:height {:optional true} [:or number? [:ref #'ExprRef]]]
    [:text {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]])
+
 (def BarConfig
   [:map {:closed true}
    [:y {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
@@ -577,6 +626,7 @@
    [:strokeOffset {:optional true} [:or number? [:ref #'ExprRef]]]
    [:height {:optional true} [:or number? [:ref #'ExprRef]]]
    [:text {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]])
+
 (def MarkConfig
   [:map {:closed true}
    [:y {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
@@ -655,6 +705,7 @@
    [:strokeOffset {:optional true} [:or number? [:ref #'ExprRef]]]
    [:height {:optional true} [:or number? [:ref #'ExprRef]]]
    [:text {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]])
+
 (def AreaConfig
   [:map {:closed true}
    [:y {:optional true} [:or number? [:ref #'ExprRef] [:enum "height"]]]
@@ -736,10 +787,13 @@
    [:strokeOffset {:optional true} [:or number? [:ref #'ExprRef]]]
    [:height {:optional true} [:or number? [:ref #'ExprRef]]]
    [:text {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]])
+
 (def AnyMarkConfig
   [:or [:ref #'MarkConfig] [:ref #'AreaConfig] [:ref #'BarConfig]
    [:ref #'RectConfig] [:ref #'LineConfig] [:ref #'TickConfig]])
+
 (def ErrorBarExtent primitives/ErrorBarExtent)
+
 (def ErrorBandDef
   [:map {:closed true} [:clip {:optional true} boolean?]
    [:color {:optional true}
@@ -751,6 +805,7 @@
    [:borders {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
    [:opacity {:optional true} number?]
    [:extent {:optional true} [:ref #'ErrorBarExtent]]])
+
 (def BoxPlotDef
   [:map {:closed true} [:clip {:optional true} boolean?]
    [:color {:optional true}
@@ -766,6 +821,7 @@
    [:opacity {:optional true} number?]
    [:extent {:optional true} [:or number? [:enum "min-max"]]]
    [:ticks {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]])
+
 (def ErrorBarDef
   [:map {:closed true} [:thickness {:optional true} number?]
    [:clip {:optional true} boolean?]
@@ -776,24 +832,33 @@
    [:size {:optional true} number?] [:opacity {:optional true} number?]
    [:extent {:optional true} [:ref #'ErrorBarExtent]]
    [:ticks {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]])
+
 (def CompositeMarkDef
   [:or [:ref #'BoxPlotDef] [:ref #'ErrorBarDef] [:ref #'ErrorBandDef]])
+
 (def AnyMark
   [:or [:ref #'CompositeMark] [:ref #'CompositeMarkDef] [:ref #'Mark]
    [:ref #'MarkDef]])
+
 (def AutosizeType primitives/AutosizeType)
+
 (def AutoSizeParams
   [:map {:closed true} [:contains {:optional true} [:enum "content" "padding"]]
    [:resize {:optional true} boolean?]
    [:type {:optional true} [:ref #'AutosizeType]]])
+
 (def LogicalNot_Predicate_
   [:map {:closed true, :json-schema/original-name "LogicalNot<Predicate>"}
    [:not [:ref #'PredicateComposition]]])
+
 (def LogicalOr_Predicate_
   [:map {:closed true, :json-schema/original-name "LogicalOr<Predicate>"}
    [:or [:vector [:ref #'PredicateComposition]]]])
+
 (def Day primitives/Day)
+
 (def Month primitives/Month)
+
 (def DateTime
   [:map {:closed true} [:quarter {:optional true} number?]
    [:day {:optional true} [:or [:ref #'Day] string?]]
@@ -802,40 +867,54 @@
    [:seconds {:optional true} number?] [:year {:optional true} number?]
    [:hours {:optional true} number?] [:milliseconds {:optional true} number?]
    [:minutes {:optional true} number?]])
+
 (def BinnedTimeUnit primitives/BinnedTimeUnit)
+
 (def LocalMultiTimeUnit primitives/LocalMultiTimeUnit)
+
 (def UtcMultiTimeUnit primitives/UtcMultiTimeUnit)
+
 (def MultiTimeUnit [:or [:ref #'LocalMultiTimeUnit] [:ref #'UtcMultiTimeUnit]])
+
 (def UtcSingleTimeUnit primitives/UtcSingleTimeUnit)
+
 (def LocalSingleTimeUnit primitives/LocalSingleTimeUnit)
+
 (def SingleTimeUnit
   [:or [:ref #'LocalSingleTimeUnit] [:ref #'UtcSingleTimeUnit]])
+
 (def TimeUnit [:or [:ref #'SingleTimeUnit] [:ref #'MultiTimeUnit]])
+
 (def TimeUnitParams
   [:map {:closed true} [:binned {:optional true} boolean?]
    [:maxbins {:optional true} number?] [:step {:optional true} number?]
    [:unit {:optional true} [:ref #'TimeUnit]] [:utc {:optional true} boolean?]])
+
 (def FieldEqualPredicate
   [:map {:closed true}
    [:equal [:or string? number? boolean? [:ref #'DateTime] [:ref #'ExprRef]]]
    [:field [:ref #'FieldName]]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]])
+
 (def FieldGTEPredicate
   [:map {:closed true} [:field [:ref #'FieldName]]
    [:gte [:or string? number? [:ref #'DateTime] [:ref #'ExprRef]]]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]])
+
 (def FieldValidPredicate
   [:map {:closed true} [:field [:ref #'FieldName]]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
    [:valid boolean?]])
+
 (def FieldGTPredicate
   [:map {:closed true} [:field [:ref #'FieldName]]
    [:gt [:or string? number? [:ref #'DateTime] [:ref #'ExprRef]]]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]])
+
 (def FieldRangePredicate
   [:map {:closed true} [:field [:ref #'FieldName]]
    [:range
@@ -843,20 +922,25 @@
      [:ref #'ExprRef]]]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]])
+
 (def FieldLTEPredicate
   [:map {:closed true} [:field [:ref #'FieldName]]
    [:lte [:or string? number? [:ref #'DateTime] [:ref #'ExprRef]]]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]])
+
 (def FieldLTPredicate
   [:map {:closed true} [:field [:ref #'FieldName]]
    [:lt [:or string? number? [:ref #'DateTime] [:ref #'ExprRef]]]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]])
+
 (def ParameterName primitives/ParameterName)
+
 (def ParameterPredicate
   [:map {:closed true} [:empty {:optional true} boolean?]
    [:param [:ref #'ParameterName]]])
+
 (def FieldOneOfPredicate
   [:map {:closed true} [:field [:ref #'FieldName]]
    [:oneOf
@@ -864,15 +948,18 @@
      [:vector [:ref #'DateTime]]]]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]])
+
 (def Predicate
   [:or [:ref #'FieldEqualPredicate] [:ref #'FieldRangePredicate]
    [:ref #'FieldOneOfPredicate] [:ref #'FieldLTPredicate]
    [:ref #'FieldGTPredicate] [:ref #'FieldLTEPredicate]
    [:ref #'FieldGTEPredicate] [:ref #'FieldValidPredicate]
    [:ref #'ParameterPredicate] string?])
+
 (def LogicalAnd_Predicate_
   [:map {:closed true, :json-schema/original-name "LogicalAnd<Predicate>"}
    [:and [:vector [:ref #'PredicateComposition]]]])
+
 (def PredicateComposition
   [:or
    [:ref {:json-schema/original-name "LogicalNot<Predicate>"}
@@ -881,6 +968,7 @@
     #'LogicalAnd_Predicate_]
    [:ref {:json-schema/original-name "LogicalOr<Predicate>"}
     #'LogicalOr_Predicate_] [:ref #'Predicate]])
+
 (def ConditionalPredicate__ValueDef__Color_null___ExprRef__
   [:or
    {:json-schema/original-name
@@ -888,6 +976,7 @@
    [:map {:closed true} [:test [:ref #'PredicateComposition]]
     [:value [:or [:ref #'Color] nil?]]]
    [:map {:closed true} [:expr string?] [:test [:ref #'PredicateComposition]]]])
+
 (def ConditionalAxisProperty__Color_null__
   [:or {:json-schema/original-name "ConditionalAxisProperty<(Color|null)>"}
    [:map {:closed true}
@@ -916,12 +1005,16 @@
            "ConditionalPredicate<(ValueDef<(Color|null)>|ExprRef)>"}
         #'ConditionalPredicate__ValueDef__Color_null___ExprRef__]]]]
     [:expr string?]]])
+
 (def ConditionalAxisColor
   [:ref {:json-schema/original-name "ConditionalAxisProperty<(Color|null)>"}
    #'ConditionalAxisProperty__Color_null__])
+
 (def TimeInterval primitives/TimeInterval)
+
 (def TimeIntervalStep
   [:map {:closed true} [:interval [:ref #'TimeInterval]] [:step number?]])
+
 (def ConditionalPredicate__ValueDef__Align_null___ExprRef__
   [:or
    {:json-schema/original-name
@@ -929,6 +1022,7 @@
    [:map {:closed true} [:test [:ref #'PredicateComposition]]
     [:value [:or [:ref #'Align] nil?]]]
    [:map {:closed true} [:expr string?] [:test [:ref #'PredicateComposition]]]])
+
 (def ConditionalAxisProperty__Align_null__
   [:or {:json-schema/original-name "ConditionalAxisProperty<(Align|null)>"}
    [:map {:closed true}
@@ -957,9 +1051,11 @@
            "ConditionalPredicate<(ValueDef<(Align|null)>|ExprRef)>"}
         #'ConditionalPredicate__ValueDef__Align_null___ExprRef__]]]]
     [:expr string?]]])
+
 (def ConditionalAxisLabelAlign
   [:ref {:json-schema/original-name "ConditionalAxisProperty<(Align|null)>"}
    #'ConditionalAxisProperty__Align_null__])
+
 (def ConditionalPredicate__ValueDef__TextBaseline_null___ExprRef__
   [:or
    {:json-schema/original-name
@@ -967,6 +1063,7 @@
    [:map {:closed true} [:test [:ref #'PredicateComposition]]
     [:value [:or [:ref #'TextBaseline] nil?]]]
    [:map {:closed true} [:expr string?] [:test [:ref #'PredicateComposition]]]])
+
 (def ConditionalAxisProperty__TextBaseline_null__
   [:or
    {:json-schema/original-name "ConditionalAxisProperty<(TextBaseline|null)>"}
@@ -996,11 +1093,14 @@
            "ConditionalPredicate<(ValueDef<(TextBaseline|null)>|ExprRef)>"}
         #'ConditionalPredicate__ValueDef__TextBaseline_null___ExprRef__]]]]
     [:expr string?]]])
+
 (def ConditionalAxisLabelBaseline
   [:ref
    {:json-schema/original-name "ConditionalAxisProperty<(TextBaseline|null)>"}
    #'ConditionalAxisProperty__TextBaseline_null__])
+
 (def TitleAnchor primitives/TitleAnchor)
+
 (def ConditionalPredicate__ValueDef__FontStyle_null___ExprRef__
   [:or
    {:json-schema/original-name
@@ -1008,6 +1108,7 @@
    [:map {:closed true} [:test [:ref #'PredicateComposition]]
     [:value [:or [:ref #'FontStyle] nil?]]]
    [:map {:closed true} [:expr string?] [:test [:ref #'PredicateComposition]]]])
+
 (def ConditionalAxisProperty__FontStyle_null__
   [:or {:json-schema/original-name "ConditionalAxisProperty<(FontStyle|null)>"}
    [:map {:closed true}
@@ -1036,10 +1137,13 @@
            "ConditionalPredicate<(ValueDef<(FontStyle|null)>|ExprRef)>"}
         #'ConditionalPredicate__ValueDef__FontStyle_null___ExprRef__]]]]
     [:expr string?]]])
+
 (def ConditionalAxisLabelFontStyle
   [:ref {:json-schema/original-name "ConditionalAxisProperty<(FontStyle|null)>"}
    #'ConditionalAxisProperty__FontStyle_null__])
+
 (def LabelOverlap primitives/LabelOverlap)
+
 (def ConditionalPredicate__ValueDef__FontWeight_null___ExprRef__
   [:or
    {:json-schema/original-name
@@ -1047,6 +1151,7 @@
    [:map {:closed true} [:test [:ref #'PredicateComposition]]
     [:value [:or [:ref #'FontWeight] nil?]]]
    [:map {:closed true} [:expr string?] [:test [:ref #'PredicateComposition]]]])
+
 (def ConditionalAxisProperty__FontWeight_null__
   [:or {:json-schema/original-name "ConditionalAxisProperty<(FontWeight|null)>"}
    [:map {:closed true}
@@ -1075,14 +1180,20 @@
            "ConditionalPredicate<(ValueDef<(FontWeight|null)>|ExprRef)>"}
         #'ConditionalPredicate__ValueDef__FontWeight_null___ExprRef__]]]]
     [:expr string?]]])
+
 (def ConditionalAxisLabelFontWeight
   [:ref
    {:json-schema/original-name "ConditionalAxisProperty<(FontWeight|null)>"}
    #'ConditionalAxisProperty__FontWeight_null__])
+
 (def AxisOrient primitives/AxisOrient)
+
 (def Dict primitives/Dict)
+
 (def TimeFormatSpecifier primitives/TimeFormatSpecifier)
+
 (def Format [:or string? [:ref #'TimeFormatSpecifier] [:ref #'Dict]])
+
 (def ConditionalPredicate__ValueDef__number_null___ExprRef__
   [:or
    {:json-schema/original-name
@@ -1090,6 +1201,7 @@
    [:map {:closed true} [:test [:ref #'PredicateComposition]]
     [:value [:or number? nil?]]]
    [:map {:closed true} [:expr string?] [:test [:ref #'PredicateComposition]]]])
+
 (def ConditionalAxisProperty__number_null__
   [:or {:json-schema/original-name "ConditionalAxisProperty<(number|null)>"}
    [:map {:closed true}
@@ -1118,9 +1230,11 @@
            "ConditionalPredicate<(ValueDef<(number|null)>|ExprRef)>"}
         #'ConditionalPredicate__ValueDef__number_null___ExprRef__]]]]
     [:expr string?]]])
+
 (def ConditionalAxisNumber
   [:ref {:json-schema/original-name "ConditionalAxisProperty<(number|null)>"}
    #'ConditionalAxisProperty__number_null__])
+
 (def ConditionalPredicate__ValueDef__number___null___ExprRef__
   [:or
    {:json-schema/original-name
@@ -1128,6 +1242,7 @@
    [:map {:closed true} [:test [:ref #'PredicateComposition]]
     [:value [:or [:vector number?] nil?]]]
    [:map {:closed true} [:expr string?] [:test [:ref #'PredicateComposition]]]])
+
 (def ConditionalAxisProperty__number___null__
   [:or {:json-schema/original-name "ConditionalAxisProperty<(number[]|null)>"}
    [:map {:closed true}
@@ -1156,9 +1271,11 @@
            "ConditionalPredicate<(ValueDef<(number[]|null)>|ExprRef)>"}
         #'ConditionalPredicate__ValueDef__number___null___ExprRef__]]]]
     [:expr string?]]])
+
 (def ConditionalAxisNumberArray
   [:ref {:json-schema/original-name "ConditionalAxisProperty<(number[]|null)>"}
    #'ConditionalAxisProperty__number___null__])
+
 (def ConditionalPredicate__ValueDef__string_null___ExprRef__
   [:or
    {:json-schema/original-name
@@ -1166,6 +1283,7 @@
    [:map {:closed true} [:test [:ref #'PredicateComposition]]
     [:value [:or string? nil?]]]
    [:map {:closed true} [:expr string?] [:test [:ref #'PredicateComposition]]]])
+
 (def ConditionalAxisProperty__string_null__
   [:or {:json-schema/original-name "ConditionalAxisProperty<(string|null)>"}
    [:map {:closed true}
@@ -1194,9 +1312,11 @@
            "ConditionalPredicate<(ValueDef<(string|null)>|ExprRef)>"}
         #'ConditionalPredicate__ValueDef__string_null___ExprRef__]]]]
     [:expr string?]]])
+
 (def ConditionalAxisString
   [:ref {:json-schema/original-name "ConditionalAxisProperty<(string|null)>"}
    #'ConditionalAxisProperty__string_null__])
+
 (def Axis
   [:map {:closed true}
    [:titleOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
@@ -1313,6 +1433,7 @@
     [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]
      [:ref #'ConditionalAxisColor]]]
    [:domainWidth {:optional true} [:or number? [:ref #'ExprRef]]]])
+
 (def AxisConfig
   [:map {:closed true}
    [:titleOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
@@ -1430,13 +1551,19 @@
     [:or [:or nil? [:ref #'Color]] [:ref #'ExprRef]
      [:ref #'ConditionalAxisColor]]]
    [:domainWidth {:optional true} [:or number? [:ref #'ExprRef]]]])
+
 (def ResolveMode primitives/ResolveMode)
+
 (def AxisResolveMap
   [:map {:closed true} [:x {:optional true} [:ref #'ResolveMode]]
    [:y {:optional true} [:ref #'ResolveMode]]])
+
 (def BBox primitives/BBox)
+
 (def TitleFrame primitives/TitleFrame)
+
 (def TitleOrient primitives/TitleOrient)
+
 (def BaseTitleNoValueRefs
   [:map {:closed true} [:baseline {:optional true} [:ref #'TextBaseline]]
    [:align {:optional true} [:ref #'Align]]
@@ -1467,7 +1594,9 @@
    [:zindex {:optional true} [:or number? [:ref #'ExprRef]]]
    [:subtitleFontWeight {:optional true}
     [:or [:ref #'FontWeight] [:ref #'ExprRef]]]])
+
 (def SingleDefUnitChannel primitives/SingleDefUnitChannel)
+
 (def ParameterExtent
   [:or
    [:map {:closed true} [:field {:optional true} [:ref #'FieldName]]
@@ -1475,7 +1604,9 @@
    [:map {:closed true}
     [:encoding {:optional true} [:ref #'SingleDefUnitChannel]]
     [:param [:ref #'ParameterName]]]])
+
 (def BinExtent [:or [:vector number?] [:ref #'ParameterExtent]])
+
 (def BinParams
   [:map {:closed true} [:maxbins {:optional true} number?]
    [:divide {:optional true} [:vector number?]]
@@ -1485,39 +1616,48 @@
    [:binned {:optional true} boolean?] [:nice {:optional true} boolean?]
    [:anchor {:optional true} number?] [:base {:optional true} number?]
    [:step {:optional true} number?]])
+
 (def BinTransform
   [:map {:closed true}
    [:as [:or [:ref #'FieldName] [:vector [:ref #'FieldName]]]]
    [:bin [:or [:ref #'BinParams] [:enum true]]] [:field [:ref #'FieldName]]])
+
 (def Element primitives/Element)
+
 (def BindCheckbox
   [:map {:closed true} [:debounce {:optional true} number?]
    [:element {:optional true} [:ref #'Element]] [:input [:= "checkbox"]]
    [:name {:optional true} string?]])
+
 (def BindDirect
   [:map {:closed true} [:debounce {:optional true} number?]
    [:element [:or [:ref #'Element] [:map {:closed true}]]]
    [:event {:optional true} string?]])
+
 (def BindInput
   [:map {:closed true} [:autocomplete {:optional true} string?]
    [:debounce {:optional true} number?]
    [:element {:optional true} [:ref #'Element]]
    [:input {:optional true} string?] [:name {:optional true} string?]
    [:placeholder {:optional true} string?]])
+
 (def BindRadioSelect
   [:map {:closed true} [:debounce {:optional true} number?]
    [:element {:optional true} [:ref #'Element]]
    [:input [:enum "radio" "select"]]
    [:labels {:optional true} [:vector string?]] [:name {:optional true} string?]
    [:options [:vector any?]]])
+
 (def BindRange
   [:map {:closed true} [:debounce {:optional true} number?]
    [:element {:optional true} [:ref #'Element]] [:input [:= "range"]]
    [:max {:optional true} number?] [:min {:optional true} number?]
    [:name {:optional true} string?] [:step {:optional true} number?]])
+
 (def Binding
   [:or [:ref #'BindCheckbox] [:ref #'BindRadioSelect] [:ref #'BindRange]
    [:ref #'BindInput] [:ref #'BindDirect]])
+
 (def BoxPlotConfig
   [:map {:closed true}
    [:box {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
@@ -1527,6 +1667,7 @@
    [:rule {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
    [:size {:optional true} number?]
    [:ticks {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]])
+
 (def BrushConfig
   [:map {:closed true} [:cursor {:optional true} [:ref #'Cursor]]
    [:fill {:optional true} [:ref #'Color]]
@@ -1536,10 +1677,14 @@
    [:strokeDashOffset {:optional true} number?]
    [:strokeOpacity {:optional true} number?]
    [:strokeWidth {:optional true} number?]])
+
 (def CalculateTransform
   [:map {:closed true} [:as [:ref #'FieldName]] [:calculate string?]])
+
 (def Categorical primitives/Categorical)
+
 (def StandardType primitives/StandardType)
+
 (def ConditionalPredicate_ValueDef__Gradient_string_null_ExprRef___
   [:map
    {:closed true,
@@ -1547,6 +1692,7 @@
       "ConditionalPredicate<ValueDef<(Gradient|string|null|ExprRef)>>"}
    [:test [:ref #'PredicateComposition]]
    [:value [:or [:ref #'Gradient] [:ref #'ExprRef] string? nil?]]])
+
 (def ConditionalParameter_ValueDef__Gradient_string_null_ExprRef___
   [:map
    {:closed true,
@@ -1554,6 +1700,7 @@
       "ConditionalParameter<ValueDef<(Gradient|string|null|ExprRef)>>"}
    [:empty {:optional true} boolean?] [:param [:ref #'ParameterName]]
    [:value [:or [:ref #'Gradient] [:ref #'ExprRef] string? nil?]]])
+
 (def ConditionalValueDef__Gradient_string_null_ExprRef__
   [:or
    {:json-schema/original-name
@@ -1566,28 +1713,45 @@
     {:json-schema/original-name
        "ConditionalParameter<ValueDef<(Gradient|string|null|ExprRef)>>"}
     #'ConditionalParameter_ValueDef__Gradient_string_null_ExprRef___]])
+
 (def RepeatRef primitives/RepeatRef)
+
 (def Field [:or [:ref #'FieldName] [:ref #'RepeatRef]])
+
 (def ScaleInterpolateParams primitives/ScaleInterpolateParams)
+
 (def Cyclical primitives/Cyclical)
+
 (def SequentialMultiHue primitives/SequentialMultiHue)
+
 (def Diverging primitives/Diverging)
+
 (def SequentialSingleHue primitives/SequentialSingleHue)
+
 (def ColorScheme
   [:or [:ref #'Categorical] [:ref #'SequentialSingleHue]
    [:ref #'SequentialMultiHue] [:ref #'Diverging] [:ref #'Cyclical]])
+
 (def SchemeParams
   [:map {:closed true} [:count {:optional true} number?]
    [:extent {:optional true} [:vector number?]] [:name [:ref #'ColorScheme]]])
+
 (def DomainUnionWith
   [:map {:closed true}
    [:unionWith [:vector [:or number? string? boolean? [:ref #'DateTime]]]]])
+
 (def RangeEnum primitives/RangeEnum)
+
 (def ScaleBinParams primitives/ScaleBinParams)
+
 (def ScaleBins [:or [:vector number?] [:ref #'ScaleBinParams]])
+
 (def ScaleInterpolateEnum primitives/ScaleInterpolateEnum)
+
 (def FieldRange primitives/FieldRange)
+
 (def ScaleType primitives/ScaleType)
+
 (def Scale
   [:map {:closed true} [:zero {:optional true} [:or boolean? [:ref #'ExprRef]]]
    [:exponent {:optional true} [:or number? [:ref #'ExprRef]]]
@@ -1627,23 +1791,32 @@
     [:or [:ref #'RangeEnum] [:ref #'FieldRange]
      [:vector [:or number? string? [:vector number?] [:ref #'ExprRef]]]]]
    [:domainMid {:optional true} [:or number? [:ref #'ExprRef]]]])
+
 (def EncodingSortField
   [:map {:closed true} [:field {:optional true} [:ref #'Field]]
    [:op {:optional true} [:ref #'NonArgAggregateOp]]
    [:order {:optional true} [:or [:ref #'SortOrder] nil?]]])
+
 (def SortArray
   [:or [:vector number?] [:vector string?] [:vector boolean?]
    [:vector [:ref #'DateTime]]])
+
 (def SortByEncoding
   [:map {:closed true} [:encoding [:ref #'SortByChannel]]
    [:order {:optional true} [:or [:ref #'SortOrder] nil?]]])
+
 (def Sort
   [:or [:ref #'SortArray] [:ref #'AllSortString] [:ref #'EncodingSortField]
    [:ref #'SortByEncoding] nil?])
+
 (def LayoutAlign primitives/LayoutAlign)
+
 (def TickCount [:or number? [:ref #'TimeInterval] [:ref #'TimeIntervalStep]])
+
 (def Orient primitives/Orient)
+
 (def LegendOrient primitives/LegendOrient)
+
 (def Legend
   [:map {:closed true}
    [:titleOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
@@ -1725,6 +1898,7 @@
     [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
    [:legendY {:optional true} [:or number? [:ref #'ExprRef]]]
    [:symbolLimit {:optional true} [:or number? [:ref #'ExprRef]]]])
+
 (def FieldOrDatumDefWithCondition_MarkPropFieldDef__Gradient_string_null__
   [:map
    {:closed true,
@@ -1752,8 +1926,11 @@
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
    [:aggregate {:optional true} [:ref #'Aggregate]]
    [:sort {:optional true} [:ref #'Sort]]])
+
 (def Type primitives/Type)
+
 (def PrimitiveValue primitives/PrimitiveValue)
+
 (def ConditionalParameter_MarkPropFieldOrDatumDef_
   [:or
    {:json-schema/original-name "ConditionalParameter<MarkPropFieldOrDatumDef>"}
@@ -1778,6 +1955,7 @@
     [:scale {:optional true} [:or [:ref #'Scale] nil?]]
     [:title {:optional true} [:or [:ref #'Text] nil?]]
     [:type {:optional true} [:ref #'Type]]]])
+
 (def ConditionalPredicate_MarkPropFieldOrDatumDef_
   [:or
    {:json-schema/original-name "ConditionalPredicate<MarkPropFieldOrDatumDef>"}
@@ -1801,6 +1979,7 @@
     [:test [:ref #'PredicateComposition]]
     [:title {:optional true} [:or [:ref #'Text] nil?]]
     [:type {:optional true} [:ref #'Type]]]])
+
 (def ConditionalMarkPropFieldOrDatumDef
   [:or
    [:ref
@@ -1809,6 +1988,7 @@
    [:ref
     {:json-schema/original-name "ConditionalParameter<MarkPropFieldOrDatumDef>"}
     #'ConditionalParameter_MarkPropFieldOrDatumDef_]])
+
 (def ValueDefWithCondition_MarkPropFieldOrDatumDef__Gradient_string_null__
   [:map
    {:closed true,
@@ -1827,6 +2007,7 @@
        #'ConditionalValueDef__Gradient_string_null_ExprRef__]]]]
    [:value {:optional true}
     [:or [:ref #'Gradient] [:ref #'ExprRef] string? nil?]]])
+
 (def FieldOrDatumDefWithCondition_DatumDef__Gradient_string_null__
   [:map
    {:closed true,
@@ -1848,6 +2029,7 @@
     [:or [:ref #'PrimitiveValue] [:ref #'DateTime] [:ref #'ExprRef]
      [:ref #'RepeatRef]]] [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'Type]]])
+
 (def MarkPropDef__Gradient_string_null__
   [:or {:json-schema/original-name "MarkPropDef<(Gradient|string|null)>"}
    [:ref
@@ -1862,45 +2044,62 @@
     {:json-schema/original-name
        "ValueDefWithCondition<MarkPropFieldOrDatumDef,(Gradient|string|null)>"}
     #'ValueDefWithCondition_MarkPropFieldOrDatumDef__Gradient_string_null__]])
+
 (def ColorDef
   [:ref {:json-schema/original-name "MarkPropDef<(Gradient|string|null)>"}
    #'MarkPropDef__Gradient_string_null__])
+
 (def CompositionConfig primitives/CompositionConfig)
+
 (def RowCol_number_ primitives/RowCol_number_)
+
 (def InlineDataset primitives/InlineDataset)
+
 (def Parse primitives/Parse)
+
 (def CsvDataFormat
   [:map {:closed true} [:parse {:optional true} [:or [:ref #'Parse] nil?]]
    [:type {:optional true} [:enum "csv" "tsv"]]])
+
 (def JsonDataFormat
   [:map {:closed true} [:parse {:optional true} [:or [:ref #'Parse] nil?]]
    [:property {:optional true} string?] [:type {:optional true} [:= "json"]]])
+
 (def TopoDataFormat
   [:map {:closed true} [:feature {:optional true} string?]
    [:mesh {:optional true} string?]
    [:parse {:optional true} [:or [:ref #'Parse] nil?]]
    [:type {:optional true} [:= "topojson"]]])
+
 (def DsvDataFormat
   [:map {:closed true} [:delimiter string?]
    [:parse {:optional true} [:or [:ref #'Parse] nil?]]
    [:type {:optional true} [:= "dsv"]]])
+
 (def DataFormat
   [:or [:ref #'CsvDataFormat] [:ref #'DsvDataFormat] [:ref #'JsonDataFormat]
    [:ref #'TopoDataFormat]])
+
 (def InlineData
   [:map {:closed true} [:format {:optional true} [:ref #'DataFormat]]
    [:name {:optional true} string?] [:values [:ref #'InlineDataset]]])
+
 (def NamedData
   [:map {:closed true} [:format {:optional true} [:ref #'DataFormat]]
    [:name string?]])
+
 (def UrlData
   [:map {:closed true} [:format {:optional true} [:ref #'DataFormat]]
    [:name {:optional true} string?] [:url string?]])
+
 (def DataSource [:or [:ref #'UrlData] [:ref #'InlineData] [:ref #'NamedData]])
+
 (def Vector2_number_ primitives/Vector2_number_)
+
 (def Vector2_Vector2_number__
   [:vector {:json-schema/original-name "Vector2<Vector2<number>>"}
    [:ref {:json-schema/original-name "Vector2<number>"} #'Vector2_number_]])
+
 (def GraticuleParams
   [:map {:closed true}
    [:extent {:optional true}
@@ -1918,24 +2117,32 @@
     [:ref {:json-schema/original-name "Vector2<number>"} #'Vector2_number_]]
    [:stepMinor {:optional true}
     [:ref {:json-schema/original-name "Vector2<number>"} #'Vector2_number_]]])
+
 (def GraticuleGenerator
   [:map {:closed true} [:graticule [:or [:ref #'GraticuleParams] [:enum true]]]
    [:name {:optional true} string?]])
+
 (def SequenceParams
   [:map {:closed true} [:as {:optional true} [:ref #'FieldName]]
    [:start number?] [:step {:optional true} number?] [:stop number?]])
+
 (def SequenceGenerator
   [:map {:closed true} [:name {:optional true} string?]
    [:sequence [:ref #'SequenceParams]]])
+
 (def SphereGenerator primitives/SphereGenerator)
+
 (def Generator
   [:or [:ref #'SequenceGenerator] [:ref #'SphereGenerator]
    [:ref #'GraticuleGenerator]])
+
 (def Data [:or [:ref #'DataSource] [:ref #'Generator]])
+
 (def PivotTransform
   [:map {:closed true} [:groupby {:optional true} [:vector [:ref #'FieldName]]]
    [:limit {:optional true} number?] [:op {:optional true} [:ref #'AggregateOp]]
    [:pivot [:ref #'FieldName]] [:value [:ref #'FieldName]]])
+
 (def DensityTransform
   [:map {:closed true} [:maxsteps {:optional true} number?]
    [:cumulative {:optional true} boolean?] [:counts {:optional true} boolean?]
@@ -1946,56 +2153,71 @@
    [:extent {:optional true} [:vector number?]]
    [:resolve {:optional true} [:enum "independent" "shared"]]
    [:density [:ref #'FieldName]]])
+
 (def FoldTransform
   [:map {:closed true} [:as {:optional true} [:vector [:ref #'FieldName]]]
    [:fold [:vector [:ref #'FieldName]]]])
+
 (def SortField
   [:map {:closed true} [:field [:ref #'FieldName]]
    [:order {:optional true} [:or [:ref #'SortOrder] nil?]]])
+
 (def WindowOnlyOp primitives/WindowOnlyOp)
+
 (def WindowFieldDef
   [:map {:closed true} [:as [:ref #'FieldName]]
    [:field {:optional true} [:ref #'FieldName]]
    [:op [:or [:ref #'AggregateOp] [:ref #'WindowOnlyOp]]]
    [:param {:optional true} number?]])
+
 (def WindowTransform
   [:map {:closed true} [:frame {:optional true} [:vector [:or nil? number?]]]
    [:groupby {:optional true} [:vector [:ref #'FieldName]]]
    [:ignorePeers {:optional true} boolean?]
    [:sort {:optional true} [:vector [:ref #'SortField]]]
    [:window [:vector [:ref #'WindowFieldDef]]]])
+
 (def FilterTransform
   [:map {:closed true} [:filter [:ref #'PredicateComposition]]])
+
 (def ExtentTransform
   [:map {:closed true} [:extent [:ref #'FieldName]]
    [:param [:ref #'ParameterName]]])
+
 (def FlattenTransform
   [:map {:closed true} [:as {:optional true} [:vector [:ref #'FieldName]]]
    [:flatten [:vector [:ref #'FieldName]]]])
+
 (def JoinAggregateFieldDef
   [:map {:closed true} [:as [:ref #'FieldName]]
    [:field {:optional true} [:ref #'FieldName]] [:op [:ref #'AggregateOp]]])
+
 (def JoinAggregateTransform
   [:map {:closed true} [:groupby {:optional true} [:vector [:ref #'FieldName]]]
    [:joinaggregate [:vector [:ref #'JoinAggregateFieldDef]]]])
+
 (def LookupData
   [:map {:closed true} [:data [:ref #'Data]]
    [:fields {:optional true} [:vector [:ref #'FieldName]]]
    [:key [:ref #'FieldName]]])
+
 (def LookupSelection
   [:map {:closed true} [:fields {:optional true} [:vector [:ref #'FieldName]]]
    [:key [:ref #'FieldName]] [:param [:ref #'ParameterName]]])
+
 (def LookupTransform
   [:map {:closed true}
    [:as {:optional true} [:or [:ref #'FieldName] [:vector [:ref #'FieldName]]]]
    [:default {:optional true} any?]
    [:from [:or [:ref #'LookupData] [:ref #'LookupSelection]]]
    [:lookup string?]])
+
 (def LoessTransform
   [:map {:closed true} [:as {:optional true} [:vector [:ref #'FieldName]]]
    [:bandwidth {:optional true} number?]
    [:groupby {:optional true} [:vector [:ref #'FieldName]]]
    [:loess [:ref #'FieldName]] [:on [:ref #'FieldName]]])
+
 (def StackTransform
   [:map {:closed true}
    [:as [:or [:ref #'FieldName] [:vector [:ref #'FieldName]]]]
@@ -2003,19 +2225,24 @@
    [:offset {:optional true} [:enum "zero" "center" "normalize"]]
    [:sort {:optional true} [:vector [:ref #'SortField]]]
    [:stack [:ref #'FieldName]]])
+
 (def QuantileTransform
   [:map {:closed true} [:as {:optional true} [:vector [:ref #'FieldName]]]
    [:groupby {:optional true} [:vector [:ref #'FieldName]]]
    [:probs {:optional true} [:vector number?]] [:quantile [:ref #'FieldName]]
    [:step {:optional true} number?]])
+
 (def TimeUnitTransformParams
   [:map {:closed true} [:maxbins {:optional true} number?]
    [:step {:optional true} number?] [:unit {:optional true} [:ref #'TimeUnit]]
    [:utc {:optional true} boolean?]])
+
 (def TimeUnitTransform
   [:map {:closed true} [:as [:ref #'FieldName]] [:field [:ref #'FieldName]]
    [:timeUnit [:or [:ref #'TimeUnit] [:ref #'TimeUnitTransformParams]]]])
+
 (def SampleTransform primitives/SampleTransform)
+
 (def RegressionTransform
   [:map {:closed true} [:as {:optional true} [:vector [:ref #'FieldName]]]
    [:extent {:optional true} [:vector number?]]
@@ -2023,8 +2250,11 @@
    [:method {:optional true} [:enum "linear" "log" "exp" "pow" "quad" "poly"]]
    [:on [:ref #'FieldName]] [:order {:optional true} number?]
    [:params {:optional true} boolean?] [:regression [:ref #'FieldName]]])
+
 (def ImputeMethod primitives/ImputeMethod)
+
 (def ImputeSequence primitives/ImputeSequence)
+
 (def ImputeTransform
   [:map {:closed true} [:frame {:optional true} [:vector [:or nil? number?]]]
    [:groupby {:optional true} [:vector [:ref #'FieldName]]]
@@ -2032,6 +2262,7 @@
    [:keyvals {:optional true} [:or [:vector any?] [:ref #'ImputeSequence]]]
    [:method {:optional true} [:ref #'ImputeMethod]]
    [:value {:optional true} any?]])
+
 (def Transform
   [:or [:ref #'AggregateTransform] [:ref #'BinTransform]
    [:ref #'CalculateTransform] [:ref #'DensityTransform]
@@ -2042,6 +2273,7 @@
    [:ref #'RegressionTransform] [:ref #'TimeUnitTransform]
    [:ref #'SampleTransform] [:ref #'StackTransform] [:ref #'WindowTransform]
    [:ref #'PivotTransform]])
+
 (def ScaleResolveMap
   [:map {:closed true} [:y {:optional true} [:ref #'ResolveMode]]
    [:strokeOpacity {:optional true} [:ref #'ResolveMode]]
@@ -2061,6 +2293,7 @@
    [:yOffset {:optional true} [:ref #'ResolveMode]]
    [:x {:optional true} [:ref #'ResolveMode]]
    [:xOffset {:optional true} [:ref #'ResolveMode]]])
+
 (def LegendResolveMap
   [:map {:closed true} [:strokeOpacity {:optional true} [:ref #'ResolveMode]]
    [:stroke {:optional true} [:ref #'ResolveMode]]
@@ -2074,10 +2307,12 @@
    [:strokeWidth {:optional true} [:ref #'ResolveMode]]
    [:opacity {:optional true} [:ref #'ResolveMode]]
    [:shape {:optional true} [:ref #'ResolveMode]]])
+
 (def Resolve
   [:map {:closed true} [:axis {:optional true} [:ref #'AxisResolveMap]]
    [:legend {:optional true} [:ref #'LegendResolveMap]]
    [:scale {:optional true} [:ref #'ScaleResolveMap]]])
+
 (def TitleParams
   [:map {:closed true} [:baseline {:optional true} [:ref #'TextBaseline]]
    [:align {:optional true} [:ref #'Align]]
@@ -2111,6 +2346,7 @@
    [:subtitleFontWeight {:optional true}
     [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
    [:text [:or [:ref #'Text] [:ref #'ExprRef]]]])
+
 (def HConcatSpec_GenericSpec_
   [:map {:closed true, :json-schema/original-name "HConcatSpec<GenericSpec>"}
    [:description {:optional true} string?]
@@ -2122,13 +2358,18 @@
    [:resolve {:optional true} [:ref #'Resolve]]
    [:spacing {:optional true} number?]
    [:data {:optional true} [:or [:ref #'Data] nil?]]])
+
 (def NonNormalizedSpec [:ref #'Spec])
+
 (def RepeatMapping primitives/RepeatMapping)
+
 (def RowCol_LayoutAlign_
   [:map {:closed true, :json-schema/original-name "RowCol<LayoutAlign>"}
    [:column {:optional true} [:ref #'LayoutAlign]]
    [:row {:optional true} [:ref #'LayoutAlign]]])
+
 (def RowCol_boolean_ primitives/RowCol_boolean_)
+
 (def NonLayerRepeatSpec
   [:map {:closed true} [:description {:optional true} string?]
    [:align {:optional true}
@@ -2149,6 +2390,7 @@
     [:or number?
      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
    [:data {:optional true} [:or [:ref #'Data] nil?]]])
+
 (def SecondaryFieldDef
   [:map {:closed true} [:aggregate {:optional true} [:ref #'Aggregate]]
    [:bandPosition {:optional true} number?] [:bin {:optional true} nil?]
@@ -2156,25 +2398,30 @@
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
    [:title {:optional true} [:or [:ref #'Text] nil?]]])
+
 (def ValueDef__number__width___height__ExprRef__
   [:map
    {:closed true,
     :json-schema/original-name
       "ValueDef<(number|\"width\"|\"height\"|ExprRef)>"}
    [:value [:or number? [:ref #'ExprRef] [:enum "width" "height"]]]])
+
 (def PositionValueDef
   [:ref
    {:json-schema/original-name
       "ValueDef<(number|\"width\"|\"height\"|ExprRef)>"}
    #'ValueDef__number__width___height__ExprRef__])
+
 (def DatumDef
   [:map {:closed true} [:bandPosition {:optional true} number?]
    [:datum {:optional true}
     [:or [:ref #'PrimitiveValue] [:ref #'DateTime] [:ref #'ExprRef]
      [:ref #'RepeatRef]]] [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'Type]]])
+
 (def Position2Def
   [:or [:ref #'SecondaryFieldDef] [:ref #'DatumDef] [:ref #'PositionValueDef]])
+
 (def ConditionalParameter_ValueDef__string_null_ExprRef___
   [:map
    {:closed true,
@@ -2182,6 +2429,7 @@
       "ConditionalParameter<ValueDef<(string|null|ExprRef)>>"}
    [:empty {:optional true} boolean?] [:param [:ref #'ParameterName]]
    [:value [:or string? nil? [:ref #'ExprRef]]]])
+
 (def ConditionalPredicate_ValueDef__string_null_ExprRef___
   [:map
    {:closed true,
@@ -2189,6 +2437,7 @@
       "ConditionalPredicate<ValueDef<(string|null|ExprRef)>>"}
    [:test [:ref #'PredicateComposition]]
    [:value [:or string? nil? [:ref #'ExprRef]]]])
+
 (def ConditionalValueDef__string_null_ExprRef__
   [:or {:json-schema/original-name "ConditionalValueDef<(string|null|ExprRef)>"}
    [:ref
@@ -2199,6 +2448,7 @@
     {:json-schema/original-name
        "ConditionalParameter<ValueDef<(string|null|ExprRef)>>"}
     #'ConditionalParameter_ValueDef__string_null_ExprRef___]])
+
 (def ValueDefWithCondition_MarkPropFieldOrDatumDef__string_null__
   [:map
    {:closed true,
@@ -2214,28 +2464,33 @@
        {:json-schema/original-name "ConditionalValueDef<(string|null|ExprRef)>"}
        #'ConditionalValueDef__string_null_ExprRef__]]]]
    [:value {:optional true} [:or string? nil? [:ref #'ExprRef]]]])
+
 (def StringValueDefWithCondition
   [:ref
    {:json-schema/original-name
       "ValueDefWithCondition<MarkPropFieldOrDatumDef,(string|null)>"}
    #'ValueDefWithCondition_MarkPropFieldOrDatumDef__string_null__])
+
 (def ConditionalPredicate_ValueDef_number__
   [:map
    {:closed true,
     :json-schema/original-name "ConditionalPredicate<ValueDef<number>>"}
    [:test [:ref #'PredicateComposition]] [:value number?]])
+
 (def ConditionalParameter_ValueDef_number__
   [:map
    {:closed true,
     :json-schema/original-name "ConditionalParameter<ValueDef<number>>"}
    [:empty {:optional true} boolean?] [:param [:ref #'ParameterName]]
    [:value number?]])
+
 (def ConditionalValueDef_number_
   [:or {:json-schema/original-name "ConditionalValueDef<number>"}
    [:ref {:json-schema/original-name "ConditionalPredicate<ValueDef<number>>"}
     #'ConditionalPredicate_ValueDef_number__]
    [:ref {:json-schema/original-name "ConditionalParameter<ValueDef<number>>"}
     #'ConditionalParameter_ValueDef_number__]])
+
 (def OrderValueDef
   [:map {:closed true}
    [:condition {:optional true}
@@ -2246,6 +2501,7 @@
       [:ref {:json-schema/original-name "ConditionalValueDef<number>"}
        #'ConditionalValueDef_number_]]]]
    [:value [:or number? [:ref #'ExprRef]]]])
+
 (def ConditionalParameter_ValueDef__number___ExprRef___
   [:map
    {:closed true,
@@ -2253,6 +2509,7 @@
       "ConditionalParameter<ValueDef<(number[]|ExprRef)>>"}
    [:empty {:optional true} boolean?] [:param [:ref #'ParameterName]]
    [:value [:or [:vector number?] [:ref #'ExprRef]]]])
+
 (def ConditionalPredicate_ValueDef__number___ExprRef___
   [:map
    {:closed true,
@@ -2260,6 +2517,7 @@
       "ConditionalPredicate<ValueDef<(number[]|ExprRef)>>"}
    [:test [:ref #'PredicateComposition]]
    [:value [:or [:vector number?] [:ref #'ExprRef]]]])
+
 (def ConditionalValueDef__number___ExprRef__
   [:or {:json-schema/original-name "ConditionalValueDef<(number[]|ExprRef)>"}
    [:ref
@@ -2270,6 +2528,7 @@
     {:json-schema/original-name
        "ConditionalParameter<ValueDef<(number[]|ExprRef)>>"}
     #'ConditionalParameter_ValueDef__number___ExprRef___]])
+
 (def FieldOrDatumDefWithCondition_MarkPropFieldDef_number___
   [:map
    {:closed true,
@@ -2295,6 +2554,7 @@
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
    [:aggregate {:optional true} [:ref #'Aggregate]]
    [:sort {:optional true} [:ref #'Sort]]])
+
 (def FieldOrDatumDefWithCondition_DatumDef_number___
   [:map
    {:closed true,
@@ -2314,6 +2574,7 @@
     [:or [:ref #'PrimitiveValue] [:ref #'DateTime] [:ref #'ExprRef]
      [:ref #'RepeatRef]]] [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'Type]]])
+
 (def ValueDefWithCondition_MarkPropFieldOrDatumDef_number___
   [:map
    {:closed true,
@@ -2329,6 +2590,7 @@
        {:json-schema/original-name "ConditionalValueDef<(number[]|ExprRef)>"}
        #'ConditionalValueDef__number___ExprRef__]]]]
    [:value {:optional true} [:or [:vector number?] [:ref #'ExprRef]]]])
+
 (def MarkPropDef_number___
   [:or {:json-schema/original-name "MarkPropDef<number[]>"}
    [:ref
@@ -2343,10 +2605,13 @@
     {:json-schema/original-name
        "ValueDefWithCondition<MarkPropFieldOrDatumDef,number[]>"}
     #'ValueDefWithCondition_MarkPropFieldOrDatumDef_number___]])
+
 (def NumericArrayMarkPropDef
   [:ref {:json-schema/original-name "MarkPropDef<number[]>"}
    #'MarkPropDef_number___])
+
 (def ValueDef_number_ primitives/ValueDef_number_)
+
 (def ScaleFieldDef
   [:map {:closed true} [:scale {:optional true} [:or [:ref #'Scale] nil?]]
    [:field {:optional true} [:ref #'Field]]
@@ -2358,6 +2623,7 @@
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
    [:aggregate {:optional true} [:ref #'Aggregate]]
    [:sort {:optional true} [:ref #'Sort]]])
+
 (def ScaleDatumDef
   [:map {:closed true} [:bandPosition {:optional true} number?]
    [:datum {:optional true}
@@ -2365,21 +2631,25 @@
      [:ref #'RepeatRef]]] [:scale {:optional true} [:or [:ref #'Scale] nil?]]
    [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'Type]]])
+
 (def OffsetDef
   [:or [:ref #'ScaleFieldDef] [:ref #'ScaleDatumDef]
    [:ref {:json-schema/original-name "ValueDef<number>"} #'ValueDef_number_]])
+
 (def ConditionalParameter_ValueDef__Text_ExprRef___
   [:map
    {:closed true,
     :json-schema/original-name "ConditionalParameter<ValueDef<(Text|ExprRef)>>"}
    [:empty {:optional true} boolean?] [:param [:ref #'ParameterName]]
    [:value [:or [:ref #'Text] [:ref #'ExprRef]]]])
+
 (def ConditionalPredicate_ValueDef__Text_ExprRef___
   [:map
    {:closed true,
     :json-schema/original-name "ConditionalPredicate<ValueDef<(Text|ExprRef)>>"}
    [:test [:ref #'PredicateComposition]]
    [:value [:or [:ref #'Text] [:ref #'ExprRef]]]])
+
 (def ConditionalValueDef__Text_ExprRef__
   [:or {:json-schema/original-name "ConditionalValueDef<(Text|ExprRef)>"}
    [:ref
@@ -2390,6 +2660,7 @@
     {:json-schema/original-name
        "ConditionalParameter<ValueDef<(Text|ExprRef)>>"}
     #'ConditionalParameter_ValueDef__Text_ExprRef___]])
+
 (def FieldOrDatumDefWithCondition_StringDatumDef_Text_
   [:map
    {:closed true,
@@ -2409,6 +2680,7 @@
    [:formatType {:optional true} string?]
    [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'Type]]])
+
 (def FieldOrDatumDefWithCondition_StringFieldDef_Text_
   [:map
    {:closed true,
@@ -2432,6 +2704,7 @@
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
    [:aggregate {:optional true} [:ref #'Aggregate]]])
+
 (def ConditionalParameter_StringFieldDef_
   [:map
    {:closed true,
@@ -2448,6 +2721,7 @@
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
    [:aggregate {:optional true} [:ref #'Aggregate]]])
+
 (def ConditionalPredicate_StringFieldDef_
   [:map
    {:closed true,
@@ -2464,12 +2738,14 @@
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
    [:aggregate {:optional true} [:ref #'Aggregate]]
    [:test [:ref #'PredicateComposition]]])
+
 (def ConditionalStringFieldDef
   [:or
    [:ref {:json-schema/original-name "ConditionalPredicate<StringFieldDef>"}
     #'ConditionalPredicate_StringFieldDef_]
    [:ref {:json-schema/original-name "ConditionalParameter<StringFieldDef>"}
     #'ConditionalParameter_StringFieldDef_]])
+
 (def ValueDefWithCondition_StringFieldDef_Text_
   [:map
    {:closed true,
@@ -2482,6 +2758,7 @@
       [:ref {:json-schema/original-name "ConditionalValueDef<(Text|ExprRef)>"}
        #'ConditionalValueDef__Text_ExprRef__]]]]
    [:value {:optional true} [:or [:ref #'Text] [:ref #'ExprRef]]]])
+
 (def TextDef
   [:or
    [:ref
@@ -2495,6 +2772,7 @@
    [:ref
     {:json-schema/original-name "ValueDefWithCondition<StringFieldDef,Text>"}
     #'ValueDefWithCondition_StringFieldDef_Text_]])
+
 (def TypedFieldDef
   [:map {:closed true} [:aggregate {:optional true} [:ref #'Aggregate]]
    [:bandPosition {:optional true} number?]
@@ -2505,9 +2783,12 @@
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
    [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'StandardType]]])
+
 (def FieldDefWithoutScale [:ref #'TypedFieldDef])
+
 (def OrderOnlyDef
   [:map {:closed true} [:sort {:optional true} [:ref #'SortOrder]]])
+
 (def ConditionalParameter_ValueDef__number_ExprRef___
   [:map
    {:closed true,
@@ -2515,6 +2796,7 @@
       "ConditionalParameter<ValueDef<(number|ExprRef)>>"}
    [:empty {:optional true} boolean?] [:param [:ref #'ParameterName]]
    [:value [:or number? [:ref #'ExprRef]]]])
+
 (def ConditionalPredicate_ValueDef__number_ExprRef___
   [:map
    {:closed true,
@@ -2522,6 +2804,7 @@
       "ConditionalPredicate<ValueDef<(number|ExprRef)>>"}
    [:test [:ref #'PredicateComposition]]
    [:value [:or number? [:ref #'ExprRef]]]])
+
 (def ConditionalValueDef__number_ExprRef__
   [:or {:json-schema/original-name "ConditionalValueDef<(number|ExprRef)>"}
    [:ref
@@ -2532,6 +2815,7 @@
     {:json-schema/original-name
        "ConditionalParameter<ValueDef<(number|ExprRef)>>"}
     #'ConditionalParameter_ValueDef__number_ExprRef___]])
+
 (def FieldOrDatumDefWithCondition_MarkPropFieldDef_number_
   [:map
    {:closed true,
@@ -2555,6 +2839,7 @@
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
    [:aggregate {:optional true} [:ref #'Aggregate]]
    [:sort {:optional true} [:ref #'Sort]]])
+
 (def ValueDefWithCondition_MarkPropFieldOrDatumDef_number_
   [:map
    {:closed true,
@@ -2568,6 +2853,7 @@
       [:ref {:json-schema/original-name "ConditionalValueDef<(number|ExprRef)>"}
        #'ConditionalValueDef__number_ExprRef__]]]]
    [:value {:optional true} [:or number? [:ref #'ExprRef]]]])
+
 (def FieldOrDatumDefWithCondition_DatumDef_number_
   [:map
    {:closed true,
@@ -2584,6 +2870,7 @@
     [:or [:ref #'PrimitiveValue] [:ref #'DateTime] [:ref #'ExprRef]
      [:ref #'RepeatRef]]] [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'Type]]])
+
 (def MarkPropDef_number_
   [:or {:json-schema/original-name "MarkPropDef<number>"}
    [:ref
@@ -2597,10 +2884,13 @@
     {:json-schema/original-name
        "ValueDefWithCondition<MarkPropFieldOrDatumDef,number>"}
     #'ValueDefWithCondition_MarkPropFieldOrDatumDef_number_]])
+
 (def NumericMarkPropDef
   [:ref {:json-schema/original-name "MarkPropDef<number>"}
    #'MarkPropDef_number_])
+
 (def StackOffset primitives/StackOffset)
+
 (def PositionDatumDefBase
   [:map {:closed true} [:bandPosition {:optional true} number?]
    [:datum {:optional true}
@@ -2609,6 +2899,7 @@
    [:stack {:optional true} [:or [:ref #'StackOffset] nil? boolean?]]
    [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'Type]]])
+
 (def PositionFieldDefBase
   [:map {:closed true} [:scale {:optional true} [:or [:ref #'Scale] nil?]]
    [:field {:optional true} [:ref #'Field]]
@@ -2622,9 +2913,11 @@
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
    [:aggregate {:optional true} [:ref #'Aggregate]]
    [:sort {:optional true} [:ref #'Sort]]])
+
 (def PolarDef
   [:or [:ref #'PositionFieldDefBase] [:ref #'PositionDatumDefBase]
    [:ref #'PositionValueDef]])
+
 (def LatLongFieldDef
   [:map {:closed true} [:aggregate {:optional true} [:ref #'Aggregate]]
    [:bandPosition {:optional true} number?] [:bin {:optional true} nil?]
@@ -2633,7 +2926,9 @@
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
    [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:= "quantitative"]]])
+
 (def LatLongDef [:or [:ref #'LatLongFieldDef] [:ref #'DatumDef]])
+
 (def TimeFieldDef
   [:map {:closed true} [:scale {:optional true} [:or [:ref #'Scale] nil?]]
    [:rescale {:optional true} boolean?] [:field {:optional true} [:ref #'Field]]
@@ -2645,7 +2940,9 @@
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
    [:aggregate {:optional true} [:ref #'Aggregate]]
    [:sort {:optional true} [:ref #'Sort]]])
+
 (def TimeDef [:ref #'TimeFieldDef])
+
 (def ConditionalParameter_ValueDef__string_ExprRef___
   [:map
    {:closed true,
@@ -2653,6 +2950,7 @@
       "ConditionalParameter<ValueDef<(string|ExprRef)>>"}
    [:empty {:optional true} boolean?] [:param [:ref #'ParameterName]]
    [:value [:or string? [:ref #'ExprRef]]]])
+
 (def ConditionalPredicate_ValueDef__string_ExprRef___
   [:map
    {:closed true,
@@ -2660,6 +2958,7 @@
       "ConditionalPredicate<ValueDef<(string|ExprRef)>>"}
    [:test [:ref #'PredicateComposition]]
    [:value [:or string? [:ref #'ExprRef]]]])
+
 (def ConditionalValueDef__string_ExprRef__
   [:or {:json-schema/original-name "ConditionalValueDef<(string|ExprRef)>"}
    [:ref
@@ -2670,6 +2969,7 @@
     {:json-schema/original-name
        "ConditionalParameter<ValueDef<(string|ExprRef)>>"}
     #'ConditionalParameter_ValueDef__string_ExprRef___]])
+
 (def FieldOrDatumDefWithCondition_StringFieldDef_string_
   [:map
    {:closed true,
@@ -2693,11 +2993,13 @@
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
    [:aggregate {:optional true} [:ref #'Aggregate]]])
+
 (def StringFieldDefWithCondition
   [:ref
    {:json-schema/original-name
       "FieldOrDatumDefWithCondition<StringFieldDef,string>"}
    #'FieldOrDatumDefWithCondition_StringFieldDef_string_])
+
 (def OrderFieldDef
   [:map {:closed true} [:aggregate {:optional true} [:ref #'Aggregate]]
    [:bandPosition {:optional true} number?]
@@ -2709,6 +3011,7 @@
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
    [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'StandardType]]])
+
 (def StringFieldDef
   [:map {:closed true} [:format {:optional true} [:ref #'Format]]
    [:field {:optional true} [:ref #'Field]]
@@ -2721,7 +3024,9 @@
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
    [:aggregate {:optional true} [:ref #'Aggregate]]])
+
 (def TypeForShape primitives/TypeForShape)
+
 (def ConditionalParameter_MarkPropFieldOrDatumDef_TypeForShape__
   [:or
    {:json-schema/original-name
@@ -2747,6 +3052,7 @@
     [:scale {:optional true} [:or [:ref #'Scale] nil?]]
     [:title {:optional true} [:or [:ref #'Text] nil?]]
     [:type {:optional true} [:ref #'Type]]]])
+
 (def ConditionalPredicate_MarkPropFieldOrDatumDef_TypeForShape__
   [:or
    {:json-schema/original-name
@@ -2771,6 +3077,7 @@
     [:test [:ref #'PredicateComposition]]
     [:title {:optional true} [:or [:ref #'Text] nil?]]
     [:type {:optional true} [:ref #'Type]]]])
+
 (def ConditionalMarkPropFieldOrDatumDef_TypeForShape_
   [:or
    {:json-schema/original-name
@@ -2783,6 +3090,7 @@
     {:json-schema/original-name
        "ConditionalParameter<MarkPropFieldOrDatumDef<TypeForShape>>"}
     #'ConditionalParameter_MarkPropFieldOrDatumDef_TypeForShape__]])
+
 (def ValueDefWithCondition_MarkPropFieldOrDatumDef_TypeForShape___string_null__
   [:map
    {:closed true,
@@ -2802,6 +3110,7 @@
        {:json-schema/original-name "ConditionalValueDef<(string|null|ExprRef)>"}
        #'ConditionalValueDef__string_null_ExprRef__]]]]
    [:value {:optional true} [:or string? nil? [:ref #'ExprRef]]]])
+
 (def FieldOrDatumDefWithCondition_DatumDef__string_null__
   [:map
    {:closed true,
@@ -2821,6 +3130,7 @@
     [:or [:ref #'PrimitiveValue] [:ref #'DateTime] [:ref #'ExprRef]
      [:ref #'RepeatRef]]] [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'Type]]])
+
 (def FieldOrDatumDefWithCondition_MarkPropFieldDef_TypeForShape___string_null__
   [:map
    {:closed true,
@@ -2846,6 +3156,7 @@
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
    [:aggregate {:optional true} [:ref #'Aggregate]]
    [:sort {:optional true} [:ref #'Sort]]])
+
 (def MarkPropDef__string_null__TypeForShape_
   [:or {:json-schema/original-name "MarkPropDef<(string|null),TypeForShape>"}
    [:ref
@@ -2860,14 +3171,17 @@
     {:json-schema/original-name
        "ValueDefWithCondition<MarkPropFieldOrDatumDef<TypeForShape>,(string|null)>"}
     #'ValueDefWithCondition_MarkPropFieldOrDatumDef_TypeForShape___string_null__]])
+
 (def ShapeDef
   [:ref {:json-schema/original-name "MarkPropDef<(string|null),TypeForShape>"}
    #'MarkPropDef__string_null__TypeForShape_])
+
 (def ImputeParams
   [:map {:closed true} [:frame {:optional true} [:vector [:or nil? number?]]]
    [:keyvals {:optional true} [:or [:vector any?] [:ref #'ImputeSequence]]]
    [:method {:optional true} [:ref #'ImputeMethod]]
    [:value {:optional true} any?]])
+
 (def PositionFieldDef
   [:map {:closed true} [:scale {:optional true} [:or [:ref #'Scale] nil?]]
    [:impute {:optional true} [:or [:ref #'ImputeParams] nil?]]
@@ -2883,6 +3197,7 @@
    [:aggregate {:optional true} [:ref #'Aggregate]]
    [:axis {:optional true} [:or [:ref #'Axis] nil?]]
    [:sort {:optional true} [:ref #'Sort]]])
+
 (def PositionDatumDef
   [:map {:closed true} [:axis {:optional true} [:or [:ref #'Axis] nil?]]
    [:bandPosition {:optional true} number?]
@@ -2894,9 +3209,11 @@
    [:stack {:optional true} [:or [:ref #'StackOffset] nil? boolean?]]
    [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'Type]]])
+
 (def PositionDef
   [:or [:ref #'PositionFieldDef] [:ref #'PositionDatumDef]
    [:ref #'PositionValueDef]])
+
 (def Encoding
   [:map {:closed true} [:y {:optional true} [:ref #'PositionDef]]
    [:description {:optional true}
@@ -2956,14 +3273,21 @@
    [:detail {:optional true}
     [:or [:ref #'FieldDefWithoutScale]
      [:vector [:ref #'FieldDefWithoutScale]]]]])
+
 (def Dict_SelectionInitInterval_ primitives/Dict_SelectionInitInterval_)
+
 (def SelectionInitIntervalMapping
   [:ref {:json-schema/original-name "Dict<SelectionInitInterval>"}
    #'Dict_SelectionInitInterval_])
+
 (def Expr primitives/Expr)
+
 (def EventType primitives/EventType)
+
 (def MarkType primitives/MarkType)
+
 (def WindowEventType [:or [:ref #'EventType] string?])
+
 (def EventStream
   [:or
    [:map {:closed true} [:markname {:optional true} string?]
@@ -2980,6 +3304,7 @@
     [:filter {:optional true} [:or [:ref #'Expr] [:vector [:ref #'Expr]]]]
     [:marktype {:optional true} [:ref #'MarkType]]
     [:throttle {:optional true} number?]]])
+
 (def DerivedStream
   [:map {:closed true} [:between {:optional true} [:vector [:ref #'Stream]]]
    [:consume {:optional true} boolean?] [:debounce {:optional true} number?]
@@ -2987,6 +3312,7 @@
    [:markname {:optional true} string?]
    [:marktype {:optional true} [:ref #'MarkType]] [:stream [:ref #'Stream]]
    [:throttle {:optional true} number?]])
+
 (def MergedStream
   [:map {:closed true} [:between {:optional true} [:vector [:ref #'Stream]]]
    [:consume {:optional true} boolean?] [:debounce {:optional true} number?]
@@ -2994,12 +3320,17 @@
    [:markname {:optional true} string?]
    [:marktype {:optional true} [:ref #'MarkType]]
    [:merge [:vector [:ref #'Stream]]] [:throttle {:optional true} number?]])
+
 (def Stream
   [:or [:ref #'EventStream] [:ref #'DerivedStream] [:ref #'MergedStream]])
+
 (def LegendStreamBinding
   [:map {:closed true} [:legend [:or string? [:ref #'Stream]]]])
+
 (def LegendBinding [:or [:ref #'LegendStreamBinding] [:enum "legend"]])
+
 (def SelectionResolution primitives/SelectionResolution)
+
 (def IntervalSelectionConfig
   [:map {:closed true} [:zoom {:optional true} [:or string? boolean?]]
    [:mark {:optional true} [:ref #'BrushConfig]]
@@ -3010,6 +3341,7 @@
    [:translate {:optional true} [:or string? boolean?]]
    [:on {:optional true} [:or [:ref #'Stream] string?]]
    [:clear {:optional true} [:or [:ref #'Stream] string? boolean?]]])
+
 (def PointSelectionConfig
   [:map {:closed true}
    [:clear {:optional true} [:or [:ref #'Stream] string? boolean?]]
@@ -3019,12 +3351,17 @@
    [:on {:optional true} [:or [:ref #'Stream] string?]]
    [:resolve {:optional true} [:ref #'SelectionResolution]]
    [:toggle {:optional true} [:or string? boolean?]] [:type [:= "point"]]])
+
 (def SelectionInit [:or [:ref #'PrimitiveValue] [:ref #'DateTime]])
+
 (def SelectionType primitives/SelectionType)
+
 (def Dict_SelectionInit_ primitives/Dict_SelectionInit_)
+
 (def SelectionInitMapping
   [:ref {:json-schema/original-name "Dict<SelectionInit>"}
    #'Dict_SelectionInit_])
+
 (def SelectionParameter
   [:map {:closed true}
    [:bind {:optional true}
@@ -3036,42 +3373,57 @@
    [:value {:optional true}
     [:or [:ref #'SelectionInit] [:ref #'SelectionInitIntervalMapping]
      [:vector [:ref #'SelectionInitMapping]]]]])
+
 (def ProjectionType primitives/ProjectionType)
+
 (def Vector3_number_ primitives/Vector3_number_)
+
 (def GeoJsonProperties primitives/GeoJsonProperties)
+
 (def Position primitives/Position)
+
 (def Polygon
   [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
    [:coordinates [:vector [:vector [:ref #'Position]]]] [:type [:= "Polygon"]]])
+
 (def LineString
   [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
    [:coordinates [:vector [:ref #'Position]]] [:type [:= "LineString"]]])
+
 (def GeometryCollection
   [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
    [:geometries [:vector [:ref #'Geometry]]] [:type [:= "GeometryCollection"]]])
+
 (def Point
   [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
    [:coordinates [:ref #'Position]] [:type [:= "Point"]]])
+
 (def MultiPolygon
   [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
    [:coordinates [:vector [:vector [:vector [:ref #'Position]]]]]
    [:type [:= "MultiPolygon"]]])
+
 (def MultiLineString
   [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
    [:coordinates [:vector [:vector [:ref #'Position]]]]
    [:type [:= "MultiLineString"]]])
+
 (def MultiPoint
   [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
    [:coordinates [:vector [:ref #'Position]]] [:type [:= "MultiPoint"]]])
+
 (def Geometry
   [:or [:ref #'Point] [:ref #'MultiPoint] [:ref #'LineString]
    [:ref #'MultiLineString] [:ref #'Polygon] [:ref #'MultiPolygon]
    [:ref #'GeometryCollection]])
+
 (def Feature
   [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
    [:geometry [:ref #'Geometry]] [:id {:optional true} [:or string? number?]]
    [:properties [:ref #'GeoJsonProperties]] [:type [:= "Feature"]]])
+
 (def GeoJsonFeature [:ref #'Feature])
+
 (def Feature_Geometry_GeoJsonProperties_
   [:map
    {:closed true,
@@ -3079,6 +3431,7 @@
    [:bbox {:optional true} [:ref #'BBox]] [:geometry [:ref #'Geometry]]
    [:id {:optional true} [:or string? number?]]
    [:properties [:ref #'GeoJsonProperties]] [:type [:= "Feature"]]])
+
 (def FeatureCollection
   [:map {:closed true} [:bbox {:optional true} [:ref #'BBox]]
    [:features
@@ -3086,10 +3439,13 @@
      [:ref {:json-schema/original-name "Feature<Geometry,GeoJsonProperties>"}
       #'Feature_Geometry_GeoJsonProperties_]]]
    [:type [:= "FeatureCollection"]]])
+
 (def GeoJsonFeatureCollection [:ref #'FeatureCollection])
+
 (def Fit
   [:or [:ref #'GeoJsonFeature] [:ref #'GeoJsonFeatureCollection]
    [:vector [:ref #'GeoJsonFeature]]])
+
 (def Projection
   [:map {:closed true}
    [:clipExtent {:optional true}
@@ -3134,10 +3490,13 @@
    [:parallels {:optional true} [:or [:vector number?] [:ref #'ExprRef]]]
    [:reflectX {:optional true} [:or boolean? [:ref #'ExprRef]]]
    [:spacing {:optional true} [:or number? [:ref #'ExprRef]]]])
+
 (def StepFor primitives/StepFor)
+
 (def Step
   [:map {:closed true} [:for {:optional true} [:ref #'StepFor]]
    [:step number?]])
+
 (def ViewBackground
   [:map {:closed true}
    [:strokeOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
@@ -3154,6 +3513,7 @@
    [:opacity {:optional true} [:or number? [:ref #'ExprRef]]]
    [:strokeJoin {:optional true} [:or [:ref #'StrokeJoin] [:ref #'ExprRef]]]
    [:strokeCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]])
+
 (def UnitSpecWithFrame
   [:map {:closed true} [:description {:optional true} string?]
    [:encoding {:optional true} [:ref #'Encoding]]
@@ -3166,6 +3526,7 @@
    [:view {:optional true} [:ref #'ViewBackground]]
    [:height {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]
    [:data {:optional true} [:or [:ref #'Data] nil?]]])
+
 (def SharedEncoding
   [:map {:closed true}
    [:y {:optional true}
@@ -3968,6 +4329,7 @@
    [:detail {:optional true}
     [:or [:ref #'FieldDefWithoutScale]
      [:vector [:ref #'FieldDefWithoutScale]]]]])
+
 (def GenericUnitSpec_Encoding_AnyMark_
   [:map
    {:closed true,
@@ -3980,9 +4342,11 @@
    [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
    [:projection {:optional true} [:ref #'Projection]]
    [:data {:optional true} [:or [:ref #'Data] nil?]]])
+
 (def UnitSpec
   [:ref {:json-schema/original-name "GenericUnitSpec<Encoding,AnyMark>"}
    #'GenericUnitSpec_Encoding_AnyMark_])
+
 (def LayerSpec
   [:map {:closed true} [:description {:optional true} string?]
    [:encoding {:optional true} [:ref #'SharedEncoding]]
@@ -3996,7 +4360,9 @@
    [:view {:optional true} [:ref #'ViewBackground]]
    [:height {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]
    [:data {:optional true} [:or [:ref #'Data] nil?]]])
+
 (def LayerRepeatMapping primitives/LayerRepeatMapping)
+
 (def LayerRepeatSpec
   [:map {:closed true} [:description {:optional true} string?]
    [:align {:optional true}
@@ -4017,7 +4383,9 @@
     [:or number?
      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
    [:data {:optional true} [:or [:ref #'Data] nil?]]])
+
 (def RepeatSpec [:or [:ref #'NonLayerRepeatSpec] [:ref #'LayerRepeatSpec]])
+
 (def Header
   [:map {:closed true}
    [:labelLimit {:optional true} [:or number? [:ref #'ExprRef]]]
@@ -4056,6 +4424,7 @@
    [:labelFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
    [:titleFontWeight {:optional true}
     [:or [:ref #'FontWeight] [:ref #'ExprRef]]]])
+
 (def FacetFieldDef
   [:map {:closed true} [:field {:optional true} [:ref #'Field]]
    [:type {:optional true} [:ref #'StandardType]]
@@ -4069,6 +4438,7 @@
    [:sort {:optional true}
     [:or [:ref #'SortArray] [:ref #'SortOrder] [:ref #'EncodingSortField]
      nil?]]])
+
 (def FacetEncodingFieldDef
   [:map {:closed true}
    [:align {:optional true}
@@ -4093,6 +4463,7 @@
    [:spacing {:optional true}
     [:or number?
      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]])
+
 (def RowColumnEncodingFieldDef
   [:map {:closed true} [:align {:optional true} [:ref #'LayoutAlign]]
    [:field {:optional true} [:ref #'Field]]
@@ -4108,6 +4479,7 @@
    [:sort {:optional true}
     [:or [:ref #'SortArray] [:ref #'SortOrder] [:ref #'EncodingSortField] nil?]]
    [:spacing {:optional true} number?]])
+
 (def FacetedEncoding
   [:map {:closed true} [:y {:optional true} [:ref #'PositionDef]]
    [:description {:optional true}
@@ -4170,6 +4542,7 @@
    [:detail {:optional true}
     [:or [:ref #'FieldDefWithoutScale]
      [:vector [:ref #'FieldDefWithoutScale]]]]])
+
 (def FacetedUnitSpec
   [:map {:closed true} [:description {:optional true} string?]
    [:encoding {:optional true} [:ref #'FacetedEncoding]]
@@ -4194,9 +4567,11 @@
     [:or number?
      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
    [:data {:optional true} [:or [:ref #'Data] nil?]]])
+
 (def FacetMapping
   [:map {:closed true} [:column {:optional true} [:ref #'FacetFieldDef]]
    [:row {:optional true} [:ref #'FacetFieldDef]]])
+
 (def FacetSpec
   [:map {:closed true} [:description {:optional true} string?]
    [:align {:optional true}
@@ -4217,6 +4592,7 @@
     [:or number?
      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
    [:data {:optional true} [:or [:ref #'Data] nil?]]])
+
 (def VConcatSpec_GenericSpec_
   [:map {:closed true, :json-schema/original-name "VConcatSpec<GenericSpec>"}
    [:description {:optional true} string?]
@@ -4228,6 +4604,7 @@
    [:resolve {:optional true} [:ref #'Resolve]]
    [:vconcat [:vector [:ref #'Spec]]] [:spacing {:optional true} number?]
    [:data {:optional true} [:or [:ref #'Data] nil?]]])
+
 (def Spec
   [:or [:ref #'FacetedUnitSpec] [:ref #'LayerSpec] [:ref #'RepeatSpec]
    [:ref #'FacetSpec]
@@ -4237,6 +4614,7 @@
     #'VConcatSpec_GenericSpec_]
    [:ref {:json-schema/original-name "HConcatSpec<GenericSpec>"}
     #'HConcatSpec_GenericSpec_]])
+
 (def ConcatSpec_GenericSpec_
   [:map {:closed true, :json-schema/original-name "ConcatSpec<GenericSpec>"}
    [:description {:optional true} string?]
@@ -4257,14 +4635,18 @@
     [:or number?
      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
    [:data {:optional true} [:or [:ref #'Data] nil?]]])
+
 (def RangeRawArray primitives/RangeRawArray)
+
 (def RangeRaw
   [:vector [:or nil? boolean? string? number? [:ref #'RangeRawArray]]])
+
 (def RangeScheme
   [:or [:ref #'RangeEnum] [:ref #'RangeRaw]
    [:map {:closed true} [:count {:optional true} number?]
     [:extent {:optional true} [:vector number?]]
     [:scheme [:or string? [:vector string?] [:ref #'ColorScheme]]]]])
+
 (def RangeConfig
   [:map {:closed false}
    [:category {:optional true}
@@ -4277,6 +4659,7 @@
     [:or [:ref #'RangeScheme] [:vector [:ref #'Color]]]]
    [:ramp {:optional true} [:or [:ref #'RangeScheme] [:vector [:ref #'Color]]]]
    [:symbol {:optional true} [:vector [:ref #'SymbolShape]]]])
+
 (def LegendConfig
   [:map {:closed true}
    [:titleOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
@@ -4369,6 +4752,7 @@
     [:or [:ref #'FontWeight] [:ref #'ExprRef]]]
    [:legendY {:optional true} [:or number? [:ref #'ExprRef]]]
    [:symbolLimit {:optional true} [:or number? [:ref #'ExprRef]]]])
+
 (def IntervalSelectionConfigWithoutType
   [:map {:closed true}
    [:clear {:optional true} [:or [:ref #'Stream] string? boolean?]]
@@ -4379,6 +4763,7 @@
    [:resolve {:optional true} [:ref #'SelectionResolution]]
    [:translate {:optional true} [:or string? boolean?]]
    [:zoom {:optional true} [:or string? boolean?]]])
+
 (def PointSelectionConfigWithoutType
   [:map {:closed true}
    [:clear {:optional true} [:or [:ref #'Stream] string? boolean?]]
@@ -4388,11 +4773,14 @@
    [:on {:optional true} [:or [:ref #'Stream] string?]]
    [:resolve {:optional true} [:ref #'SelectionResolution]]
    [:toggle {:optional true} [:or string? boolean?]]])
+
 (def SelectionConfig
   [:map {:closed true}
    [:interval {:optional true} [:ref #'IntervalSelectionConfigWithoutType]]
    [:point {:optional true} [:ref #'PointSelectionConfigWithoutType]]])
+
 (def ProjectionConfig [:ref #'Projection])
+
 (def TopLevelSelectionParameter
   [:map {:closed true}
    [:bind {:optional true}
@@ -4405,12 +4793,15 @@
     [:or [:ref #'SelectionInit] [:ref #'SelectionInitIntervalMapping]
      [:vector [:ref #'SelectionInitMapping]]]]
    [:views {:optional true} [:vector string?]]])
+
 (def VariableParameter
   [:map {:closed true} [:bind {:optional true} [:ref #'Binding]]
    [:expr {:optional true} [:ref #'Expr]] [:name [:ref #'ParameterName]]
    [:react {:optional true} boolean?] [:value {:optional true} any?]])
+
 (def TopLevelParameter
   [:or [:ref #'VariableParameter] [:ref #'TopLevelSelectionParameter]])
+
 (def HeaderConfig
   [:map {:closed true}
    [:labelLimit {:optional true} [:or number? [:ref #'ExprRef]]]
@@ -4448,11 +4839,13 @@
    [:labelFontSize {:optional true} [:or number? [:ref #'ExprRef]]]
    [:titleFontWeight {:optional true}
     [:or [:ref #'FontWeight] [:ref #'ExprRef]]]])
+
 (def ErrorBarConfig
   [:map {:closed true} [:extent {:optional true} [:ref #'ErrorBarExtent]]
    [:rule {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
    [:size {:optional true} number?] [:thickness {:optional true} number?]
    [:ticks {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]])
+
 (def ErrorBandConfig
   [:map {:closed true}
    [:band {:optional true} [:or boolean? [:ref #'AnyMarkConfig]]]
@@ -4460,11 +4853,17 @@
    [:extent {:optional true} [:ref #'ErrorBarExtent]]
    [:interpolate {:optional true} [:ref #'Interpolate]]
    [:tension {:optional true} number?]])
+
 (def Padding primitives/Padding)
+
 (def FormatConfig primitives/FormatConfig)
+
 (def Vector2_string_ primitives/Vector2_string_)
+
 (def Vector12_string_ primitives/Vector12_string_)
+
 (def Vector7_string_ primitives/Vector7_string_)
+
 (def TimeLocale
   [:map {:closed true} [:date string?] [:dateTime string?]
    [:days
@@ -4478,7 +4877,9 @@
    [:shortMonths
     [:ref {:json-schema/original-name "Vector12<string>"} #'Vector12_string_]]
    [:time string?]])
+
 (def Vector10_string_ primitives/Vector10_string_)
+
 (def NumberLocale
   [:map {:closed true}
    [:currency
@@ -4488,9 +4889,11 @@
    [:numerals {:optional true}
     [:ref {:json-schema/original-name "Vector10<string>"} #'Vector10_string_]]
    [:percent {:optional true} string?] [:thousands string?]])
+
 (def Locale
   [:map {:closed true} [:number {:optional true} [:ref #'NumberLocale]]
    [:time {:optional true} [:ref #'TimeLocale]]])
+
 (def ViewConfig
   [:map {:closed true}
    [:discreteHeight {:optional true}
@@ -4514,6 +4917,7 @@
    [:strokeJoin {:optional true} [:or [:ref #'StrokeJoin] [:ref #'ExprRef]]]
    [:strokeCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
    [:step {:optional true} number?]])
+
 (def StyleConfigIndex
   [:map {:closed false} [:tick {:optional true} [:ref #'TickConfig]]
    [:geoshape {:optional true} [:ref #'MarkConfig]]
@@ -4534,131 +4938,168 @@
    [:guide-title {:optional true} [:ref #'MarkConfig]]
    [:rect {:optional true} [:ref #'RectConfig]]
    [:text {:optional true} [:ref #'MarkConfig]]])
+
 (def ScaleInvalidDataShowAsValue__strokeWidth__
   primitives/ScaleInvalidDataShowAsValue__strokeWidth__)
+
 (def ScaleInvalidDataShowAs__strokeWidth__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"strokeWidth\">"}
    [:ref
     {:json-schema/original-name "ScaleInvalidDataShowAsValue<\"strokeWidth\">"}
     #'ScaleInvalidDataShowAsValue__strokeWidth__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataShowAsValue__angle__
   primitives/ScaleInvalidDataShowAsValue__angle__)
+
 (def ScaleInvalidDataShowAs__angle__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"angle\">"}
    [:ref {:json-schema/original-name "ScaleInvalidDataShowAsValue<\"angle\">"}
     #'ScaleInvalidDataShowAsValue__angle__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataShowAsValue__radius__
   primitives/ScaleInvalidDataShowAsValue__radius__)
+
 (def ScaleInvalidDataShowAs__radius__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"radius\">"}
    [:ref {:json-schema/original-name "ScaleInvalidDataShowAsValue<\"radius\">"}
     #'ScaleInvalidDataShowAsValue__radius__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataShowAsValue__strokeOpacity__
   primitives/ScaleInvalidDataShowAsValue__strokeOpacity__)
+
 (def ScaleInvalidDataShowAs__strokeOpacity__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"strokeOpacity\">"}
    [:ref
     {:json-schema/original-name
        "ScaleInvalidDataShowAsValue<\"strokeOpacity\">"}
     #'ScaleInvalidDataShowAsValue__strokeOpacity__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataShowAsValue__yOffset__
   primitives/ScaleInvalidDataShowAsValue__yOffset__)
+
 (def ScaleInvalidDataShowAs__yOffset__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"yOffset\">"}
    [:ref {:json-schema/original-name "ScaleInvalidDataShowAsValue<\"yOffset\">"}
     #'ScaleInvalidDataShowAsValue__yOffset__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataShowAsValue__fill__
   [:map
    {:closed true,
     :json-schema/original-name "ScaleInvalidDataShowAsValue<\"fill\">"}
    [:value {:optional true} [:or [:ref #'Color] [:ref #'Gradient] nil?]]])
+
 (def ScaleInvalidDataShowAs__fill__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"fill\">"}
    [:ref {:json-schema/original-name "ScaleInvalidDataShowAsValue<\"fill\">"}
     #'ScaleInvalidDataShowAsValue__fill__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataShowAsValue__theta__
   primitives/ScaleInvalidDataShowAsValue__theta__)
+
 (def ScaleInvalidDataShowAs__theta__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"theta\">"}
    [:ref {:json-schema/original-name "ScaleInvalidDataShowAsValue<\"theta\">"}
     #'ScaleInvalidDataShowAsValue__theta__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataShowAsValue__time__
   primitives/ScaleInvalidDataShowAsValue__time__)
+
 (def ScaleInvalidDataShowAs__time__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"time\">"}
    [:ref {:json-schema/original-name "ScaleInvalidDataShowAsValue<\"time\">"}
     #'ScaleInvalidDataShowAsValue__time__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataShowAsValue__color__
   [:map
    {:closed true,
     :json-schema/original-name "ScaleInvalidDataShowAsValue<\"color\">"}
    [:value {:optional true} [:or [:ref #'Color] [:ref #'Gradient]]]])
+
 (def ScaleInvalidDataShowAs__color__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"color\">"}
    [:ref {:json-schema/original-name "ScaleInvalidDataShowAsValue<\"color\">"}
     #'ScaleInvalidDataShowAsValue__color__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataShowAsValue__size__
   primitives/ScaleInvalidDataShowAsValue__size__)
+
 (def ScaleInvalidDataShowAs__size__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"size\">"}
    [:ref {:json-schema/original-name "ScaleInvalidDataShowAsValue<\"size\">"}
     #'ScaleInvalidDataShowAsValue__size__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataShowAsValue__shape__
   [:map
    {:closed true,
     :json-schema/original-name "ScaleInvalidDataShowAsValue<\"shape\">"}
    [:value {:optional true} [:or [:ref #'SymbolShape] string?]]])
+
 (def ScaleInvalidDataShowAs__shape__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"shape\">"}
    [:ref {:json-schema/original-name "ScaleInvalidDataShowAsValue<\"shape\">"}
     #'ScaleInvalidDataShowAsValue__shape__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataShowAsValue__stroke__
   [:map
    {:closed true,
     :json-schema/original-name "ScaleInvalidDataShowAsValue<\"stroke\">"}
    [:value {:optional true} [:or [:ref #'Color] [:ref #'Gradient] nil?]]])
+
 (def ScaleInvalidDataShowAs__stroke__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"stroke\">"}
    [:ref {:json-schema/original-name "ScaleInvalidDataShowAsValue<\"stroke\">"}
     #'ScaleInvalidDataShowAsValue__stroke__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataShowAsValue__xOffset__
   primitives/ScaleInvalidDataShowAsValue__xOffset__)
+
 (def ScaleInvalidDataShowAs__xOffset__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"xOffset\">"}
    [:ref {:json-schema/original-name "ScaleInvalidDataShowAsValue<\"xOffset\">"}
     #'ScaleInvalidDataShowAsValue__xOffset__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataShowAsValue__strokeDash__
   primitives/ScaleInvalidDataShowAsValue__strokeDash__)
+
 (def ScaleInvalidDataShowAs__strokeDash__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"strokeDash\">"}
    [:ref
     {:json-schema/original-name "ScaleInvalidDataShowAsValue<\"strokeDash\">"}
     #'ScaleInvalidDataShowAsValue__strokeDash__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataShowAsValue__y__
   primitives/ScaleInvalidDataShowAsValue__y__)
+
 (def ScaleInvalidDataShowAs__y__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"y\">"}
    [:ref {:json-schema/original-name "ScaleInvalidDataShowAsValue<\"y\">"}
     #'ScaleInvalidDataShowAsValue__y__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataShowAsValue__x__
   primitives/ScaleInvalidDataShowAsValue__x__)
+
 (def ScaleInvalidDataShowAs__x__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"x\">"}
    [:ref {:json-schema/original-name "ScaleInvalidDataShowAsValue<\"x\">"}
     #'ScaleInvalidDataShowAsValue__x__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataShowAsValue__fillOpacity__
   primitives/ScaleInvalidDataShowAsValue__fillOpacity__)
+
 (def ScaleInvalidDataShowAs__fillOpacity__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"fillOpacity\">"}
    [:ref
     {:json-schema/original-name "ScaleInvalidDataShowAsValue<\"fillOpacity\">"}
     #'ScaleInvalidDataShowAsValue__fillOpacity__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataShowAsValue__opacity__
   primitives/ScaleInvalidDataShowAsValue__opacity__)
+
 (def ScaleInvalidDataShowAs__opacity__
   [:or {:json-schema/original-name "ScaleInvalidDataShowAs<\"opacity\">"}
    [:ref {:json-schema/original-name "ScaleInvalidDataShowAsValue<\"opacity\">"}
     #'ScaleInvalidDataShowAsValue__opacity__] [:enum "zero-or-min"]])
+
 (def ScaleInvalidDataConfig
   [:map {:closed true}
    [:y {:optional true}
@@ -4716,6 +5157,7 @@
    [:xOffset {:optional true}
     [:ref {:json-schema/original-name "ScaleInvalidDataShowAs<\"xOffset\">"}
      #'ScaleInvalidDataShowAs__xOffset__]]])
+
 (def ScaleConfig
   [:map {:closed true} [:zero {:optional true} boolean?]
    [:bandPaddingInner {:optional true} [:or number? [:ref #'ExprRef]]]
@@ -4748,7 +5190,9 @@
    [:framesPerSecond {:optional true} number?]
    [:minStrokeWidth {:optional true} number?]
    [:pointPadding {:optional true} [:or number? [:ref #'ExprRef]]]])
+
 (def TitleConfig [:ref #'BaseTitleNoValueRefs])
+
 (def Config
   [:map {:closed true} [:tick {:optional true} [:ref #'TickConfig]]
    [:axisTemporal {:optional true} [:ref #'AxisConfig]]
@@ -4823,19 +5267,26 @@
    [:numberFormatType {:optional true} string?]
    [:axisDiscrete {:optional true} [:ref #'AxisConfig]]
    [:text {:optional true} [:ref #'MarkConfig]]])
+
 (def Dict_InlineDataset_ primitives/Dict_InlineDataset_)
+
 (def Datasets
   [:ref {:json-schema/original-name "Dict<InlineDataset>"}
    #'Dict_InlineDataset_])
+
 (def ParseValue primitives/ParseValue)
+
 (def Vector2_DateTime_
   [:vector {:json-schema/original-name "Vector2<DateTime>"} [:ref #'DateTime]])
+
 (def Vector2_boolean_ primitives/Vector2_boolean_)
+
 (def SelectionInitInterval
   [:or [:ref {:json-schema/original-name "Vector2<boolean>"} #'Vector2_boolean_]
    [:ref {:json-schema/original-name "Vector2<number>"} #'Vector2_number_]
    [:ref {:json-schema/original-name "Vector2<string>"} #'Vector2_string_]
    [:ref {:json-schema/original-name "Vector2<DateTime>"} #'Vector2_DateTime_]])
+
 (def TopLevelConcatSpec
   [:map {:closed true} [:description {:optional true} string?]
    [:autosize {:optional true}
@@ -4863,6 +5314,7 @@
     [:or number?
      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
    [:data {:optional true} [:or [:ref #'Data] nil?]]])
+
 (def TopLevelFacetSpec
   [:map {:closed true} [:description {:optional true} string?]
    [:autosize {:optional true}
@@ -4891,6 +5343,7 @@
     [:or number?
      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
    [:data [:or [:ref #'Data] nil?]]])
+
 (def TopLevelHConcatSpec
   [:map {:closed true} [:description {:optional true} string?]
    [:autosize {:optional true}
@@ -4909,6 +5362,7 @@
    [:resolve {:optional true} [:ref #'Resolve]]
    [:$schema {:optional true} string?] [:spacing {:optional true} number?]
    [:data {:optional true} [:or [:ref #'Data] nil?]]])
+
 (def TopLevelLayerSpec
   [:map {:closed true} [:description {:optional true} string?]
    [:encoding {:optional true} [:ref #'SharedEncoding]]
@@ -4930,6 +5384,7 @@
    [:view {:optional true} [:ref #'ViewBackground]]
    [:height {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]
    [:data {:optional true} [:or [:ref #'Data] nil?]]])
+
 (def TopLevelRepeatSpec
   [:or
    [:map {:closed true} [:description {:optional true} string?]
@@ -4985,6 +5440,7 @@
      [:or number?
       [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
     [:data {:optional true} [:or [:ref #'Data] nil?]]]])
+
 (def TopLevelVConcatSpec
   [:map {:closed true} [:description {:optional true} string?]
    [:autosize {:optional true}
@@ -5004,6 +5460,7 @@
    [:vconcat [:vector [:ref #'NonNormalizedSpec]]]
    [:spacing {:optional true} number?]
    [:data {:optional true} [:or [:ref #'Data] nil?]]])
+
 (def TopLevelUnitSpec
   [:map {:closed true} [:description {:optional true} string?]
    [:encoding {:optional true} [:ref #'FacetedEncoding]]
@@ -5035,9 +5492,11 @@
     [:or number?
      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
    [:data [:or [:ref #'Data] nil?]]])
+
 (def TopLevelSpec
   [:or [:ref #'TopLevelUnitSpec] [:ref #'TopLevelFacetSpec]
    [:ref #'TopLevelLayerSpec] [:ref #'TopLevelRepeatSpec]
    [:ref #'TopLevelConcatSpec] [:ref #'TopLevelVConcatSpec]
    [:ref #'TopLevelHConcatSpec]])
+
 (def schema [:ref #'TopLevelSpec])
