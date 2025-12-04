@@ -123,8 +123,8 @@
    [:x {:optional true} [:ref #'ResolveMode]]
    [:y {:optional true} [:ref #'ResolveMode]]])
 
-(def LegendResolveMap
-  [:map {:closed true}
+(def BaseResolveMap
+  [:map
    [:angle {:optional true} [:ref #'ResolveMode]]
    [:color {:optional true} [:ref #'ResolveMode]]
    [:fill {:optional true} [:ref #'ResolveMode]]
@@ -138,26 +138,17 @@
    [:strokeWidth {:optional true} [:ref #'ResolveMode]]
    [:time {:optional true} [:ref #'ResolveMode]]])
 
+(def LegendResolveMap [:merge BaseResolveMap [:map {:closed true}]])
+
 (def ScaleResolveMap
-  [:map {:closed true}
-   [:angle {:optional true} [:ref #'ResolveMode]]
-   [:color {:optional true} [:ref #'ResolveMode]]
-   [:fill {:optional true} [:ref #'ResolveMode]]
-   [:fillOpacity {:optional true} [:ref #'ResolveMode]]
-   [:opacity {:optional true} [:ref #'ResolveMode]]
-   [:radius {:optional true} [:ref #'ResolveMode]]
-   [:shape {:optional true} [:ref #'ResolveMode]]
-   [:size {:optional true} [:ref #'ResolveMode]]
-   [:stroke {:optional true} [:ref #'ResolveMode]]
-   [:strokeDash {:optional true} [:ref #'ResolveMode]]
-   [:strokeOpacity {:optional true} [:ref #'ResolveMode]]
-   [:strokeWidth {:optional true} [:ref #'ResolveMode]]
-   [:theta {:optional true} [:ref #'ResolveMode]]
-   [:time {:optional true} [:ref #'ResolveMode]]
-   [:x {:optional true} [:ref #'ResolveMode]]
-   [:xOffset {:optional true} [:ref #'ResolveMode]]
-   [:y {:optional true} [:ref #'ResolveMode]]
-   [:yOffset {:optional true} [:ref #'ResolveMode]]])
+  [:merge BaseResolveMap
+   [:map {:closed true}
+    [:radius {:optional true} [:ref #'ResolveMode]]
+    [:theta {:optional true} [:ref #'ResolveMode]]
+    [:x {:optional true} [:ref #'ResolveMode]]
+    [:xOffset {:optional true} [:ref #'ResolveMode]]
+    [:y {:optional true} [:ref #'ResolveMode]]
+    [:yOffset {:optional true} [:ref #'ResolveMode]]]])
 
 (def Resolve
   [:map {:closed true}

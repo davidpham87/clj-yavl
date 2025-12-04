@@ -94,50 +94,45 @@
 
 (def RepeatSpec [:or [:ref #'NonLayerRepeatSpec] [:ref #'LayerRepeatSpec]])
 
-(def HConcatSpec_GenericSpec_
-  [:map {:closed true, :json-schema/original-name "HConcatSpec<GenericSpec>"}
-   [:description {:optional true} string?]
-   [:transform {:optional true} [:vector [:ref #'Transform]]]
-   [:hconcat [:vector [:ref #'Spec]]] [:name {:optional true} string?]
+(def BaseConcatSpec
+  [:map
    [:bounds {:optional true} [:enum "full" "flush"]]
-   [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
-   [:center {:optional true} boolean?]
+   [:data {:optional true} [:or [:ref #'Data] nil?]]
+   [:description {:optional true} string?]
+   [:name {:optional true} string?]
    [:resolve {:optional true} [:ref #'Resolve]]
-   [:spacing {:optional true} number?]
-   [:data {:optional true} [:or [:ref #'Data] nil?]]])
+   [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
+   [:transform {:optional true} [:vector [:ref #'Transform]]]])
+
+(def HConcatSpec_GenericSpec_
+  [:merge BaseConcatSpec
+   [:map {:closed true, :json-schema/original-name "HConcatSpec<GenericSpec>"}
+    [:center {:optional true} boolean?]
+    [:hconcat [:vector [:ref #'Spec]]]
+    [:spacing {:optional true} number?]]])
 
 (def VConcatSpec_GenericSpec_
-  [:map {:closed true, :json-schema/original-name "VConcatSpec<GenericSpec>"}
-   [:description {:optional true} string?]
-   [:transform {:optional true} [:vector [:ref #'Transform]]]
-   [:name {:optional true} string?]
-   [:bounds {:optional true} [:enum "full" "flush"]]
-   [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
-   [:center {:optional true} boolean?]
-   [:resolve {:optional true} [:ref #'Resolve]]
-   [:vconcat [:vector [:ref #'Spec]]] [:spacing {:optional true} number?]
-   [:data {:optional true} [:or [:ref #'Data] nil?]]])
+  [:merge BaseConcatSpec
+   [:map {:closed true, :json-schema/original-name "VConcatSpec<GenericSpec>"}
+    [:center {:optional true} boolean?]
+    [:spacing {:optional true} number?]
+    [:vconcat [:vector [:ref #'Spec]]]]])
 
 (def ConcatSpec_GenericSpec_
-  [:map {:closed true, :json-schema/original-name "ConcatSpec<GenericSpec>"}
-   [:description {:optional true} string?]
-   [:align {:optional true}
-    [:or [:ref #'LayoutAlign]
-     [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
-      #'RowCol_LayoutAlign_]]]
-   [:transform {:optional true} [:vector [:ref #'Transform]]]
-   [:concat [:vector [:ref #'Spec]]] [:columns {:optional true} number?]
-   [:name {:optional true} string?]
-   [:bounds {:optional true} [:enum "full" "flush"]]
-   [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
-   [:center {:optional true}
-    [:or boolean?
-     [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
-   [:resolve {:optional true} [:ref #'Resolve]]
-   [:spacing {:optional true}
-    [:or number?
-     [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
-   [:data {:optional true} [:or [:ref #'Data] nil?]]])
+  [:merge BaseConcatSpec
+   [:map {:closed true, :json-schema/original-name "ConcatSpec<GenericSpec>"}
+    [:align {:optional true}
+     [:or [:ref #'LayoutAlign]
+      [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
+       #'RowCol_LayoutAlign_]]]
+    [:center {:optional true}
+     [:or boolean?
+      [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
+    [:columns {:optional true} number?]
+    [:concat [:vector [:ref #'Spec]]]
+    [:spacing {:optional true}
+     [:or number?
+      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]]])
 
 (def Spec
   [:or [:ref #'FacetedUnitSpec] [:ref #'LayerSpec] [:ref #'RepeatSpec]
