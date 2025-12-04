@@ -44,7 +44,8 @@
 (def Field [:or [:ref #'FieldName] [:ref #'RepeatRef]])
 
 (def EncodingSortField
-  [:map {:closed true} [:field {:optional true} [:ref #'Field]]
+  [:map {:closed true}
+   [:field {:optional true} [:ref #'Field]]
    [:op {:optional true} [:ref #'NonArgAggregateOp]]
    [:order {:optional true} [:or [:ref #'SortOrder] nil?]]])
 
@@ -53,7 +54,8 @@
    [:vector [:ref #'DateTime]]])
 
 (def SortByEncoding
-  [:map {:closed true} [:encoding [:ref #'SortByChannel]]
+  [:map {:closed true}
+   [:encoding [:ref #'SortByChannel]]
    [:order {:optional true} [:or [:ref #'SortOrder] nil?]]])
 
 (def Sort
@@ -75,11 +77,9 @@
    {:closed true,
     :json-schema/original-name
       "FieldOrDatumDefWithCondition<MarkPropFieldDef,(Gradient|string|null)>"}
-   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
-   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
-   [:field {:optional true} [:ref #'Field]]
-   [:type {:optional true} [:ref #'StandardType]]
-   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:bandPosition {:optional true} number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
    [:condition {:optional true}
     [:or
      [:ref
@@ -91,12 +91,14 @@
        {:json-schema/original-name
           "ConditionalValueDef<(Gradient|string|null|ExprRef)>"}
        #'ConditionalValueDef__Gradient_string_null_ExprRef__]]]]
-   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
-   [:bandPosition {:optional true} number?]
+   [:field {:optional true} [:ref #'Field]]
+   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:sort {:optional true} [:ref #'Sort]]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
-   [:aggregate {:optional true} [:ref #'Aggregate]]
-   [:sort {:optional true} [:ref #'Sort]]])
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:type {:optional true} [:ref #'StandardType]]])
 
 (def ConditionalParameter_MarkPropFieldOrDatumDef_
   [:or
@@ -194,7 +196,8 @@
        #'ConditionalValueDef__Gradient_string_null_ExprRef__]]]]
    [:datum {:optional true}
     [:or [:ref #'PrimitiveValue] [:ref #'DateTime] [:ref #'ExprRef]
-     [:ref #'RepeatRef]]] [:title {:optional true} [:or [:ref #'Text] nil?]]
+     [:ref #'RepeatRef]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'Type]]])
 
 (def MarkPropDef__Gradient_string_null__
@@ -217,8 +220,10 @@
    #'MarkPropDef__Gradient_string_null__])
 
 (def SecondaryFieldDef
-  [:map {:closed true} [:aggregate {:optional true} [:ref #'Aggregate]]
-   [:bandPosition {:optional true} number?] [:bin {:optional true} nil?]
+  [:map {:closed true}
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:bandPosition {:optional true} number?]
+   [:bin {:optional true} nil?]
    [:field {:optional true} [:ref #'Field]]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
@@ -238,10 +243,12 @@
    #'ValueDef__number__width___height__ExprRef__])
 
 (def DatumDef
-  [:map {:closed true} [:bandPosition {:optional true} number?]
+  [:map {:closed true}
+   [:bandPosition {:optional true} number?]
    [:datum {:optional true}
     [:or [:ref #'PrimitiveValue] [:ref #'DateTime] [:ref #'ExprRef]
-     [:ref #'RepeatRef]]] [:title {:optional true} [:or [:ref #'Text] nil?]]
+     [:ref #'RepeatRef]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'Type]]])
 
 (def Position2Def
@@ -305,11 +312,9 @@
    {:closed true,
     :json-schema/original-name
       "FieldOrDatumDefWithCondition<MarkPropFieldDef,number[]>"}
-   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
-   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
-   [:field {:optional true} [:ref #'Field]]
-   [:type {:optional true} [:ref #'StandardType]]
-   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:bandPosition {:optional true} number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
    [:condition {:optional true}
     [:or
      [:ref
@@ -319,12 +324,14 @@
       [:ref
        {:json-schema/original-name "ConditionalValueDef<(number[]|ExprRef)>"}
        #'ConditionalValueDef__number___ExprRef__]]]]
-   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
-   [:bandPosition {:optional true} number?]
+   [:field {:optional true} [:ref #'Field]]
+   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:sort {:optional true} [:ref #'Sort]]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
-   [:aggregate {:optional true} [:ref #'Aggregate]]
-   [:sort {:optional true} [:ref #'Sort]]])
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:type {:optional true} [:ref #'StandardType]]])
 
 (def FieldOrDatumDefWithCondition_DatumDef_number___
   [:map
@@ -343,7 +350,8 @@
        #'ConditionalValueDef__number___ExprRef__]]]]
    [:datum {:optional true}
     [:or [:ref #'PrimitiveValue] [:ref #'DateTime] [:ref #'ExprRef]
-     [:ref #'RepeatRef]]] [:title {:optional true} [:or [:ref #'Text] nil?]]
+     [:ref #'RepeatRef]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'Type]]])
 
 (def ValueDefWithCondition_MarkPropFieldOrDatumDef_number___
@@ -382,22 +390,25 @@
    #'MarkPropDef_number___])
 
 (def ScaleFieldDef
-  [:map {:closed true} [:scale {:optional true} [:or [:ref #'Scale] nil?]]
-   [:field {:optional true} [:ref #'Field]]
-   [:type {:optional true} [:ref #'StandardType]]
-   [:title {:optional true} [:or [:ref #'Text] nil?]]
-   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+  [:map {:closed true}
+   [:aggregate {:optional true} [:ref #'Aggregate]]
    [:bandPosition {:optional true} number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:sort {:optional true} [:ref #'Sort]]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
-   [:aggregate {:optional true} [:ref #'Aggregate]]
-   [:sort {:optional true} [:ref #'Sort]]])
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:type {:optional true} [:ref #'StandardType]]])
 
 (def ScaleDatumDef
-  [:map {:closed true} [:bandPosition {:optional true} number?]
+  [:map {:closed true}
+   [:bandPosition {:optional true} number?]
    [:datum {:optional true}
     [:or [:ref #'PrimitiveValue] [:ref #'DateTime] [:ref #'ExprRef]
-     [:ref #'RepeatRef]]] [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
    [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'Type]]])
 
@@ -427,7 +438,8 @@
        #'ConditionalValueDef__Text_ExprRef__]]]]
    [:datum {:optional true}
     [:or [:ref #'PrimitiveValue] [:ref #'DateTime] [:ref #'ExprRef]
-     [:ref #'RepeatRef]]] [:format {:optional true} [:ref #'Format]]
+     [:ref #'RepeatRef]]]
+   [:format {:optional true} [:ref #'Format]]
    [:formatType {:optional true} string?]
    [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'Type]]])
@@ -437,11 +449,10 @@
    {:closed true,
     :json-schema/original-name
       "FieldOrDatumDefWithCondition<StringFieldDef,Text>"}
-   [:format {:optional true} [:ref #'Format]]
-   [:field {:optional true} [:ref #'Field]]
-   [:type {:optional true} [:ref #'StandardType]]
-   [:title {:optional true} [:or [:ref #'Text] nil?]]
-   [:formatType {:optional true} string?]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:bandPosition {:optional true} number?]
+   [:bin {:optional true}
+    [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
    [:condition {:optional true}
     [:or
      [:ref {:json-schema/original-name "ConditionalValueDef<(Text|ExprRef)>"}
@@ -449,12 +460,13 @@
      [:vector
       [:ref {:json-schema/original-name "ConditionalValueDef<(Text|ExprRef)>"}
        #'ConditionalValueDef__Text_ExprRef__]]]]
-   [:bin {:optional true}
-    [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
-   [:bandPosition {:optional true} number?]
+   [:field {:optional true} [:ref #'Field]]
+   [:format {:optional true} [:ref #'Format]]
+   [:formatType {:optional true} string?]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
-   [:aggregate {:optional true} [:ref #'Aggregate]]])
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:type {:optional true} [:ref #'StandardType]]])
 
 (def ConditionalStringFieldDef
   [:or
@@ -513,7 +525,8 @@
     #'ValueDefWithCondition_StringFieldDef_Text_]])
 
 (def TypedFieldDef
-  [:map {:closed true} [:aggregate {:optional true} [:ref #'Aggregate]]
+  [:map {:closed true}
+   [:aggregate {:optional true} [:ref #'Aggregate]]
    [:bandPosition {:optional true} number?]
    [:bin {:optional true}
     [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
@@ -526,7 +539,8 @@
 (def FieldDefWithoutScale [:ref #'TypedFieldDef])
 
 (def OrderOnlyDef
-  [:map {:closed true} [:sort {:optional true} [:ref #'SortOrder]]])
+  [:map {:closed true}
+   [:sort {:optional true} [:ref #'SortOrder]]])
 
 (def ConditionalValueDef__number_ExprRef__
   [:or {:json-schema/original-name "ConditionalValueDef<(number|ExprRef)>"}
@@ -540,11 +554,9 @@
    {:closed true,
     :json-schema/original-name
       "FieldOrDatumDefWithCondition<MarkPropFieldDef,number>"}
-   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
-   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
-   [:field {:optional true} [:ref #'Field]]
-   [:type {:optional true} [:ref #'StandardType]]
-   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:bandPosition {:optional true} number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
    [:condition {:optional true}
     [:or
      [:ref {:json-schema/original-name "ConditionalValueDef<(number|ExprRef)>"}
@@ -552,12 +564,14 @@
      [:vector
       [:ref {:json-schema/original-name "ConditionalValueDef<(number|ExprRef)>"}
        #'ConditionalValueDef__number_ExprRef__]]]]
-   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
-   [:bandPosition {:optional true} number?]
+   [:field {:optional true} [:ref #'Field]]
+   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:sort {:optional true} [:ref #'Sort]]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
-   [:aggregate {:optional true} [:ref #'Aggregate]]
-   [:sort {:optional true} [:ref #'Sort]]])
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:type {:optional true} [:ref #'StandardType]]])
 
 (def ValueDefWithCondition_MarkPropFieldOrDatumDef_number_
   [:map
@@ -587,7 +601,8 @@
        #'ConditionalValueDef__number_ExprRef__]]]]
    [:datum {:optional true}
     [:or [:ref #'PrimitiveValue] [:ref #'DateTime] [:ref #'ExprRef]
-     [:ref #'RepeatRef]]] [:title {:optional true} [:or [:ref #'Text] nil?]]
+     [:ref #'RepeatRef]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'Type]]])
 
 (def MarkPropDef_number_
@@ -609,35 +624,40 @@
    #'MarkPropDef_number_])
 
 (def PositionDatumDefBase
-  [:map {:closed true} [:bandPosition {:optional true} number?]
+  [:map {:closed true}
+   [:bandPosition {:optional true} number?]
    [:datum {:optional true}
     [:or [:ref #'PrimitiveValue] [:ref #'DateTime] [:ref #'ExprRef]
-     [:ref #'RepeatRef]]] [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+     [:ref #'RepeatRef]]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
    [:stack {:optional true} [:or [:ref #'StackOffset] nil? boolean?]]
    [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'Type]]])
 
 (def PositionFieldDefBase
-  [:map {:closed true} [:scale {:optional true} [:or [:ref #'Scale] nil?]]
-   [:field {:optional true} [:ref #'Field]]
-   [:type {:optional true} [:ref #'StandardType]]
-   [:title {:optional true} [:or [:ref #'Text] nil?]]
+  [:map {:closed true}
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:bandPosition {:optional true} number?]
    [:bin {:optional true}
     [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:sort {:optional true} [:ref #'Sort]]
    [:stack {:optional true} [:or [:ref #'StackOffset] nil? boolean?]]
-   [:bandPosition {:optional true} number?]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
-   [:aggregate {:optional true} [:ref #'Aggregate]]
-   [:sort {:optional true} [:ref #'Sort]]])
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:type {:optional true} [:ref #'StandardType]]])
 
 (def PolarDef
   [:or [:ref #'PositionFieldDefBase] [:ref #'PositionDatumDefBase]
    [:ref #'PositionValueDef]])
 
 (def LatLongFieldDef
-  [:map {:closed true} [:aggregate {:optional true} [:ref #'Aggregate]]
-   [:bandPosition {:optional true} number?] [:bin {:optional true} nil?]
+  [:map {:closed true}
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:bandPosition {:optional true} number?]
+   [:bin {:optional true} nil?]
    [:field {:optional true} [:ref #'Field]]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
@@ -647,16 +667,18 @@
 (def LatLongDef [:or [:ref #'LatLongFieldDef] [:ref #'DatumDef]])
 
 (def TimeFieldDef
-  [:map {:closed true} [:scale {:optional true} [:or [:ref #'Scale] nil?]]
-   [:rescale {:optional true} boolean?] [:field {:optional true} [:ref #'Field]]
-   [:type {:optional true} [:ref #'StandardType]]
-   [:title {:optional true} [:or [:ref #'Text] nil?]]
-   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+  [:map {:closed true}
+   [:aggregate {:optional true} [:ref #'Aggregate]]
    [:bandPosition {:optional true} number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:rescale {:optional true} boolean?]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:sort {:optional true} [:ref #'Sort]]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
-   [:aggregate {:optional true} [:ref #'Aggregate]]
-   [:sort {:optional true} [:ref #'Sort]]])
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:type {:optional true} [:ref #'StandardType]]])
 
 (def TimeDef [:ref #'TimeFieldDef])
 
@@ -672,11 +694,10 @@
    {:closed true,
     :json-schema/original-name
       "FieldOrDatumDefWithCondition<StringFieldDef,string>"}
-   [:format {:optional true} [:ref #'Format]]
-   [:field {:optional true} [:ref #'Field]]
-   [:type {:optional true} [:ref #'StandardType]]
-   [:title {:optional true} [:or [:ref #'Text] nil?]]
-   [:formatType {:optional true} string?]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:bandPosition {:optional true} number?]
+   [:bin {:optional true}
+    [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
    [:condition {:optional true}
     [:or
      [:ref {:json-schema/original-name "ConditionalValueDef<(string|ExprRef)>"}
@@ -684,12 +705,13 @@
      [:vector
       [:ref {:json-schema/original-name "ConditionalValueDef<(string|ExprRef)>"}
        #'ConditionalValueDef__string_ExprRef__]]]]
-   [:bin {:optional true}
-    [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
-   [:bandPosition {:optional true} number?]
+   [:field {:optional true} [:ref #'Field]]
+   [:format {:optional true} [:ref #'Format]]
+   [:formatType {:optional true} string?]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
-   [:aggregate {:optional true} [:ref #'Aggregate]]])
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:type {:optional true} [:ref #'StandardType]]])
 
 (def StringFieldDefWithCondition
   [:ref
@@ -698,7 +720,8 @@
    #'FieldOrDatumDefWithCondition_StringFieldDef_string_])
 
 (def OrderFieldDef
-  [:map {:closed true} [:aggregate {:optional true} [:ref #'Aggregate]]
+  [:map {:closed true}
+   [:aggregate {:optional true} [:ref #'Aggregate]]
    [:bandPosition {:optional true} number?]
    [:bin {:optional true}
     [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
@@ -710,17 +733,18 @@
    [:type {:optional true} [:ref #'StandardType]]])
 
 (def StringFieldDef
-  [:map {:closed true} [:format {:optional true} [:ref #'Format]]
-   [:field {:optional true} [:ref #'Field]]
-   [:type {:optional true} [:ref #'StandardType]]
-   [:title {:optional true} [:or [:ref #'Text] nil?]]
-   [:formatType {:optional true} string?]
+  [:map {:closed true}
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:bandPosition {:optional true} number?]
    [:bin {:optional true}
     [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
-   [:bandPosition {:optional true} number?]
+   [:field {:optional true} [:ref #'Field]]
+   [:format {:optional true} [:ref #'Format]]
+   [:formatType {:optional true} string?]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
-   [:aggregate {:optional true} [:ref #'Aggregate]]])
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:type {:optional true} [:ref #'StandardType]]])
 
 (def ConditionalMarkPropFieldOrDatumDef_TypeForShape_
   [:or
@@ -805,7 +829,8 @@
        #'ConditionalValueDef__string_null_ExprRef__]]]]
    [:datum {:optional true}
     [:or [:ref #'PrimitiveValue] [:ref #'DateTime] [:ref #'ExprRef]
-     [:ref #'RepeatRef]]] [:title {:optional true} [:or [:ref #'Text] nil?]]
+     [:ref #'RepeatRef]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:type {:optional true} [:ref #'Type]]])
 
 (def FieldOrDatumDefWithCondition_MarkPropFieldDef_TypeForShape___string_null__
@@ -813,11 +838,9 @@
    {:closed true,
     :json-schema/original-name
       "FieldOrDatumDefWithCondition<MarkPropFieldDef<TypeForShape>,(string|null)>"}
-   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
-   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
-   [:field {:optional true} [:ref #'Field]]
-   [:type {:optional true} [:ref #'TypeForShape]]
-   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:aggregate {:optional true} [:ref #'Aggregate]]
+   [:bandPosition {:optional true} number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
    [:condition {:optional true}
     [:or
      [:ref
@@ -827,12 +850,14 @@
       [:ref
        {:json-schema/original-name "ConditionalValueDef<(string|null|ExprRef)>"}
        #'ConditionalValueDef__string_null_ExprRef__]]]]
-   [:bin {:optional true} [:or boolean? nil? [:ref #'BinParams]]]
-   [:bandPosition {:optional true} number?]
+   [:field {:optional true} [:ref #'Field]]
+   [:legend {:optional true} [:or [:ref #'Legend] nil?]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:sort {:optional true} [:ref #'Sort]]
    [:timeUnit {:optional true}
     [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
-   [:aggregate {:optional true} [:ref #'Aggregate]]
-   [:sort {:optional true} [:ref #'Sort]]])
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:type {:optional true} [:ref #'TypeForShape]]])
 
 (def MarkPropDef__string_null__TypeForShape_
   [:or {:json-schema/original-name "MarkPropDef<(string|null),TypeForShape>"}
@@ -854,23 +879,25 @@
    #'MarkPropDef__string_null__TypeForShape_])
 
 (def PositionFieldDef
-  [:map {:closed true} [:scale {:optional true} [:or [:ref #'Scale] nil?]]
-   [:impute {:optional true} [:or [:ref #'ImputeParams] nil?]]
-   [:field {:optional true} [:ref #'Field]]
-   [:type {:optional true} [:ref #'StandardType]]
-   [:title {:optional true} [:or [:ref #'Text] nil?]]
-   [:bin {:optional true}
-    [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
-   [:stack {:optional true} [:or [:ref #'StackOffset] nil? boolean?]]
-   [:bandPosition {:optional true} number?]
-   [:timeUnit {:optional true}
-    [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
+  [:map {:closed true}
    [:aggregate {:optional true} [:ref #'Aggregate]]
    [:axis {:optional true} [:or [:ref #'Axis] nil?]]
-   [:sort {:optional true} [:ref #'Sort]]])
+   [:bandPosition {:optional true} number?]
+   [:bin {:optional true}
+    [:or boolean? nil? [:ref #'BinParams] [:enum "binned"]]]
+   [:field {:optional true} [:ref #'Field]]
+   [:impute {:optional true} [:or [:ref #'ImputeParams] nil?]]
+   [:scale {:optional true} [:or [:ref #'Scale] nil?]]
+   [:sort {:optional true} [:ref #'Sort]]
+   [:stack {:optional true} [:or [:ref #'StackOffset] nil? boolean?]]
+   [:timeUnit {:optional true}
+    [:or [:ref #'TimeUnit] [:ref #'BinnedTimeUnit] [:ref #'TimeUnitParams]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:type {:optional true} [:ref #'StandardType]]])
 
 (def PositionDatumDef
-  [:map {:closed true} [:axis {:optional true} [:or [:ref #'Axis] nil?]]
+  [:map {:closed true}
+   [:axis {:optional true} [:or [:ref #'Axis] nil?]]
    [:bandPosition {:optional true} number?]
    [:datum {:optional true}
     [:or [:ref #'PrimitiveValue] [:ref #'DateTime] [:ref #'ExprRef]
@@ -886,61 +913,63 @@
    [:ref #'PositionValueDef]])
 
 (def Encoding
-  [:map {:closed true} [:y {:optional true} [:ref #'PositionDef]]
+  [:map {:closed true}
+   [:angle {:optional true} [:ref #'NumericMarkPropDef]]
+   [:color {:optional true} [:ref #'ColorDef]]
    [:description {:optional true}
     [:or [:ref #'StringFieldDefWithCondition]
      [:ref #'StringValueDefWithCondition]]]
-   [:strokeOpacity {:optional true} [:ref #'NumericMarkPropDef]]
-   [:xError2 {:optional true}
-    [:or [:ref #'SecondaryFieldDef]
-     [:ref {:json-schema/original-name "ValueDef<number>"} #'ValueDef_number_]]]
-   [:stroke {:optional true} [:ref #'ColorDef]]
-   [:color {:optional true} [:ref #'ColorDef]]
-   [:key {:optional true} [:ref #'FieldDefWithoutScale]]
-   [:longitude2 {:optional true} [:ref #'Position2Def]]
+   [:detail {:optional true}
+    [:or [:ref #'FieldDefWithoutScale]
+     [:vector [:ref #'FieldDefWithoutScale]]]]
    [:fill {:optional true} [:ref #'ColorDef]]
-   [:strokeDash {:optional true} [:ref #'NumericArrayMarkPropDef]]
-   [:time {:optional true} [:ref #'TimeDef]]
-   [:longitude {:optional true} [:ref #'LatLongDef]]
    [:fillOpacity {:optional true} [:ref #'NumericMarkPropDef]]
-   [:angle {:optional true} [:ref #'NumericMarkPropDef]]
-   [:theta {:optional true} [:ref #'PolarDef]]
-   [:radius {:optional true} [:ref #'PolarDef]]
-   [:theta2 {:optional true} [:ref #'Position2Def]]
-   [:size {:optional true} [:ref #'NumericMarkPropDef]]
-   [:yError {:optional true}
-    [:or [:ref #'SecondaryFieldDef]
-     [:ref {:json-schema/original-name "ValueDef<number>"} #'ValueDef_number_]]]
-   [:strokeWidth {:optional true} [:ref #'NumericMarkPropDef]]
-   [:opacity {:optional true} [:ref #'NumericMarkPropDef]]
-   [:shape {:optional true} [:ref #'ShapeDef]]
-   [:url {:optional true}
+   [:href {:optional true}
     [:or [:ref #'StringFieldDefWithCondition]
      [:ref #'StringValueDefWithCondition]]]
+   [:key {:optional true} [:ref #'FieldDefWithoutScale]]
    [:latitude {:optional true} [:ref #'LatLongDef]]
+   [:latitude2 {:optional true} [:ref #'Position2Def]]
+   [:longitude {:optional true} [:ref #'LatLongDef]]
+   [:longitude2 {:optional true} [:ref #'Position2Def]]
+   [:opacity {:optional true} [:ref #'NumericMarkPropDef]]
    [:order {:optional true}
     [:or [:ref #'OrderFieldDef] [:ref #'OrderValueDef] [:ref #'OrderOnlyDef]
      [:vector [:ref #'OrderFieldDef]]]]
+   [:radius {:optional true} [:ref #'PolarDef]]
+   [:radius2 {:optional true} [:ref #'Position2Def]]
+   [:shape {:optional true} [:ref #'ShapeDef]]
+   [:size {:optional true} [:ref #'NumericMarkPropDef]]
+   [:stroke {:optional true} [:ref #'ColorDef]]
+   [:strokeDash {:optional true} [:ref #'NumericArrayMarkPropDef]]
+   [:strokeOpacity {:optional true} [:ref #'NumericMarkPropDef]]
+   [:strokeWidth {:optional true} [:ref #'NumericMarkPropDef]]
+   [:text {:optional true} [:ref #'TextDef]]
+   [:theta {:optional true} [:ref #'PolarDef]]
+   [:theta2 {:optional true} [:ref #'Position2Def]]
+   [:time {:optional true} [:ref #'TimeDef]]
+   [:tooltip {:optional true}
+    [:or [:ref #'StringFieldDefWithCondition]
+     [:ref #'StringValueDefWithCondition] [:vector [:ref #'StringFieldDef]]
+     nil?]]
+   [:url {:optional true}
+    [:or [:ref #'StringFieldDefWithCondition]
+     [:ref #'StringValueDefWithCondition]]]
+   [:x {:optional true} [:ref #'PositionDef]]
+   [:x2 {:optional true} [:ref #'Position2Def]]
    [:xError {:optional true}
+    [:or [:ref #'SecondaryFieldDef]
+     [:ref {:json-schema/original-name "ValueDef<number>"} #'ValueDef_number_]]]
+   [:xError2 {:optional true}
+    [:or [:ref #'SecondaryFieldDef]
+     [:ref {:json-schema/original-name "ValueDef<number>"} #'ValueDef_number_]]]
+   [:xOffset {:optional true} [:ref #'OffsetDef]]
+   [:y {:optional true} [:ref #'PositionDef]]
+   [:y2 {:optional true} [:ref #'Position2Def]]
+   [:yError {:optional true}
     [:or [:ref #'SecondaryFieldDef]
      [:ref {:json-schema/original-name "ValueDef<number>"} #'ValueDef_number_]]]
    [:yError2 {:optional true}
     [:or [:ref #'SecondaryFieldDef]
      [:ref {:json-schema/original-name "ValueDef<number>"} #'ValueDef_number_]]]
-   [:yOffset {:optional true} [:ref #'OffsetDef]]
-   [:x {:optional true} [:ref #'PositionDef]]
-   [:y2 {:optional true} [:ref #'Position2Def]]
-   [:radius2 {:optional true} [:ref #'Position2Def]]
-   [:x2 {:optional true} [:ref #'Position2Def]]
-   [:latitude2 {:optional true} [:ref #'Position2Def]]
-   [:href {:optional true}
-    [:or [:ref #'StringFieldDefWithCondition]
-     [:ref #'StringValueDefWithCondition]]]
-   [:tooltip {:optional true}
-    [:or [:ref #'StringFieldDefWithCondition]
-     [:ref #'StringValueDefWithCondition] [:vector [:ref #'StringFieldDef]]
-     nil?]] [:text {:optional true} [:ref #'TextDef]]
-   [:xOffset {:optional true} [:ref #'OffsetDef]]
-   [:detail {:optional true}
-    [:or [:ref #'FieldDefWithoutScale]
-     [:vector [:ref #'FieldDefWithoutScale]]]]])
+   [:yOffset {:optional true} [:ref #'OffsetDef]]])

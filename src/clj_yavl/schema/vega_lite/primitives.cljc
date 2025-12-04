@@ -81,7 +81,8 @@
 
 (def Baseline [:enum "top" "middle" "bottom"])
 
-(def TooltipContent [:map {:closed true} [:content [:enum "encoding" "data"]]])
+(def TooltipContent [:map {:closed true}
+   [:content [:enum "encoding" "data"]]])
 
 (def StrokeCap [:enum "butt" "round" "square"])
 
@@ -99,9 +100,11 @@
 
 (def Text [:or string? [:vector string?]])
 
-(def ExprRef [:map {:closed true} [:expr string?]])
+(def ExprRef [:map {:closed true}
+   [:expr string?]])
 
-(def RelativeBandSize [:map {:closed true} [:band number?]])
+(def RelativeBandSize [:map {:closed true}
+   [:band number?]])
 
 (def Mark
   [:enum "arc" "area" "bar" "image" "line" "point" "rect" "rule" "text" "tick"
@@ -180,12 +183,17 @@
 (def Dict [:map-of any? any?])
 
 (def TimeFormatSpecifier
-  [:map {:closed true} [:quarter {:optional true} string?]
-   [:day {:optional true} string?] [:date {:optional true} string?]
-   [:week {:optional true} string?] [:month {:optional true} string?]
-   [:seconds {:optional true} string?] [:year {:optional true} string?]
-   [:hours {:optional true} string?] [:milliseconds {:optional true} string?]
-   [:minutes {:optional true} string?]])
+  [:map {:closed true}
+   [:date {:optional true} string?]
+   [:day {:optional true} string?]
+   [:hours {:optional true} string?]
+   [:milliseconds {:optional true} string?]
+   [:minutes {:optional true} string?]
+   [:month {:optional true} string?]
+   [:quarter {:optional true} string?]
+   [:seconds {:optional true} string?]
+   [:week {:optional true} string?]
+   [:year {:optional true} string?]])
 
 (def ResolveMode [:enum "independent" "shared"])
 
@@ -211,10 +219,12 @@
 (def StandardType [:enum "quantitative" "ordinal" "temporal" "nominal"])
 
 (def RepeatRef
-  [:map {:closed true} [:repeat [:enum "row" "column" "repeat" "layer"]]])
+  [:map {:closed true}
+   [:repeat [:enum "row" "column" "repeat" "layer"]]])
 
 (def ScaleInterpolateParams
-  [:map {:closed true} [:gamma {:optional true} number?]
+  [:map {:closed true}
+   [:gamma {:optional true} number?]
    [:type [:enum "rgb" "cubehelix" "cubehelix-long"]]])
 
 (def Cyclical [:enum "rainbow" "sinebow"])
@@ -300,14 +310,17 @@
    "heatmap"])
 
 (def ScaleBinParams
-  [:map {:closed true} [:start {:optional true} number?] [:step number?]
+  [:map {:closed true}
+   [:start {:optional true} number?]
+   [:step number?]
    [:stop {:optional true} number?]])
 
 (def ScaleInterpolateEnum
   [:enum "rgb" "lab" "hcl" "hsl" "hsl-long" "hcl-long" "cubehelix"
    "cubehelix-long"])
 
-(def FieldRange [:map {:closed true} [:field string?]])
+(def FieldRange [:map {:closed true}
+   [:field string?]])
 
 (def ScaleType
   [:enum "linear" "log" "pow" "sqrt" "symlog" "identity" "sequential" "time"
@@ -327,12 +340,14 @@
 (def PrimitiveValue [:or number? string? boolean? nil?])
 
 (def CompositionConfig
-  [:map {:closed true} [:columns {:optional true} number?]
+  [:map {:closed true}
+   [:columns {:optional true} number?]
    [:spacing {:optional true} number?]])
 
 (def RowCol_number_
   [:map {:closed true, :json-schema/original-name "RowCol<number>"}
-   [:column {:optional true} number?] [:row {:optional true} number?]])
+   [:column {:optional true} number?]
+   [:row {:optional true} number?]])
 
 (def InlineDataset
   [:or [:vector number?] [:vector string?] [:vector boolean?]
@@ -344,28 +359,34 @@
   [:vector {:json-schema/original-name "Vector2<number>"} number?])
 
 (def SphereGenerator
-  [:map {:closed true} [:name {:optional true} string?]
+  [:map {:closed true}
+   [:name {:optional true} string?]
    [:sphere [:or [:map-of any? any?] [:enum true]]]])
 
 (def WindowOnlyOp
   [:enum "row_number" "rank" "dense_rank" "percent_rank" "cume_dist" "ntile"
    "lag" "lead" "first_value" "last_value" "nth_value"])
 
-(def SampleTransform [:map {:closed true} [:sample number?]])
+(def SampleTransform [:map {:closed true}
+   [:sample number?]])
 
 (def ImputeMethod [:enum "value" "median" "max" "min" "mean"])
 
 (def ImputeSequence
-  [:map {:closed true} [:start {:optional true} number?]
-   [:step {:optional true} number?] [:stop number?]])
+  [:map {:closed true}
+   [:start {:optional true} number?]
+   [:step {:optional true} number?]
+   [:stop number?]])
 
 (def RepeatMapping
-  [:map {:closed true} [:column {:optional true} [:vector string?]]
+  [:map {:closed true}
+   [:column {:optional true} [:vector string?]]
    [:row {:optional true} [:vector string?]]])
 
 (def RowCol_boolean_
   [:map {:closed true, :json-schema/original-name "RowCol<boolean>"}
-   [:column {:optional true} boolean?] [:row {:optional true} boolean?]])
+   [:column {:optional true} boolean?]
+   [:row {:optional true} boolean?]])
 
 (def ValueDef_number_
   [:map {:closed true, :json-schema/original-name "ValueDef<number>"}
@@ -414,8 +435,10 @@
 (def StepFor [:enum "position" "offset"])
 
 (def LayerRepeatMapping
-  [:map {:closed true} [:column {:optional true} [:vector string?]]
-   [:layer [:vector string?]] [:row {:optional true} [:vector string?]]])
+  [:map {:closed true}
+   [:column {:optional true} [:vector string?]]
+   [:layer [:vector string?]]
+   [:row {:optional true} [:vector string?]]])
 
 (def RangeRawArray [:vector number?])
 
@@ -426,7 +449,8 @@
     [:top {:optional true} number?]]])
 
 (def FormatConfig
-  [:map {:closed true} [:normalizedNumberFormat {:optional true} string?]
+  [:map {:closed true}
+   [:normalizedNumberFormat {:optional true} string?]
    [:normalizedNumberFormatType {:optional true} string?]
    [:numberFormat {:optional true} string?]
    [:numberFormatType {:optional true} string?]

@@ -38,23 +38,24 @@
 
 (def ViewBackground
   [:map {:closed true}
-   [:strokeOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:stroke {:optional true} [:or [:ref #'Color] [:ref #'ExprRef] nil?]]
-   [:fill {:optional true} [:or [:ref #'Color] [:ref #'ExprRef] nil?]]
-   [:strokeDash {:optional true} [:or [:vector number?] [:ref #'ExprRef]]]
-   [:cursor {:optional true} [:ref #'Cursor]]
-   [:fillOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:strokeMiterLimit {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:strokeDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
    [:cornerRadius {:optional true} [:or number? [:ref #'ExprRef]]]
-   [:style {:optional true} [:or string? [:vector string?]]]
-   [:strokeWidth {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:cursor {:optional true} [:ref #'Cursor]]
+   [:fill {:optional true} [:or [:ref #'Color] [:ref #'ExprRef] nil?]]
+   [:fillOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
    [:opacity {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:stroke {:optional true} [:or [:ref #'Color] [:ref #'ExprRef] nil?]]
+   [:strokeCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]
+   [:strokeDash {:optional true} [:or [:vector number?] [:ref #'ExprRef]]]
+   [:strokeDashOffset {:optional true} [:or number? [:ref #'ExprRef]]]
    [:strokeJoin {:optional true} [:or [:ref #'StrokeJoin] [:ref #'ExprRef]]]
-   [:strokeCap {:optional true} [:or [:ref #'StrokeCap] [:ref #'ExprRef]]]])
+   [:strokeMiterLimit {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:strokeOpacity {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:strokeWidth {:optional true} [:or number? [:ref #'ExprRef]]]
+   [:style {:optional true} [:or string? [:vector string?]]]])
 
 (def Step
-  [:map {:closed true} [:for {:optional true} [:ref #'StepFor]]
+  [:map {:closed true}
+   [:for {:optional true} [:ref #'StepFor]]
    [:step number?]])
 
 (def Data data/Data)
@@ -66,73 +67,80 @@
 (def ResolveMode primitives/ResolveMode)
 
 (def AxisResolveMap
-  [:map {:closed true} [:x {:optional true} [:ref #'ResolveMode]]
+  [:map {:closed true}
+   [:x {:optional true} [:ref #'ResolveMode]]
    [:y {:optional true} [:ref #'ResolveMode]]])
 
 (def LegendResolveMap
-  [:map {:closed true} [:strokeOpacity {:optional true} [:ref #'ResolveMode]]
-   [:stroke {:optional true} [:ref #'ResolveMode]]
+  [:map {:closed true}
+   [:angle {:optional true} [:ref #'ResolveMode]]
    [:color {:optional true} [:ref #'ResolveMode]]
    [:fill {:optional true} [:ref #'ResolveMode]]
-   [:strokeDash {:optional true} [:ref #'ResolveMode]]
-   [:time {:optional true} [:ref #'ResolveMode]]
    [:fillOpacity {:optional true} [:ref #'ResolveMode]]
-   [:angle {:optional true} [:ref #'ResolveMode]]
-   [:size {:optional true} [:ref #'ResolveMode]]
-   [:strokeWidth {:optional true} [:ref #'ResolveMode]]
-   [:opacity {:optional true} [:ref #'ResolveMode]]
-   [:shape {:optional true} [:ref #'ResolveMode]]])
-
-(def ScaleResolveMap
-  [:map {:closed true} [:y {:optional true} [:ref #'ResolveMode]]
-   [:strokeOpacity {:optional true} [:ref #'ResolveMode]]
-   [:stroke {:optional true} [:ref #'ResolveMode]]
-   [:color {:optional true} [:ref #'ResolveMode]]
-   [:fill {:optional true} [:ref #'ResolveMode]]
-   [:strokeDash {:optional true} [:ref #'ResolveMode]]
-   [:time {:optional true} [:ref #'ResolveMode]]
-   [:fillOpacity {:optional true} [:ref #'ResolveMode]]
-   [:angle {:optional true} [:ref #'ResolveMode]]
-   [:theta {:optional true} [:ref #'ResolveMode]]
-   [:radius {:optional true} [:ref #'ResolveMode]]
-   [:size {:optional true} [:ref #'ResolveMode]]
-   [:strokeWidth {:optional true} [:ref #'ResolveMode]]
    [:opacity {:optional true} [:ref #'ResolveMode]]
    [:shape {:optional true} [:ref #'ResolveMode]]
-   [:yOffset {:optional true} [:ref #'ResolveMode]]
+   [:size {:optional true} [:ref #'ResolveMode]]
+   [:stroke {:optional true} [:ref #'ResolveMode]]
+   [:strokeDash {:optional true} [:ref #'ResolveMode]]
+   [:strokeOpacity {:optional true} [:ref #'ResolveMode]]
+   [:strokeWidth {:optional true} [:ref #'ResolveMode]]
+   [:time {:optional true} [:ref #'ResolveMode]]])
+
+(def ScaleResolveMap
+  [:map {:closed true}
+   [:angle {:optional true} [:ref #'ResolveMode]]
+   [:color {:optional true} [:ref #'ResolveMode]]
+   [:fill {:optional true} [:ref #'ResolveMode]]
+   [:fillOpacity {:optional true} [:ref #'ResolveMode]]
+   [:opacity {:optional true} [:ref #'ResolveMode]]
+   [:radius {:optional true} [:ref #'ResolveMode]]
+   [:shape {:optional true} [:ref #'ResolveMode]]
+   [:size {:optional true} [:ref #'ResolveMode]]
+   [:stroke {:optional true} [:ref #'ResolveMode]]
+   [:strokeDash {:optional true} [:ref #'ResolveMode]]
+   [:strokeOpacity {:optional true} [:ref #'ResolveMode]]
+   [:strokeWidth {:optional true} [:ref #'ResolveMode]]
+   [:theta {:optional true} [:ref #'ResolveMode]]
+   [:time {:optional true} [:ref #'ResolveMode]]
    [:x {:optional true} [:ref #'ResolveMode]]
-   [:xOffset {:optional true} [:ref #'ResolveMode]]])
+   [:xOffset {:optional true} [:ref #'ResolveMode]]
+   [:y {:optional true} [:ref #'ResolveMode]]
+   [:yOffset {:optional true} [:ref #'ResolveMode]]])
 
 (def Resolve
-  [:map {:closed true} [:axis {:optional true} [:ref #'AxisResolveMap]]
+  [:map {:closed true}
+   [:axis {:optional true} [:ref #'AxisResolveMap]]
    [:legend {:optional true} [:ref #'LegendResolveMap]]
    [:scale {:optional true} [:ref #'ScaleResolveMap]]])
 
 (def UnitSpecWithFrame
-  [:map {:closed true} [:description {:optional true} string?]
+  [:map {:closed true}
+   [:data {:optional true} [:or [:ref #'Data] nil?]]
+   [:description {:optional true} string?]
    [:encoding {:optional true} [:ref #'Encoding]]
-   [:transform {:optional true} [:vector [:ref #'Transform]]]
-   [:mark [:ref #'AnyMark]] [:name {:optional true} string?]
-   [:width {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]
-   [:params {:optional true} [:vector [:ref #'SelectionParameter]]]
-   [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
-   [:projection {:optional true} [:ref #'Projection]]
-   [:view {:optional true} [:ref #'ViewBackground]]
    [:height {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]
-   [:data {:optional true} [:or [:ref #'Data] nil?]]])
+   [:mark [:ref #'AnyMark]]
+   [:name {:optional true} string?]
+   [:params {:optional true} [:vector [:ref #'SelectionParameter]]]
+   [:projection {:optional true} [:ref #'Projection]]
+   [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
+   [:transform {:optional true} [:vector [:ref #'Transform]]]
+   [:view {:optional true} [:ref #'ViewBackground]]
+   [:width {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]])
 
 (def GenericUnitSpec_Encoding_AnyMark_
   [:map
    {:closed true,
     :json-schema/original-name "GenericUnitSpec<Encoding,AnyMark>"}
+   [:data {:optional true} [:or [:ref #'Data] nil?]]
    [:description {:optional true} string?]
    [:encoding {:optional true} [:ref #'Encoding]]
-   [:transform {:optional true} [:vector [:ref #'Transform]]]
-   [:mark [:ref #'AnyMark]] [:name {:optional true} string?]
+   [:mark [:ref #'AnyMark]]
+   [:name {:optional true} string?]
    [:params {:optional true} [:vector [:ref #'SelectionParameter]]]
-   [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
    [:projection {:optional true} [:ref #'Projection]]
-   [:data {:optional true} [:or [:ref #'Data] nil?]]])
+   [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
+   [:transform {:optional true} [:vector [:ref #'Transform]]]])
 
 (def UnitSpec
   [:ref {:json-schema/original-name "GenericUnitSpec<Encoding,AnyMark>"}
@@ -142,44 +150,46 @@
 
 (def FacetEncodingFieldDef
   [:map {:closed true}
+   [:aggregate {:optional true} [:ref #'common/Aggregate]]
    [:align {:optional true}
     [:or [:ref #'LayoutAlign]
      [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
-      #'RowCol_LayoutAlign_]]] [:columns {:optional true} number?]
-   [:field {:optional true} [:ref #'encoding/Field]]
-   [:type {:optional true} [:ref #'encoding/StandardType]]
-   [:header {:optional true} [:or [:ref #'Header] nil?]]
+      #'RowCol_LayoutAlign_]]]
+   [:bandPosition {:optional true} number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'transform/BinParams]]]
    [:bounds {:optional true} [:enum "full" "flush"]]
-   [:title {:optional true} [:or [:ref #'Text] nil?]]
    [:center {:optional true}
     [:or boolean?
      [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
-   [:bin {:optional true} [:or boolean? nil? [:ref #'transform/BinParams]]]
-   [:bandPosition {:optional true} number?]
-   [:timeUnit {:optional true}
-    [:or [:ref #'expr/TimeUnit] [:ref #'expr/BinnedTimeUnit] [:ref #'expr/TimeUnitParams]]]
-   [:aggregate {:optional true} [:ref #'common/Aggregate]]
+   [:columns {:optional true} number?]
+   [:field {:optional true} [:ref #'encoding/Field]]
+   [:header {:optional true} [:or [:ref #'Header] nil?]]
    [:sort {:optional true}
     [:or [:ref #'encoding/SortArray] [:ref #'common/SortOrder] [:ref #'encoding/EncodingSortField] nil?]]
    [:spacing {:optional true}
     [:or number?
-     [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]])
-
-(def RowColumnEncodingFieldDef
-  [:map {:closed true} [:align {:optional true} [:ref #'LayoutAlign]]
-   [:field {:optional true} [:ref #'encoding/Field]]
-   [:type {:optional true} [:ref #'encoding/StandardType]]
-   [:header {:optional true} [:or [:ref #'Header] nil?]]
-   [:title {:optional true} [:or [:ref #'Text] nil?]]
-   [:center {:optional true} boolean?]
-   [:bin {:optional true} [:or boolean? nil? [:ref #'transform/BinParams]]]
-   [:bandPosition {:optional true} number?]
+     [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
    [:timeUnit {:optional true}
     [:or [:ref #'expr/TimeUnit] [:ref #'expr/BinnedTimeUnit] [:ref #'expr/TimeUnitParams]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:type {:optional true} [:ref #'encoding/StandardType]]])
+
+(def RowColumnEncodingFieldDef
+  [:map {:closed true}
    [:aggregate {:optional true} [:ref #'common/Aggregate]]
+   [:align {:optional true} [:ref #'LayoutAlign]]
+   [:bandPosition {:optional true} number?]
+   [:bin {:optional true} [:or boolean? nil? [:ref #'transform/BinParams]]]
+   [:center {:optional true} boolean?]
+   [:field {:optional true} [:ref #'encoding/Field]]
+   [:header {:optional true} [:or [:ref #'Header] nil?]]
    [:sort {:optional true}
     [:or [:ref #'encoding/SortArray] [:ref #'common/SortOrder] [:ref #'encoding/EncodingSortField] nil?]]
-   [:spacing {:optional true} number?]])
+   [:spacing {:optional true} number?]
+   [:timeUnit {:optional true}
+    [:or [:ref #'expr/TimeUnit] [:ref #'expr/BinnedTimeUnit] [:ref #'expr/TimeUnitParams]]]
+   [:title {:optional true} [:or [:ref #'Text] nil?]]
+   [:type {:optional true} [:ref #'encoding/StandardType]]])
 
 (def PositionDef encoding/PositionDef)
 (def StringFieldDefWithCondition encoding/StringFieldDefWithCondition)
@@ -203,96 +213,101 @@
 (def TextDef encoding/TextDef)
 
 (def FacetedEncoding
-  [:map {:closed true} [:y {:optional true} [:ref #'PositionDef]]
+  [:map {:closed true}
+   [:angle {:optional true} [:ref #'NumericMarkPropDef]]
+   [:color {:optional true} [:ref #'ColorDef]]
+   [:column {:optional true} [:ref #'RowColumnEncodingFieldDef]]
    [:description {:optional true}
     [:or [:ref #'StringFieldDefWithCondition]
      [:ref #'StringValueDefWithCondition]]]
-   [:strokeOpacity {:optional true} [:ref #'NumericMarkPropDef]]
-   [:xError2 {:optional true}
-    [:or [:ref #'SecondaryFieldDef]
-     [:ref {:json-schema/original-name "ValueDef<number>"} #'ValueDef_number_]]]
-   [:stroke {:optional true} [:ref #'ColorDef]]
-   [:color {:optional true} [:ref #'ColorDef]]
-   [:key {:optional true} [:ref #'FieldDefWithoutScale]]
-   [:longitude2 {:optional true} [:ref #'Position2Def]]
-   [:fill {:optional true} [:ref #'ColorDef]]
-   [:strokeDash {:optional true} [:ref #'NumericArrayMarkPropDef]]
-   [:time {:optional true} [:ref #'TimeDef]]
+   [:detail {:optional true}
+    [:or [:ref #'FieldDefWithoutScale]
+     [:vector [:ref #'FieldDefWithoutScale]]]]
    [:facet {:optional true} [:ref #'FacetEncodingFieldDef]]
-   [:longitude {:optional true} [:ref #'LatLongDef]]
+   [:fill {:optional true} [:ref #'ColorDef]]
    [:fillOpacity {:optional true} [:ref #'NumericMarkPropDef]]
-   [:angle {:optional true} [:ref #'NumericMarkPropDef]]
-   [:theta {:optional true} [:ref #'PolarDef]]
-   [:radius {:optional true} [:ref #'PolarDef]]
-   [:theta2 {:optional true} [:ref #'Position2Def]]
-   [:size {:optional true} [:ref #'NumericMarkPropDef]]
-   [:column {:optional true} [:ref #'RowColumnEncodingFieldDef]]
-   [:yError {:optional true}
-    [:or [:ref #'SecondaryFieldDef]
-     [:ref {:json-schema/original-name "ValueDef<number>"} #'ValueDef_number_]]]
-   [:strokeWidth {:optional true} [:ref #'NumericMarkPropDef]]
-   [:opacity {:optional true} [:ref #'NumericMarkPropDef]]
-   [:shape {:optional true} [:ref #'ShapeDef]]
-   [:url {:optional true}
+   [:href {:optional true}
     [:or [:ref #'StringFieldDefWithCondition]
      [:ref #'StringValueDefWithCondition]]]
+   [:key {:optional true} [:ref #'FieldDefWithoutScale]]
    [:latitude {:optional true} [:ref #'LatLongDef]]
+   [:latitude2 {:optional true} [:ref #'Position2Def]]
+   [:longitude {:optional true} [:ref #'LatLongDef]]
+   [:longitude2 {:optional true} [:ref #'Position2Def]]
+   [:opacity {:optional true} [:ref #'NumericMarkPropDef]]
    [:order {:optional true}
     [:or [:ref #'OrderFieldDef] [:ref #'OrderValueDef] [:ref #'OrderOnlyDef]
      [:vector [:ref #'OrderFieldDef]]]]
+   [:radius {:optional true} [:ref #'PolarDef]]
+   [:radius2 {:optional true} [:ref #'Position2Def]]
+   [:row {:optional true} [:ref #'RowColumnEncodingFieldDef]]
+   [:shape {:optional true} [:ref #'ShapeDef]]
+   [:size {:optional true} [:ref #'NumericMarkPropDef]]
+   [:stroke {:optional true} [:ref #'ColorDef]]
+   [:strokeDash {:optional true} [:ref #'NumericArrayMarkPropDef]]
+   [:strokeOpacity {:optional true} [:ref #'NumericMarkPropDef]]
+   [:strokeWidth {:optional true} [:ref #'NumericMarkPropDef]]
+   [:text {:optional true} [:ref #'TextDef]]
+   [:theta {:optional true} [:ref #'PolarDef]]
+   [:theta2 {:optional true} [:ref #'Position2Def]]
+   [:time {:optional true} [:ref #'TimeDef]]
+   [:tooltip {:optional true}
+    [:or [:ref #'StringFieldDefWithCondition]
+     [:ref #'StringValueDefWithCondition] [:vector [:ref #'StringFieldDef]]
+     nil?]]
+   [:url {:optional true}
+    [:or [:ref #'StringFieldDefWithCondition]
+     [:ref #'StringValueDefWithCondition]]]
+   [:x {:optional true} [:ref #'PositionDef]]
+   [:x2 {:optional true} [:ref #'Position2Def]]
    [:xError {:optional true}
+    [:or [:ref #'SecondaryFieldDef]
+     [:ref {:json-schema/original-name "ValueDef<number>"} #'ValueDef_number_]]]
+   [:xError2 {:optional true}
+    [:or [:ref #'SecondaryFieldDef]
+     [:ref {:json-schema/original-name "ValueDef<number>"} #'ValueDef_number_]]]
+   [:xOffset {:optional true} [:ref #'OffsetDef]]
+   [:y {:optional true} [:ref #'PositionDef]]
+   [:y2 {:optional true} [:ref #'Position2Def]]
+   [:yError {:optional true}
     [:or [:ref #'SecondaryFieldDef]
      [:ref {:json-schema/original-name "ValueDef<number>"} #'ValueDef_number_]]]
    [:yError2 {:optional true}
     [:or [:ref #'SecondaryFieldDef]
      [:ref {:json-schema/original-name "ValueDef<number>"} #'ValueDef_number_]]]
-   [:yOffset {:optional true} [:ref #'OffsetDef]]
-   [:x {:optional true} [:ref #'PositionDef]]
-   [:y2 {:optional true} [:ref #'Position2Def]]
-   [:radius2 {:optional true} [:ref #'Position2Def]]
-   [:x2 {:optional true} [:ref #'Position2Def]]
-   [:latitude2 {:optional true} [:ref #'Position2Def]]
-   [:href {:optional true}
-    [:or [:ref #'StringFieldDefWithCondition]
-     [:ref #'StringValueDefWithCondition]]]
-   [:tooltip {:optional true}
-    [:or [:ref #'StringFieldDefWithCondition]
-     [:ref #'StringValueDefWithCondition] [:vector [:ref #'StringFieldDef]]
-     nil?]] [:row {:optional true} [:ref #'RowColumnEncodingFieldDef]]
-   [:text {:optional true} [:ref #'TextDef]]
-   [:xOffset {:optional true} [:ref #'OffsetDef]]
-   [:detail {:optional true}
-    [:or [:ref #'FieldDefWithoutScale]
-     [:vector [:ref #'FieldDefWithoutScale]]]]])
+   [:yOffset {:optional true} [:ref #'OffsetDef]]])
 
 (def TopLevelUnitSpec
-  [:map {:closed true} [:description {:optional true} string?]
-   [:encoding {:optional true} [:ref #'FacetedEncoding]]
-   [:autosize {:optional true}
-    [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
+  [:map {:closed true}
+   [:$schema {:optional true} string?]
    [:align {:optional true}
     [:or [:ref #'LayoutAlign]
      [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
-      #'RowCol_LayoutAlign_]]] [:datasets {:optional true} [:ref #'Datasets]]
-   [:transform {:optional true} [:vector [:ref #'Transform]]]
-   [:usermeta {:optional true} [:ref #'Dict]]
-   [:config {:optional true} [:ref #'Config]] [:mark [:ref #'AnyMark]]
-   [:name {:optional true} string?]
-   [:width {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]
+      #'RowCol_LayoutAlign_]]]
+   [:autosize {:optional true}
+    [:or [:ref #'AutosizeType] [:ref #'AutoSizeParams]]]
    [:background {:optional true} [:or [:ref #'Color] [:ref #'ExprRef]]]
-   [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
    [:bounds {:optional true} [:enum "full" "flush"]]
-   [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
    [:center {:optional true}
     [:or boolean?
      [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
-   [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
-   [:resolve {:optional true} [:ref #'Resolve]]
-   [:$schema {:optional true} string?]
-   [:projection {:optional true} [:ref #'Projection]]
-   [:view {:optional true} [:ref #'ViewBackground]]
+   [:config {:optional true} [:ref #'Config]]
+   [:data [:or [:ref #'Data] nil?]]
+   [:datasets {:optional true} [:ref #'Datasets]]
+   [:description {:optional true} string?]
+   [:encoding {:optional true} [:ref #'FacetedEncoding]]
    [:height {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]
+   [:mark [:ref #'AnyMark]]
+   [:name {:optional true} string?]
+   [:padding {:optional true} [:or [:ref #'Padding] [:ref #'ExprRef]]]
+   [:params {:optional true} [:vector [:ref #'TopLevelParameter]]]
+   [:projection {:optional true} [:ref #'Projection]]
+   [:resolve {:optional true} [:ref #'Resolve]]
    [:spacing {:optional true}
     [:or number?
      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
-   [:data [:or [:ref #'Data] nil?]]])
+   [:title {:optional true} [:or [:ref #'Text] [:ref #'TitleParams]]]
+   [:transform {:optional true} [:vector [:ref #'Transform]]]
+   [:usermeta {:optional true} [:ref #'Dict]]
+   [:view {:optional true} [:ref #'ViewBackground]]
+   [:width {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]])

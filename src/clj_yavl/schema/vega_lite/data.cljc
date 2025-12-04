@@ -6,21 +6,26 @@
 (def Parse primitives/Parse)
 
 (def CsvDataFormat
-  [:map {:closed true} [:parse {:optional true} [:or [:ref #'Parse] nil?]]
+  [:map {:closed true}
+   [:parse {:optional true} [:or [:ref #'Parse] nil?]]
    [:type {:optional true} [:enum "csv" "tsv"]]])
 
 (def JsonDataFormat
-  [:map {:closed true} [:parse {:optional true} [:or [:ref #'Parse] nil?]]
-   [:property {:optional true} string?] [:type {:optional true} [:= "json"]]])
+  [:map {:closed true}
+   [:parse {:optional true} [:or [:ref #'Parse] nil?]]
+   [:property {:optional true} string?]
+   [:type {:optional true} [:= "json"]]])
 
 (def TopoDataFormat
-  [:map {:closed true} [:feature {:optional true} string?]
+  [:map {:closed true}
+   [:feature {:optional true} string?]
    [:mesh {:optional true} string?]
    [:parse {:optional true} [:or [:ref #'Parse] nil?]]
    [:type {:optional true} [:= "topojson"]]])
 
 (def DsvDataFormat
-  [:map {:closed true} [:delimiter string?]
+  [:map {:closed true}
+   [:delimiter string?]
    [:parse {:optional true} [:or [:ref #'Parse] nil?]]
    [:type {:optional true} [:= "dsv"]]])
 
@@ -29,16 +34,21 @@
    [:ref #'TopoDataFormat]])
 
 (def InlineData
-  [:map {:closed true} [:format {:optional true} [:ref #'DataFormat]]
-   [:name {:optional true} string?] [:values [:ref #'InlineDataset]]])
+  [:map {:closed true}
+   [:format {:optional true} [:ref #'DataFormat]]
+   [:name {:optional true} string?]
+   [:values [:ref #'InlineDataset]]])
 
 (def NamedData
-  [:map {:closed true} [:format {:optional true} [:ref #'DataFormat]]
+  [:map {:closed true}
+   [:format {:optional true} [:ref #'DataFormat]]
    [:name string?]])
 
 (def UrlData
-  [:map {:closed true} [:format {:optional true} [:ref #'DataFormat]]
-   [:name {:optional true} string?] [:url string?]])
+  [:map {:closed true}
+   [:format {:optional true} [:ref #'DataFormat]]
+   [:name {:optional true} string?]
+   [:url string?]])
 
 (def DataSource [:or [:ref #'UrlData] [:ref #'InlineData] [:ref #'NamedData]])
 
@@ -58,7 +68,8 @@
      #'Vector2_Vector2_number__]]
    [:extentMinor {:optional true}
     [:ref {:json-schema/original-name "Vector2<Vector2<number>>"}
-     #'Vector2_Vector2_number__]] [:precision {:optional true} number?]
+     #'Vector2_Vector2_number__]]
+   [:precision {:optional true} number?]
    [:step {:optional true}
     [:ref {:json-schema/original-name "Vector2<number>"} #'Vector2_number_]]
    [:stepMajor {:optional true}
@@ -67,15 +78,20 @@
     [:ref {:json-schema/original-name "Vector2<number>"} #'Vector2_number_]]])
 
 (def GraticuleGenerator
-  [:map {:closed true} [:graticule [:or [:ref #'GraticuleParams] [:enum true]]]
+  [:map {:closed true}
+   [:graticule [:or [:ref #'GraticuleParams] [:enum true]]]
    [:name {:optional true} string?]])
 
 (def SequenceParams
-  [:map {:closed true} [:as {:optional true} [:ref #'FieldName]]
-   [:start number?] [:step {:optional true} number?] [:stop number?]])
+  [:map {:closed true}
+   [:as {:optional true} [:ref #'FieldName]]
+   [:start number?]
+   [:step {:optional true} number?]
+   [:stop number?]])
 
 (def SequenceGenerator
-  [:map {:closed true} [:name {:optional true} string?]
+  [:map {:closed true}
+   [:name {:optional true} string?]
    [:sequence [:ref #'SequenceParams]]])
 
 (def SphereGenerator primitives/SphereGenerator)

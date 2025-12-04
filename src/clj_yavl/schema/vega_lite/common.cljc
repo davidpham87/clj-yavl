@@ -3,11 +3,13 @@
 
 (def FieldName primitives/FieldName)
 
-(def ArgminDef [:map {:closed true} [:argmin [:ref #'FieldName]]])
+(def ArgminDef [:map {:closed true}
+   [:argmin [:ref #'FieldName]]])
 
 (def NonArgAggregateOp primitives/NonArgAggregateOp)
 
-(def ArgmaxDef [:map {:closed true} [:argmax [:ref #'FieldName]]])
+(def ArgmaxDef [:map {:closed true}
+   [:argmax [:ref #'FieldName]]])
 
 (def Aggregate
   [:or [:ref #'NonArgAggregateOp] [:ref #'ArgmaxDef] [:ref #'ArgminDef]])
@@ -15,8 +17,10 @@
 (def AggregateOp primitives/AggregateOp)
 
 (def AggregatedFieldDef
-  [:map {:closed true} [:as [:ref #'FieldName]]
-   [:field {:optional true} [:ref #'FieldName]] [:op [:ref #'AggregateOp]]])
+  [:map {:closed true}
+   [:as [:ref #'FieldName]]
+   [:field {:optional true} [:ref #'FieldName]]
+   [:op [:ref #'AggregateOp]]])
 
 (def Align primitives/Align)
 
@@ -40,19 +44,30 @@
 (def Color [:or [:ref #'ColorName] [:ref #'HexColor] string?])
 
 (def GradientStop
-  [:map {:closed true} [:color [:ref #'Color]] [:offset number?]])
+  [:map {:closed true}
+   [:color [:ref #'Color]]
+   [:offset number?]])
 
 (def RadialGradient
-  [:map {:closed true} [:stops [:vector [:ref #'GradientStop]]]
-   [:y1 {:optional true} number?] [:r2 {:optional true} number?]
-   [:r1 {:optional true} number?] [:id {:optional true} string?]
-   [:gradient [:= "radial"]] [:x1 {:optional true} number?]
-   [:y2 {:optional true} number?] [:x2 {:optional true} number?]])
+  [:map {:closed true}
+   [:gradient [:= "radial"]]
+   [:id {:optional true} string?]
+   [:r1 {:optional true} number?]
+   [:r2 {:optional true} number?]
+   [:stops [:vector [:ref #'GradientStop]]]
+   [:x1 {:optional true} number?]
+   [:x2 {:optional true} number?]
+   [:y1 {:optional true} number?]
+   [:y2 {:optional true} number?]])
 
 (def LinearGradient
-  [:map {:closed true} [:gradient [:= "linear"]] [:id {:optional true} string?]
-   [:stops [:vector [:ref #'GradientStop]]] [:x1 {:optional true} number?]
-   [:x2 {:optional true} number?] [:y1 {:optional true} number?]
+  [:map {:closed true}
+   [:gradient [:= "linear"]]
+   [:id {:optional true} string?]
+   [:stops [:vector [:ref #'GradientStop]]]
+   [:x1 {:optional true} number?]
+   [:x2 {:optional true} number?]
+   [:y1 {:optional true} number?]
    [:y2 {:optional true} number?]])
 
 (def Gradient [:or [:ref #'LinearGradient] [:ref #'RadialGradient]])
