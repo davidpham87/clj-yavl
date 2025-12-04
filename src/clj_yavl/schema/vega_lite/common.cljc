@@ -115,3 +115,43 @@
   [:map {:closed true, :json-schema/original-name "RowCol<LayoutAlign>"}
    [:column {:optional true} [:ref #'LayoutAlign]]
    [:row {:optional true} [:ref #'LayoutAlign]]])
+
+(def ResolveMode primitives/ResolveMode)
+
+(def AxisResolveMap
+  [:map {:closed true}
+   [:x {:optional true} [:ref #'ResolveMode]]
+   [:y {:optional true} [:ref #'ResolveMode]]])
+
+(def BaseResolveMap
+  [:map
+   [:angle {:optional true} [:ref #'ResolveMode]]
+   [:color {:optional true} [:ref #'ResolveMode]]
+   [:fill {:optional true} [:ref #'ResolveMode]]
+   [:fillOpacity {:optional true} [:ref #'ResolveMode]]
+   [:opacity {:optional true} [:ref #'ResolveMode]]
+   [:shape {:optional true} [:ref #'ResolveMode]]
+   [:size {:optional true} [:ref #'ResolveMode]]
+   [:stroke {:optional true} [:ref #'ResolveMode]]
+   [:strokeDash {:optional true} [:ref #'ResolveMode]]
+   [:strokeOpacity {:optional true} [:ref #'ResolveMode]]
+   [:strokeWidth {:optional true} [:ref #'ResolveMode]]
+   [:time {:optional true} [:ref #'ResolveMode]]])
+
+(def LegendResolveMap [:merge BaseResolveMap [:map {:closed true}]])
+
+(def ScaleResolveMap
+  [:merge BaseResolveMap
+   [:map {:closed true}
+    [:radius {:optional true} [:ref #'ResolveMode]]
+    [:theta {:optional true} [:ref #'ResolveMode]]
+    [:x {:optional true} [:ref #'ResolveMode]]
+    [:xOffset {:optional true} [:ref #'ResolveMode]]
+    [:y {:optional true} [:ref #'ResolveMode]]
+    [:yOffset {:optional true} [:ref #'ResolveMode]]]])
+
+(def Resolve
+  [:map {:closed true}
+   [:axis {:optional true} [:ref #'AxisResolveMap]]
+   [:legend {:optional true} [:ref #'LegendResolveMap]]
+   [:scale {:optional true} [:ref #'ScaleResolveMap]]])
