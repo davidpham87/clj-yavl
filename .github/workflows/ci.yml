@@ -20,6 +20,10 @@ jobs:
       uses: DeLaGuardo/setup-clojure@12.5
       with:
         cli: 'latest'
+    - name: Download Vega-Lite schema
+      run: |
+        mkdir -p resources
+        curl -o resources/vega-lite-v6.json https://vega.github.io/schema/vega-lite/v6.json
     - name: Run tests
       run: clojure -X:test
 
