@@ -1,5 +1,19 @@
 (ns clj-yavl.api
-  (:require [malli.core :as m]))
+  (:require [malli.core :as m]
+            [clojure.string :as str]))
+
+;; Google Corporate Colors
+(def google-colors
+  ["#4285F4" "#DB4437" "#F4B400" "#0F9D58"])
+
+(def default-config
+  {:config {:range {:category google-colors}
+            :axis {:labelFontSize 12 :titleFontSize 14}
+            :header {:labelFontSize 12 :titleFontSize 14}
+            :legend {:labelFontSize 12 :titleFontSize 14}
+            :text {:fontSize 12}}
+   :width 400
+   :height 300})
 
 (defn- infer-vl-type
   "Infers the Vega-Lite type from a Malli schema node."
@@ -34,6 +48,57 @@
   (when-let [field-schema (get-field-schema dataset-schema field-name)]
     (infer-vl-type field-schema)))
 
+(defn rename-column-values
+  "Creates a Vega-Lite calculate transform to rename values in a column.
+   Values not in the mapping are left unchanged.
+
+   Args:
+     col-name: The name of the column (string).
+     mapping: A map of {old-value new-value}.
+
+   Returns:
+     A map representing a Vega-Lite calculate transform."
+  [col-name mapping]
+  (let [expression (str/join " : "
+                             (concat
+                              (map (fn [[old new]]
+                                     (str "datum['" col-name "'] == '" old "' ? '" new "'"))
+                                   mapping)
+                              [(str "datum['" col-name "']")]))]
+    {:calculate expression :as col-name}))
+
+(defn transform-map
+  "Creates a Vega-Lite calculate transform (map operation).
+
+   Args:
+     new-col: The name of the new column (string).
+     expression: The Vega expression string.
+
+   Returns:
+     A map representing a Vega-Lite calculate transform."
+  [new-col expression]
+  {:calculate expression :as new-col})
+
+(defn transform-filter
+  "Creates a Vega-Lite filter transform.
+
+   Args:
+     predicate: The Vega expression string for filtering.
+
+   Returns:
+     A map representing a Vega-Lite filter transform."
+  [predicate]
+  {:filter predicate})
+
+(defn- deep-merge
+  "Recursively merges maps."
+  [& maps]
+  (apply merge-with (fn [x y]
+                      (if (and (map? x) (map? y))
+                        (deep-merge x y)
+                        y))
+         maps))
+
 (defn base-plot
   "Generates a Vega-Lite spec.
 
@@ -58,7 +123,9 @@
                              inferred-type (assoc :type inferred-type))]
              (assoc acc channel final-def)))
          {}
-         encodings)]
-    (merge common-specs
+         encodings)
+        ;; Merge defaults into common-specs
+        final-specs (deep-merge default-config common-specs)]
+    (merge final-specs
            (when (seq processed-encodings)
              {:encoding processed-encodings}))))
