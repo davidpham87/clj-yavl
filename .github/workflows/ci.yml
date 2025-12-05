@@ -75,4 +75,4 @@ jobs:
     - name: Install npm dependencies
       run: npm install
     - name: Compile shadow-cljs app
-      run: clojure -M:shadow-cljs compile app
+      run: clojure -M:cljs:shadow-cljs compile app

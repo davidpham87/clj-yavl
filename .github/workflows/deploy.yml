@@ -1,0 +1,50 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - releases
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: read
+
+    container:
+      image: ghcr.io/${{ github.repository }}:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: releases
+
+    - name: Link node_modules
+      run: ln -s /opt/app/node_modules .
+
+    - name: Cache .shadow-cljs and node modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          .shadow-cljs
+          ~/.m2/repository
+          ~/.gitlibs
+          ~/.deps.clj
+          .cpcache
+          node_modules
+        key: ${{ runner.os }}-shadow-cljs-${{ hashFiles('deps.edn', 'package.json')}}
+        restore-keys: |
+          ${{ runner.os }}-shadow-cljs-
+
+    - name: Build app
+      run: npx shadow-cljs compile app
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
