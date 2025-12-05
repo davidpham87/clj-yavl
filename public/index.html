@@ -4,11 +4,22 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Title</title>
+  <title>Vega-Lite Editor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="app"></div>
   <script src="/js/main.js"></script>
+  <script>
+    // Ensure the namespace exists before calling init
+    if (typeof clj_yavl !== 'undefined' && clj_yavl.core) {
+      clj_yavl.core.init();
+    } else {
+      console.warn("clj_yavl.core not found. shadow-cljs loader might be async or namespace name is different.");
+      // Fallback or retry logic if needed, but for now just log.
+      // With shadow-cljs :browser target, it should be available if main.js is loaded.
+    }
+  </script>
 </body>
 </html>
