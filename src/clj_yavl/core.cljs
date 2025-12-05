@@ -1,5 +1,5 @@
 (ns clj-yavl.core
-  (:require [reagent.dom :as rdom]
+  (:require [reagent.dom.client :as rdc]
             [re-frame.core :as rf]
             [bb-web-ds-tools.components.editor :as editor]
             [cljs.pprint :refer [pprint]]
@@ -117,6 +117,10 @@
       [:iframe {:src "http://localhost:5678"
                 :class "w-full h-full border-none"}]]]))
 
+
+(defonce react-root (rdomc/create-root (.getElementById js/document "app")))
+(defn run [] (rdomc/render react-root [main-view]))
+
 (defn ^:export init []
   (rf/dispatch-sync [::initialize])
-  (rdom/render [main-view] (.getElementById js/document "app")))
+  (run))
