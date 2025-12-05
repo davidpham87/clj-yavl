@@ -12,19 +12,22 @@ jobs:
       contents: write
       packages: read
 
-    container:
-      image: ghcr.io/${{ github.repository }}:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
     steps:
+  
+    - name: Prepare java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+        
+    - name: Install clojure tools
+      uses: DeLaGuardo/setup-clojure@12.5
+      with:
+        cli: 'latest'
+        
     - uses: actions/checkout@v3
       with:
         ref: releases
-
-    - name: Link node_modules
-      run: ln -s /opt/app/node_modules .
 
     - name: Cache .shadow-cljs and node modules
       uses: actions/cache@v3
