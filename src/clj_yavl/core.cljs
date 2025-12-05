@@ -1,5 +1,5 @@
 (ns clj-yavl.core
-  (:require [reagent.dom.client :as rdc]
+  (:require [reagent.dom.client :as rdomc]
             [re-frame.core :as rf]
             [bb-web-ds-tools.components.editor :as editor]
             [cljs.pprint :refer [pprint]]
