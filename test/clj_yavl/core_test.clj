@@ -5,7 +5,8 @@
             [clojure.test.check.properties :as prop]
             [clojure.test.check.generators :as gen]
             [malli.core :as m]
-            [malli.generator :as mg]))
+            [malli.generator :as mg]
+            [clojure.string :as str]))
 
 (def cars-schema
   [:vector
@@ -28,6 +29,20 @@
       (is (= "Origin" (get-in result [:encoding :y :field])))
       (is (= "nominal" (get-in result [:encoding :color :type])))
       (is (= "Name" (get-in result [:encoding :color :field])))))
+
+  (testing "base-plot defaults"
+    (let [result (api/base-plot {} {:mark "bar"} {})]
+      (is (= 400 (:width result)))
+      (is (= 300 (:height result)))
+      (is (vector? (get-in result [:config :range :category])))
+      (is (= 4 (count (get-in result [:config :range :category])))) ;; Google colors
+      (is (= 12 (get-in result [:config :axis :labelFontSize])))
+      (is (= 14 (get-in result [:config :axis :titleFontSize])))))
+
+  (testing "base-plot defaults can be overridden"
+    (let [result (api/base-plot {} {:mark "bar" :width 800 :height 600} {})]
+      (is (= 800 (:width result)))
+      (is (= 600 (:height result)))))
 
   (testing "base-plot with explicit encoding map overrides inference"
     (let [encodings {:x {:field "Miles_per_Gallon" :type "ordinal"}}
@@ -55,6 +70,27 @@
           charts-opts {:data-schema cars-schema}
           result (api/base-plot encodings common-specs charts-opts)]
       (is (= "temporal" (get-in result [:encoding :x :type]))))))
+
+(deftest transforms-test
+  (testing "rename-column-values"
+    (let [result (api/rename-column-values "origin" {"USA" "United States" "UK" "United Kingdom"})
+          expr (:calculate result)
+          as (:as result)]
+      (is (= "origin" as))
+      ;; Check for presence of replacement logic.
+      ;; Exact string match depends on map iteration order, so check parts.
+      (is (str/includes? expr "datum['origin'] == 'USA' ? 'United States'"))
+      (is (str/includes? expr "datum['origin'] == 'UK' ? 'United Kingdom'"))
+      (is (str/ends-with? expr ": datum['origin']"))))
+
+  (testing "transform-map"
+    (let [result (api/transform-map "new_col" "datum.a * 2")]
+      (is (= "new_col" (:as result)))
+      (is (= "datum.a * 2" (:calculate result)))))
+
+  (testing "transform-filter"
+    (let [result (api/transform-filter "datum.a > 10")]
+      (is (= "datum.a > 10" (:filter result))))))
 
 ;; Generative Testing Helpers using Malli Generators
 
