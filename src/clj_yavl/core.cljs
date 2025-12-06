@@ -135,6 +135,36 @@
          (assoc-in [:user-input :vega-lite :default ::config-mode] new-mode)
          (assoc-in [:user-input :vega-lite :default ::config-input] new-input)))))
 
+(rf/reg-sub
+ ::config-transform
+ :<- [::config-input]
+ :<- [::config-mode]
+ (fn [[input mode] _]
+   (try
+     (case mode
+       :edn (get (edn/read-string input) :transform)
+       :json (get (js->clj (js/JSON.parse input) :keywordize-keys true) :transform)
+       nil)
+     (catch js/Error _ nil))))
+
+(rf/reg-event-db
+ ::set-config-transform
+ (fn [db [_ new-transform]]
+   (let [user-input (get-in db [:user-input :vega-lite :default])
+         mode (::config-mode user-input)
+         input (::config-input user-input)
+         new-input (try
+                     (case mode
+                       :edn (let [data (edn/read-string input)
+                                  updated (assoc data :transform new-transform)]
+                              (with-out-str (pprint updated)))
+                       :json (let [data (js->clj (js/JSON.parse input) :keywordize-keys true)
+                                   updated (assoc data :transform new-transform)]
+                               (js/JSON.stringify (clj->js updated) nil 2))
+                       input)
+                     (catch js/Error _ input))]
+     (assoc-in db [:user-input :vega-lite :default ::config-input] new-input))))
+
 
 ;; --- View ---
 
