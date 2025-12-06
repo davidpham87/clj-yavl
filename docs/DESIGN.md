@@ -39,102 +39,77 @@ Specification (Spec) is the "Source of Truth", and the UI Builder is a
     paths (e.g., `[:encoding :x :field]`) to populate form controls. Actions
     dispatch events to `assoc-in` or `update-in` the Canonical State.
 
-### 3.2 Bidirectional Sync
+### 3.2 Bidirectional Sync with Validation
 
-#### UI -> Config (Write)
-This is straightforward. UI components emit specific actions.
-*   *Example:* User selects "Bar" mark.
-*   *Action:* `(assoc-in db [:spec :mark] "bar")`
-*   *Result:* The internal spec updates, and the Text Editor re-renders with
-    the new JSON.
+To ensure robustness, the 2-way communication includes validation:
+*   **UI -> Config:** Changes from the UI are inherently safer as they come from
+    controlled inputs, but they still update the canonical spec.
+*   **Config -> UI:** When the text config changes, we validate against the
+    schema. If the config diverges from what the UI can represent (e.g., a
+    custom transform not in our presets), the UI degrades gracefully or warns
+    the user.
 
-#### Config -> UI (Read)
-This is the challenging part. The UI components must "read" the arbitrary spec.
-*   **Direct Mapping:** For simple keys (`mark`, `title`, `encoding.x.field`),
-    the UI component simply subscribes to that path.
-*   **Normalization:** If the user types a shorthand (e.g., `encoding: {x:
-    "field"}`), the parser or subscription must normalize it to the longhand
-    object (`encoding: {x: {field: "field"}}`) so the UI component can handle
-    it.
-*   **Unsupported/Advanced Features:** If the config contains structures the UI
-    cannot represent (e.g., complex recursive transforms), the UI should either:
-    1.  **Degrade Gracefully:** Show the recognized parts and hide/disable the
-        unrecognized ones.
-    2.  **Warn:** Indicate that "Advanced editing mode is active" and visual
-        controls might be limited.
+## 4. Proposed Solution: Presets & Composition
 
-## 4. Proposed Solution: "The Hybrid Approach"
+To support advanced features (layers, facets, repeat, hconcat, vconcat) without
+overwhelming complexity, we adopt a **Preset & Composition** strategy.
 
-To satisfy the requirement of "reducing complexity" while acknowledging
-"solutions applicable to the whole problem", we propose a hybrid design.
+### 4.1 Unit Specs & Global Formatting
+We maintain the design for **Unit Specs** (single charts) as the fundamental
+building block.
+*   **Formatting Assumption:** To reduce nested complexity, formatting options
+    like labels, titles, and font sizes are treated as **Global Constants** for
+    the whole configuration. We do not support per-axis or per-legend overrides
+    in the UI (though they persist if added via code).
 
-### 4.1 The "Whole Problem" Solution (Theoretical)
-**Schema-Driven UI Generation:**
-Since we have the full Malli schema for Vega-Lite, we could theoretically
-generate the entire UI form automatically.
-*   **Mechanism:** recursively walk the Malli schema. For `[:enum ...]`, render
-    a dropdown. For `[:map ...]`, render a fieldset. For `[:or ...]`, render a
-    "Type Switcher".
-*   **Pros:** 100% coverage of the Vega-Lite spec.
-*   **Cons:**
-    *   **Usability Nightmare:** The form would be massive, deeply nested, and
-        confusing (Vega-Lite is not designed for linear forms).
-    *   **Implementation Difficulty:** Handling recursion, discriminators, and
-        context-dependent validation in a generic form generator is highly
-        complex.
+### 4.2 Registry & Composition
+Instead of a single monolithic tree editor, users define individual **Unit
+Specs** (plots) and register them.
+*   **Registry:** A collection of named plots (e.g., "SalesBar", "TrendLine").
+*   **Composition:** A higher-level UI allows users to compose these named plots
+    using layout primitives:
+    *   `layer`: Stack "SalesBar" and "TrendLine".
+    *   `hconcat` / `vconcat`: Arrange plots side-by-side or vertically.
+    *   `facet` / `repeat`: Apply iteration over a base unit spec.
 
-### 4.2 The "Simplified & Pragmatic" Solution (Recommended)
-**Curated UI for Common Paths:**
-We build specific UI components for the 80% use case (Unit Specs: Single Chart
-with Encodings).
+### 4.3 Functional Presets with Specialized UI
+To further limit complexity, we introduce **Functional Presets**. Instead of a
+generic "Chart" builder, we offer specific "Functions" that generate a template
+tree, each with a dedicated UI.
 
-**Components:**
-1.  **Chart Type Selector:** Dropdown for `mark` (bar, line, point, etc.).
-2.  **Encoding Shelf:** A list of "Channels" (X, Y, Color, Size).
-    *   Each channel has a "Field" selector (from the data schema).
-    *   Each channel has a "Type" selector (Quantitative, Nominal, etc.).
-    *   Each channel has "Aggregation" options.
-3.  **Data Source:** Simple input for `data.url` or `data.values`.
+**Examples:**
+*   **Pie Chart Preset:**
+    *   *UI:* Asks only for `Radius`, `Angle`, and `Color`.
+    *   *Hidden:* `X` and `Y` axes are irrelevant and hidden.
+*   **Bar Chart Preset:**
+    *   *UI:* Asks for `X`, `Y`, `Color`.
+*   **Faceted Scatter Preset:**
+    *   *UI:* Asks for `X`, `Y`, and `Facet Row/Column`.
 
-**Handling Composition (Layers/Facets):**
-Instead of a generic tree editor, we treat composition as "Advanced". The UI
-Builder primarily supports the `UnitSpec` (single chart). If the Spec detects
-`layer`, `hconcat`, or `vconcat` at the top level, the UI switches to a
-**"Structure View"** (tree representation) or simply disables the specific
-"Unit" controls, asking the user to edit via Text or a specialized Sub-View.
+**Mechanism:**
+1.  **Select Function:** User chooses a preset (e.g., "Pie Chart").
+2.  **Render UI:** The system renders the specific UI components required for
+    that function (defined with base components).
+3.  **Generate Spec:** The function transforms the UI inputs into the correct
+    Vega-Lite spec (setting `mark: arc`, `encoding: {theta: ...}`, etc.).
 
 ## 5. Implementation Strategy
 
 ### 5.1 Re-frame Events & Subs
-*   `::update-spec-path [path value]`: Generic handler to update deep values in
-    the spec.
-*   `::spec-at-path [path]`: Generic subscription to get a value, possibly with
-    a `normalize` interceptor to handle shorthands.
+*   `::update-spec-path [path value]`: Generic handler to update deep values.
+*   `::apply-preset [preset-id args]`: Dispatches a function to generate a spec
+    subtree based on preset arguments.
 
-### 5.2 Normalization Logic
-To ensure the UI works even when the user manually types shorthands:
-```clojure
-(defn normalize-encoding [encoding]
-  (reduce-kv (fn [acc k v]
-               (assoc acc k (if (string? v) {:field v} v)))
-             {}
-             encoding))
-```
-The UI subscriptions should use this normalization logic so the inputs don't
-crash on string shorthands.
-
-### 5.3 Schema Integration
-We leverage the existing Malli schema (`clj-yavl.schema.vega-lite`) to:
-1.  **Populate Enums:** Use `m/children` on schema definitions to get valid
-    options for Dropdowns (e.g., `Mark`, `AggregateOp`).
-2.  **Validate:** Provide real-time validation feedback in the UI if the user
-    enters an invalid value.
+### 5.2 Component Library
+We build a library of **Base Components** (Field Selector, Color Picker, Toggle)
+that are composed to create the "Specialized UI" for each preset.
 
 ## 6. Summary of Operations
-1.  **Parse:** Text Input -> JSON/EDN Parse -> `db`.
-2.  **Project:** `db` -> Subscriptions (Normalize) -> UI Components.
-3.  **Interact:** UI Component -> `dispatch` event -> `assoc-in db`.
-4.  **Serialize:** `db` -> JSON/EDN Stringify -> Text Input.
-
-This ensures the UI and Config are always in sync, satisfying the bidirectional
-communication requirement.
+1.  **Select Preset:** User picks a "Function" (e.g., "Layered Bar Chart").
+2.  **Input:** User interacts with the simplified, relevant UI for that preset.
+3.  **Generate:** System runs the function to produce the Vega-Lite Spec.
+4.  **Sync:** Changes are reflected in the Text Editor.
+5.  **Reverse Sync:** If the user edits the Text Editor, we attempt to map it
+    back to the active preset's state. If the text deviates too far (e.g.,
+    changing `mark: arc` to `mark: bar` while in "Pie Mode"), the UI may revert
+    to a "Raw JSON" view or show a validation warning.
