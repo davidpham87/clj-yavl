@@ -90,6 +90,25 @@
   [predicate]
   {:filter predicate})
 
+(defn tooltip-def
+  "Generates a tooltip definition (vector of field definitions) for Vega-Lite.
+
+   Args:
+     keys: A sequence of field names (strings).
+     dataset-schema: The Malli schema of the dataset.
+
+   Returns:
+     A vector of maps, where each map matches StringFieldDef."
+  [keys dataset-schema]
+  (vec
+   (for [k keys]
+     (let [inferred-type (infer-type-for-field dataset-schema k)
+           field-def {:field k
+                      :type inferred-type}]
+       (if (= inferred-type "quantitative")
+         (assoc field-def :format "s")
+         field-def)))))
+
 (defn- deep-merge
   "Recursively merges maps."
   [& maps]
