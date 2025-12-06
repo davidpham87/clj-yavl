@@ -191,14 +191,14 @@ return iter__5503__auto__(keys);
  */
 clj_yavl.api.deep_merge = (function clj_yavl$api$deep_merge(var_args){
 var args__5755__auto__ = [];
-var len__5749__auto___26666 = arguments.length;
-var i__5750__auto___26667 = (0);
+var len__5749__auto___26665 = arguments.length;
+var i__5750__auto___26666 = (0);
 while(true){
-if((i__5750__auto___26667 < len__5749__auto___26666)){
-args__5755__auto__.push((arguments[i__5750__auto___26667]));
+if((i__5750__auto___26666 < len__5749__auto___26665)){
+args__5755__auto__.push((arguments[i__5750__auto___26666]));
 
-var G__26668 = (i__5750__auto___26667 + (1));
-i__5750__auto___26667 = G__26668;
+var G__26667 = (i__5750__auto___26666 + (1));
+i__5750__auto___26666 = G__26667;
 continue;
 } else {
 }
@@ -253,11 +253,11 @@ return and__5023__auto____$1;
 return and__5023__auto__;
 }
 })())?clj_yavl.api.infer_type_for_field(data_schema,field):null);
-var final_def = (function (){var G__26643 = encoding_def;
+var final_def = (function (){var G__26646 = encoding_def;
 if(cljs.core.truth_(inferred_type)){
-return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__26643,new cljs.core.Keyword(null,"type","type",1174270348),inferred_type);
+return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__26646,new cljs.core.Keyword(null,"type","type",1174270348),inferred_type);
 } else {
-return G__26643;
+return G__26646;
 }
 })();
 return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(acc,channel,final_def);

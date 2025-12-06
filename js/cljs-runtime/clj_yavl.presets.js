@@ -21,65 +21,65 @@ return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(spec,new cljs.core.Keyword(
 return spec;
 }
 });
-clj_yavl.presets.unit_spec.cljs$core$IMultiFn$_add_method$arity$3(null,new cljs.core.Keyword(null,"xyplot","xyplot",-1505772843),(function (p__26655){
-var map__26656 = p__26655;
-var map__26656__$1 = cljs.core.__destructure_map(map__26656);
-var x = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26656__$1,new cljs.core.Keyword(null,"x","x",2099068185));
-var y = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26656__$1,new cljs.core.Keyword(null,"y","y",-1757859776));
-var mark = cljs.core.get.cljs$core$IFn$_invoke$arity$3(map__26656__$1,new cljs.core.Keyword(null,"mark","mark",-373816345),new cljs.core.Keyword(null,"point","point",1813198264));
-var color = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26656__$1,new cljs.core.Keyword(null,"color","color",1011675173));
-var size = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26656__$1,new cljs.core.Keyword(null,"size","size",1098693007));
-var title = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26656__$1,new cljs.core.Keyword(null,"title","title",636505583));
-var data_schema = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26656__$1,new cljs.core.Keyword(null,"data-schema","data-schema",981553358));
-var encodings = (function (){var G__26658 = new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"x","x",2099068185),x,new cljs.core.Keyword(null,"y","y",-1757859776),y], null);
-var G__26658__$1 = (cljs.core.truth_(color)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__26658,new cljs.core.Keyword(null,"color","color",1011675173),color):G__26658);
+clj_yavl.presets.unit_spec.cljs$core$IMultiFn$_add_method$arity$3(null,new cljs.core.Keyword(null,"xyplot","xyplot",-1505772843),(function (p__26652){
+var map__26653 = p__26652;
+var map__26653__$1 = cljs.core.__destructure_map(map__26653);
+var x = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26653__$1,new cljs.core.Keyword(null,"x","x",2099068185));
+var y = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26653__$1,new cljs.core.Keyword(null,"y","y",-1757859776));
+var mark = cljs.core.get.cljs$core$IFn$_invoke$arity$3(map__26653__$1,new cljs.core.Keyword(null,"mark","mark",-373816345),new cljs.core.Keyword(null,"point","point",1813198264));
+var color = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26653__$1,new cljs.core.Keyword(null,"color","color",1011675173));
+var size = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26653__$1,new cljs.core.Keyword(null,"size","size",1098693007));
+var title = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26653__$1,new cljs.core.Keyword(null,"title","title",636505583));
+var data_schema = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26653__$1,new cljs.core.Keyword(null,"data-schema","data-schema",981553358));
+var encodings = (function (){var G__26655 = new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"x","x",2099068185),x,new cljs.core.Keyword(null,"y","y",-1757859776),y], null);
+var G__26655__$1 = (cljs.core.truth_(color)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__26655,new cljs.core.Keyword(null,"color","color",1011675173),color):G__26655);
 if(cljs.core.truth_(size)){
-return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__26658__$1,new cljs.core.Keyword(null,"size","size",1098693007),size);
+return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__26655__$1,new cljs.core.Keyword(null,"size","size",1098693007),size);
 } else {
-return G__26658__$1;
+return G__26655__$1;
 }
 })();
 var common_specs = new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"mark","mark",-373816345),mark], null);
 return clj_yavl.presets.with_title(clj_yavl.api.base_plot(encodings,common_specs,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"data-schema","data-schema",981553358),data_schema], null)),title);
 }));
-clj_yavl.presets.unit_spec.cljs$core$IMultiFn$_add_method$arity$3(null,new cljs.core.Keyword(null,"pie","pie",1530441672),(function (p__26673){
-var map__26674 = p__26673;
-var map__26674__$1 = cljs.core.__destructure_map(map__26674);
-var category = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26674__$1,new cljs.core.Keyword(null,"category","category",-593092832));
-var value = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26674__$1,new cljs.core.Keyword(null,"value","value",305978217));
-var inner_radius = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26674__$1,new cljs.core.Keyword(null,"inner-radius","inner-radius",-681823510));
-var title = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26674__$1,new cljs.core.Keyword(null,"title","title",636505583));
-var data_schema = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26674__$1,new cljs.core.Keyword(null,"data-schema","data-schema",981553358));
+clj_yavl.presets.unit_spec.cljs$core$IMultiFn$_add_method$arity$3(null,new cljs.core.Keyword(null,"pie","pie",1530441672),(function (p__26656){
+var map__26657 = p__26656;
+var map__26657__$1 = cljs.core.__destructure_map(map__26657);
+var category = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26657__$1,new cljs.core.Keyword(null,"category","category",-593092832));
+var value = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26657__$1,new cljs.core.Keyword(null,"value","value",305978217));
+var inner_radius = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26657__$1,new cljs.core.Keyword(null,"inner-radius","inner-radius",-681823510));
+var title = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26657__$1,new cljs.core.Keyword(null,"title","title",636505583));
+var data_schema = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26657__$1,new cljs.core.Keyword(null,"data-schema","data-schema",981553358));
 var encodings = new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"theta","theta",-427510258),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"field","field",-1302436500),value,new cljs.core.Keyword(null,"type","type",1174270348),"quantitative",new cljs.core.Keyword(null,"stack","stack",-793405930),true], null),new cljs.core.Keyword(null,"color","color",1011675173),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"field","field",-1302436500),category,new cljs.core.Keyword(null,"type","type",1174270348),"nominal"], null)], null);
-var mark_def = (function (){var G__26676 = new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"type","type",1174270348),"arc"], null);
+var mark_def = (function (){var G__26658 = new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"type","type",1174270348),"arc"], null);
 if(cljs.core.truth_(inner_radius)){
-return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__26676,new cljs.core.Keyword(null,"innerRadius","innerRadius",2016984517),inner_radius);
+return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__26658,new cljs.core.Keyword(null,"innerRadius","innerRadius",2016984517),inner_radius);
 } else {
-return G__26676;
+return G__26658;
 }
 })();
 var common_specs = new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"mark","mark",-373816345),mark_def], null);
 return clj_yavl.presets.with_title(clj_yavl.api.base_plot(encodings,common_specs,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"data-schema","data-schema",981553358),data_schema], null)),title);
 }));
-clj_yavl.presets.unit_spec.cljs$core$IMultiFn$_add_method$arity$3(null,new cljs.core.Keyword(null,"bar","bar",-1386246584),(function (p__26678){
-var map__26679 = p__26678;
-var map__26679__$1 = cljs.core.__destructure_map(map__26679);
-var x = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26679__$1,new cljs.core.Keyword(null,"x","x",2099068185));
-var y = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26679__$1,new cljs.core.Keyword(null,"y","y",-1757859776));
-var color = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26679__$1,new cljs.core.Keyword(null,"color","color",1011675173));
-var group = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26679__$1,new cljs.core.Keyword(null,"group","group",582596132));
-var grouped_QMARK_ = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26679__$1,new cljs.core.Keyword(null,"grouped?","grouped?",531080948));
-var orientation = cljs.core.get.cljs$core$IFn$_invoke$arity$3(map__26679__$1,new cljs.core.Keyword(null,"orientation","orientation",623557579),new cljs.core.Keyword(null,"vertical","vertical",718696748));
-var title = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26679__$1,new cljs.core.Keyword(null,"title","title",636505583));
-var data_schema = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26679__$1,new cljs.core.Keyword(null,"data-schema","data-schema",981553358));
+clj_yavl.presets.unit_spec.cljs$core$IMultiFn$_add_method$arity$3(null,new cljs.core.Keyword(null,"bar","bar",-1386246584),(function (p__26660){
+var map__26661 = p__26660;
+var map__26661__$1 = cljs.core.__destructure_map(map__26661);
+var x = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26661__$1,new cljs.core.Keyword(null,"x","x",2099068185));
+var y = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26661__$1,new cljs.core.Keyword(null,"y","y",-1757859776));
+var color = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26661__$1,new cljs.core.Keyword(null,"color","color",1011675173));
+var group = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26661__$1,new cljs.core.Keyword(null,"group","group",582596132));
+var grouped_QMARK_ = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26661__$1,new cljs.core.Keyword(null,"grouped?","grouped?",531080948));
+var orientation = cljs.core.get.cljs$core$IFn$_invoke$arity$3(map__26661__$1,new cljs.core.Keyword(null,"orientation","orientation",623557579),new cljs.core.Keyword(null,"vertical","vertical",718696748));
+var title = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26661__$1,new cljs.core.Keyword(null,"title","title",636505583));
+var data_schema = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__26661__$1,new cljs.core.Keyword(null,"data-schema","data-schema",981553358));
 var is_horizontal = cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(orientation,new cljs.core.Keyword(null,"horizontal","horizontal",2062109475));
-var base_encodings = (function (){var G__26685 = cljs.core.PersistentArrayMap.EMPTY;
-var G__26685__$1 = (cljs.core.truth_(x)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__26685,new cljs.core.Keyword(null,"x","x",2099068185),x):G__26685);
-var G__26685__$2 = (cljs.core.truth_(y)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__26685__$1,new cljs.core.Keyword(null,"y","y",-1757859776),y):G__26685__$1);
+var base_encodings = (function (){var G__26663 = cljs.core.PersistentArrayMap.EMPTY;
+var G__26663__$1 = (cljs.core.truth_(x)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__26663,new cljs.core.Keyword(null,"x","x",2099068185),x):G__26663);
+var G__26663__$2 = (cljs.core.truth_(y)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__26663__$1,new cljs.core.Keyword(null,"y","y",-1757859776),y):G__26663__$1);
 if(cljs.core.truth_(color)){
-return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__26685__$2,new cljs.core.Keyword(null,"color","color",1011675173),color);
+return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__26663__$2,new cljs.core.Keyword(null,"color","color",1011675173),color);
 } else {
-return G__26685__$2;
+return G__26663__$2;
 }
 })();
 var encodings = (cljs.core.truth_((function (){var and__5023__auto__ = grouped_QMARK_;
