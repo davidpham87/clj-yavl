@@ -1,7 +1,8 @@
 (ns clj-yavl.subs
   (:require [clj-yavl.presets :as presets]
             [clojure.edn :as edn]
-            [babashka.json :as json]))
+            [babashka.json :as json]
+            [clj-yavl.core :as-alias core]))
 
 (defn unit-spec-ids
   [db _]
@@ -30,11 +31,11 @@
 
 (defn config-input
   [root]
-  (:clj-yavl.core/config-input root))
+  (::core/config-input root))
 
 (defn config-mode
   [root]
-  (:clj-yavl.core/config-mode root))
+  (::core/config-mode root))
 
 (defn parsed-config
   [[input mode] _]
