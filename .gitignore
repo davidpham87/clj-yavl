@@ -1,8 +1,0 @@
-node_modules/
-out/
-.shadow-cljs/
-.cpcache/
-target/
-resources/vega-lite-v6.json
-test-resources/
-public/js/
