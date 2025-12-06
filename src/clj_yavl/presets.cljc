@@ -1,26 +1,16 @@
 (ns clj-yavl.presets
   (:require [clj-yavl.api :as api]))
 
+(defmulti unit-spec
+  "Generates a Vega-Lite spec based on the :type key in the options map."
+  :type)
+
 (defn- with-title [spec title]
   (if title
     (assoc spec :title title)
     spec))
 
-(defn xy-plot
-  "Generates an XY plot spec (Point, Line, Area).
-
-   Args:
-     input: map with keys:
-       - :x (field name or encoding map)
-       - :y (field name or encoding map)
-       - :mark (string/keyword, e.g. :point, :line, :area) - default :point
-       - :color (optional field name or encoding map)
-       - :size (optional field name or encoding map)
-       - :title (optional string)
-       - :data-schema (optional Malli schema for type inference)
-
-   Returns:
-     Vega-Lite spec map."
+(defmethod unit-spec :xyplot
   [{:keys [x y mark color size title data-schema] :or {mark :point}}]
   (let [encodings (cond-> {:x x :y y}
                     color (assoc :color color)
@@ -29,19 +19,7 @@
     (-> (api/base-plot encodings common-specs {:data-schema data-schema})
         (with-title title))))
 
-(defn pie-chart
-  "Generates a Pie or Doughnut chart spec.
-
-   Args:
-     input: map with keys:
-       - :category (field name for color)
-       - :value (field name for theta)
-       - :inner-radius (optional number for doughnut)
-       - :title (optional string)
-       - :data-schema (optional Malli schema)
-
-   Returns:
-     Vega-Lite spec map."
+(defmethod unit-spec :pie
   [{:keys [category value inner-radius title data-schema]}]
   (let [encodings {:theta {:field value :type "quantitative" :stack true}
                    :color {:field category :type "nominal"}}
@@ -51,22 +29,7 @@
     (-> (api/base-plot encodings common-specs {:data-schema data-schema})
         (with-title title))))
 
-(defn bar-chart
-  "Generates a Bar chart spec, optionally grouped.
-
-   Args:
-     input: map with keys:
-       - :x (field name for x-axis)
-       - :y (field name for y-axis)
-       - :color (optional field name for color)
-       - :group (optional field name for grouping/offset)
-       - :grouped? (boolean, if true uses :group for xOffset)
-       - :orientation (optional :vertical or :horizontal, default :vertical)
-       - :title (optional string)
-       - :data-schema (optional Malli schema)
-
-   Returns:
-     Vega-Lite spec map."
+(defmethod unit-spec :bar
   [{:keys [x y color group grouped? orientation title data-schema] :or {orientation :vertical}}]
   (let [is-horizontal (= orientation :horizontal)
         ;; For vertical bar: x is categorical usually, y is quantitative

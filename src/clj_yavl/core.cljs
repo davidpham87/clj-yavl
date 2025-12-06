@@ -83,11 +83,7 @@
    (when spec
      (let [{:keys [type input]} spec]
        (try
-         (case type
-           :xyplot (presets/xy-plot input)
-           :pie (presets/pie-chart input)
-           :bar (presets/bar-chart input)
-           nil)
+         (presets/unit-spec (assoc input :type type))
          (catch :default e
            {:error (str "Error compiling spec: " e)}))))))
 
