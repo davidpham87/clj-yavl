@@ -1,5 +1,5 @@
 (ns clj-yavl.presets-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [clojure.test :refer [deftest is testing] :include-macros true]
             [clj-yavl.presets :as presets]))
 
 (deftest xy-plot-test
