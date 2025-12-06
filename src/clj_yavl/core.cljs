@@ -104,6 +104,40 @@
  (fn [root]
    (::config-mode root)))
 
+(rf/reg-sub
+ ::parsed-config
+ :<- [::config-input]
+ :<- [::config-mode]
+ (fn [[input mode] _]
+   (try
+     (if (= mode :json)
+       (js->clj (js/JSON.parse input) :keywordize-keys true)
+       (edn/read-string input))
+     (catch :default _ nil))))
+
+(rf/reg-sub
+ ::top-level-prop
+ :<- [::parsed-config]
+ (fn [config [_ prop-key]]
+   (get config prop-key)))
+
+(rf/reg-event-db
+ ::set-top-level-prop
+ (fn [db [_ prop-key value]]
+   (let [user-input (get-in db [:user-input :vega-lite :default])
+         mode (::config-mode user-input)
+         input (::config-input user-input)]
+     (try
+       (let [parsed (if (= mode :json)
+                      (js->clj (js/JSON.parse input) :keywordize-keys true)
+                      (edn/read-string input))
+             updated (assoc parsed prop-key value)
+             new-input (if (= mode :json)
+                         (js/JSON.stringify (clj->js updated) nil 2)
+                         (with-out-str (pprint updated)))]
+         (assoc-in db [:user-input :vega-lite :default ::config-input] new-input))
+       (catch :default _ db)))))
+
 (rf/reg-event-db
  ::set-config-input
  (fn [db [_ val]]
