@@ -3,7 +3,8 @@
             [re-frame.core :as rf]
             [bb-web-ds-tools.components.editor :as editor]
             [cljs.pprint :refer [pprint]]
-            [clojure.edn :as edn]))
+            [clojure.edn :as edn]
+            [clj-yavl.presets :as presets]))
 
 ;; --- State ---
 
@@ -13,7 +14,8 @@
  ::initialize
  (fn [db _]
    (let [user-input-exists? (get-in db [:user-input :vega-lite])
-         component-state-exists? (::vega-lite db)]
+         component-state-exists? (::vega-lite db)
+         unit-specs-exists? (get-in db [:user-input :unit-specs])]
      (cond-> db
        (not user-input-exists?)
        (assoc-in [:user-input :vega-lite]
@@ -29,7 +31,65 @@
                ::structure :columnar
                ::parsed-data nil
                ::inferred-schema nil
-               ::active-left-tab :config})))))
+               ::active-left-tab :config})
+
+       (not unit-specs-exists?)
+       (assoc-in [:user-input :unit-specs] {})))))
+
+;; --- Unit Specs Events & Subs ---
+
+(rf/reg-event-db
+ ::init-unit-spec
+ (fn [db [_ id type initial-input]]
+   (assoc-in db [:user-input :unit-specs id]
+             {:type type
+              :input (or initial-input {})})))
+
+(rf/reg-event-db
+ ::remove-unit-spec
+ (fn [db [_ id]]
+   (update-in db [:user-input :unit-specs] dissoc id)))
+
+(rf/reg-event-db
+ ::update-unit-spec-input
+ (fn [db [_ id field value]]
+   (assoc-in db [:user-input :unit-specs id :input field] value)))
+
+(rf/reg-event-db
+ ::set-unit-spec-input
+ (fn [db [_ id input]]
+   (assoc-in db [:user-input :unit-specs id :input] input)))
+
+(rf/reg-sub
+ ::unit-spec-ids
+ (fn [db _]
+   (keys (get-in db [:user-input :unit-specs]))))
+
+(rf/reg-sub
+ ::unit-spec
+ (fn [db [_ id]]
+   (get-in db [:user-input :unit-specs id])))
+
+(rf/reg-sub
+ ::all-unit-specs
+ (fn [db _]
+   (get-in db [:user-input :unit-specs])))
+
+(rf/reg-sub
+ ::compiled-unit-spec
+ (fn [[_ id]]
+   (rf/subscribe [::unit-spec id]))
+ (fn [spec _]
+   (when spec
+     (let [{:keys [type input]} spec]
+       (try
+         (case type
+           :xyplot (presets/xy-plot input)
+           :pie (presets/pie-chart input)
+           :bar (presets/bar-chart input)
+           nil)
+         (catch :default e
+           {:error (str "Error compiling spec: " e)}))))))
 
 (rf/reg-sub
  ::user-input-root
