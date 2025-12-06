@@ -1,18 +1,37 @@
-# Common Keys of Top-Level Specs in Vega-Lite
+# Top-Level Spec Properties in Vega-Lite
 
-The following keys are common to all top-level specifications in Vega-Lite
-(e.g., Unit, Layer, Facet, Concat). These are defined in `TopLevelProps`.
+The following properties can appear in top-level specifications (Unit, Layer,
+Facet, Concat). Properties marked with (*) are common to all top-level specs.
 
-- `$schema`
-- `autosize`
-- `background`
-- `config`
-- `data`
-- `datasets`
-- `description`
-- `name`
-- `padding`
-- `params`
-- `title`
-- `transform`
-- `usermeta`
+- `$schema` (*)
+- `align`
+- `autosize` (*)
+- `background` (*)
+- `bounds`
+- `center`
+- `columns`
+- `concat`
+- `config` (*)
+- `data` (*)
+- `datasets` (*)
+- `description` (*)
+- `encoding`
+- `facet`
+- `hconcat`
+- `height`
+- `layer`
+- `mark`
+- `name` (*)
+- `padding` (*)
+- `params` (*)
+- `projection`
+- `repeat`
+- `resolve`
+- `spacing`
+- `spec`
+- `title` (*)
+- `transform` (*)
+- `usermeta` (*)
+- `vconcat`
+- `view`
+- `width`
