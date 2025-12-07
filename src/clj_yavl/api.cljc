@@ -43,6 +43,21 @@
                 v))
             (m/children map-schema)))))
 
+(defn- get-field-props
+  "Finds the properties for a specific field within a dataset schema."
+  [dataset-schema field-name]
+  (let [schema (m/schema dataset-schema)
+        t (m/type schema)
+        ;; Unwrap collection type if present
+        map-schema (if (#{:vector :sequential :set :list} t)
+                     (first (m/children schema))
+                     schema)]
+    (when (= (m/type map-schema) :map)
+      (some (fn [[k props _]]
+              (when (= (name k) field-name)
+                props))
+            (m/children map-schema)))))
+
 (defn- infer-type-for-field
   [dataset-schema field-name]
   (when-let [field-schema (get-field-schema dataset-schema field-name)]
@@ -103,11 +118,14 @@
   (vec
    (for [k keys]
      (let [inferred-type (infer-type-for-field dataset-schema k)
+           field-props (get-field-props dataset-schema k)
+           custom-format (:format field-props)
            field-def {:field k
                       :type inferred-type}]
-       (if (= inferred-type "quantitative")
-         (assoc field-def :format "s")
-         field-def)))))
+       (cond
+         custom-format (assoc field-def :format custom-format)
+         (= inferred-type "quantitative") (assoc field-def :format "s")
+         :else field-def)))))
 
 (defn- deep-merge
   "Recursively merges maps."

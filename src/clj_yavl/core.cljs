@@ -2,139 +2,48 @@
   (:require [reagent.dom.client :as rdomc]
             [re-frame.core :as rf]
             [bb-web-ds-tools.components.editor :as editor]
-            [cljs.pprint :refer [pprint]]
-            [clojure.edn :as edn]
-            [clj-yavl.presets :as presets]))
+            [clj-yavl.events :as events]
+            [clj-yavl.subs :as subs]))
 
 ;; --- State ---
 
-(def default-config-json "{\n  \"$schema\": \"https://vega.github.io/schema/vega-lite/v5.json\",\n  \"mark\": \"bar\",\n  \"encoding\": {\n    \"x\": {\"field\": \"col1\", \"type\": \"ordinal\"},\n    \"y\": {\"field\": \"col2\", \"type\": \"quantitative\"}\n  }\n}")
-
-(rf/reg-event-db
- ::initialize
- (fn [db _]
-   (let [user-input-exists? (get-in db [:user-input :vega-lite])
-         component-state-exists? (::vega-lite db)
-         unit-specs-exists? (get-in db [:user-input :unit-specs])]
-     (cond-> db
-       (not user-input-exists?)
-       (assoc-in [:user-input :vega-lite]
-                 {:saved-configs {}
-                  :default {::data-input ""
-                            ::config-input default-config-json
-                            ::config-mode :json
-                            ::active-config-name nil}})
-
-       (not component-state-exists?)
-       (assoc ::vega-lite
-              {::format :csv
-               ::structure :columnar
-               ::parsed-data nil
-               ::inferred-schema nil
-               ::active-left-tab :config})
-
-       (not unit-specs-exists?)
-       (assoc-in [:user-input :unit-specs] {})))))
+(rf/reg-event-db ::initialize events/initialize-db)
 
 ;; --- Unit Specs Events & Subs ---
 
-(rf/reg-event-db
- ::init-unit-spec
- (fn [db [_ id type initial-input]]
-   (assoc-in db [:user-input :unit-specs id]
-             {:type type
-              :input (or initial-input {})})))
+(rf/reg-event-db ::init-unit-spec events/init-unit-spec)
+(rf/reg-event-db ::remove-unit-spec events/remove-unit-spec)
+(rf/reg-event-db ::update-unit-spec-input events/update-unit-spec-input)
+(rf/reg-event-db ::set-unit-spec-input events/set-unit-spec-input)
 
-(rf/reg-event-db
- ::remove-unit-spec
- (fn [db [_ id]]
-   (update-in db [:user-input :unit-specs] dissoc id)))
-
-(rf/reg-event-db
- ::update-unit-spec-input
- (fn [db [_ id field value]]
-   (assoc-in db [:user-input :unit-specs id :input field] value)))
-
-(rf/reg-event-db
- ::set-unit-spec-input
- (fn [db [_ id input]]
-   (assoc-in db [:user-input :unit-specs id :input] input)))
-
-(rf/reg-sub
- ::unit-spec-ids
- (fn [db _]
-   (keys (get-in db [:user-input :unit-specs]))))
-
-(rf/reg-sub
- ::unit-spec
- (fn [db [_ id]]
-   (get-in db [:user-input :unit-specs id])))
-
-(rf/reg-sub
- ::all-unit-specs
- (fn [db _]
-   (get-in db [:user-input :unit-specs])))
+(rf/reg-sub ::unit-spec-ids subs/unit-spec-ids)
+(rf/reg-sub ::unit-spec subs/unit-spec)
+(rf/reg-sub ::all-unit-specs subs/all-unit-specs)
 
 (rf/reg-sub
  ::compiled-unit-spec
  (fn [[_ id]]
    (rf/subscribe [::unit-spec id]))
- (fn [spec _]
-   (when spec
-     (let [{:keys [type input]} spec]
-       (try
-         (presets/unit-spec (assoc input :type type))
-         (catch :default e
-           {:error (str "Error compiling spec: " e)}))))))
+ subs/compiled-unit-spec-fn)
+
+(rf/reg-sub ::user-input-root subs/user-input-root)
+(rf/reg-sub ::config-input :<- [::user-input-root] subs/config-input)
+(rf/reg-sub ::config-mode :<- [::user-input-root] subs/config-mode)
 
 (rf/reg-sub
- ::user-input-root
- (fn [db _]
-   (get-in db [:user-input :vega-lite :default])))
+ ::parsed-config
+ :<- [::config-input]
+ :<- [::config-mode]
+ subs/parsed-config)
 
 (rf/reg-sub
- ::config-input
- :<- [::user-input-root]
- (fn [root]
-   (::config-input root)))
+ ::top-level-prop
+ :<- [::parsed-config]
+ subs/top-level-prop)
 
-(rf/reg-sub
- ::config-mode
- :<- [::user-input-root]
- (fn [root]
-   (::config-mode root)))
-
-(rf/reg-event-db
- ::set-config-input
- (fn [db [_ val]]
-   (assoc-in db [:user-input :vega-lite :default ::config-input] val)))
-
-(rf/reg-event-db
- ::set-config-mode
- (fn [db [_ new-mode]]
-   (let [user-input (get-in db [:user-input :vega-lite :default])
-         current-mode (::config-mode user-input)
-         current-input (::config-input user-input)
-         new-input (cond
-                     (and (= current-mode :json) (= new-mode :edn))
-                     (try
-                       (let [obj (js/JSON.parse current-input)
-                             edn-data (js->clj obj :keywordize-keys true)]
-                         (with-out-str (pprint edn-data)))
-                       (catch js/Error _ current-input))
-
-                     (and (= current-mode :edn) (= new-mode :json))
-                     (try
-                       (let [edn-data (edn/read-string current-input)
-                             obj (clj->js edn-data)]
-                         (js/JSON.stringify obj nil 2))
-                       (catch js/Error _ current-input))
-
-                     :else current-input)]
-     (-> db
-         (assoc-in [:user-input :vega-lite :default ::config-mode] new-mode)
-         (assoc-in [:user-input :vega-lite :default ::config-input] new-input)))))
-
+(rf/reg-event-db ::set-top-level-prop events/set-top-level-prop)
+(rf/reg-event-db ::set-config-input events/set-config-input)
+(rf/reg-event-db ::set-config-mode events/set-config-mode)
 
 ;; --- View ---
 
