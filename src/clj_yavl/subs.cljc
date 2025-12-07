@@ -1,7 +1,7 @@
 (ns clj-yavl.subs
   (:require [clj-yavl.presets :as presets]
             [clojure.edn :as edn]
-            [babashka.json :as json]
+            [clj-yavl.io :as io]
             [clj-yavl.core :as-alias core]))
 
 (defn unit-spec-ids
@@ -41,7 +41,7 @@
   [[input mode] _]
   (try
     (if (= mode :json)
-      (json/read-str input {:key-fn keyword})
+      (io/read-json-str input {:key-fn keyword})
       (edn/read-string input))
     (catch #?(:clj Exception :cljs :default) _ nil)))
 
