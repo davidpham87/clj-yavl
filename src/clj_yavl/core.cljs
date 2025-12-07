@@ -23,7 +23,8 @@
                   :default {::data-input ""
                             ::config-input default-config-json
                             ::config-mode :json
-                            ::active-config-name nil}})
+                            ::active-config-name nil
+                            ::transform-ops []}})
 
        (not component-state-exists?)
        (assoc ::vega-lite
@@ -136,7 +137,7 @@
          (assoc-in [:user-input :vega-lite :default ::config-input] new-input)))))
 
 (rf/reg-sub
- ::config-transform
+ ::config-transform-raw
  :<- [::config-input]
  :<- [::config-mode]
  (fn [[input mode] _]
@@ -148,7 +149,7 @@
      (catch js/Error _ nil))))
 
 (rf/reg-event-db
- ::set-config-transform
+ ::set-config-transform-raw
  (fn [db [_ new-transform]]
    (let [user-input (get-in db [:user-input :vega-lite :default])
          mode (::config-mode user-input)
@@ -164,6 +165,48 @@
                        input)
                      (catch js/Error _ input))]
      (assoc-in db [:user-input :vega-lite :default ::config-input] new-input))))
+
+;; --- Transform Ops Events & Subs ---
+
+(rf/reg-sub
+ ::transform-ops
+ (fn [db _]
+   (get-in db [:user-input :vega-lite :default ::transform-ops])))
+
+(rf/reg-event-db
+ ::add-transform-op
+ (fn [db [_ op]]
+   (update-in db [:user-input :vega-lite :default ::transform-ops] conj op)))
+
+(rf/reg-event-db
+ ::remove-transform-op
+ (fn [db [_ index]]
+   (let [path [:user-input :vega-lite :default ::transform-ops]]
+     (update-in db path (fn [ops]
+                          (vec (concat (subvec ops 0 index)
+                                       (subvec ops (inc index)))))))))
+
+(rf/reg-event-db
+ ::update-transform-op
+ (fn [db [_ index new-op]]
+   (assoc-in db [:user-input :vega-lite :default ::transform-ops index] new-op)))
+
+(rf/reg-event-db
+ ::reorder-transform-ops
+ (fn [db [_ from-index to-index]]
+   (let [path [:user-input :vega-lite :default ::transform-ops]]
+     (update-in db path (fn [ops]
+                          (let [item (nth ops from-index)
+                                removed (vec (concat (subvec ops 0 from-index)
+                                                     (subvec ops (inc from-index))))]
+                            (vec (concat (subvec removed 0 to-index)
+                                         [item]
+                                         (subvec removed to-index)))))))))
+
+(rf/reg-event-db
+ ::set-transform-ops
+ (fn [db [_ ops]]
+   (assoc-in db [:user-input :vega-lite :default ::transform-ops] ops)))
 
 
 ;; --- View ---
