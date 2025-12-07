@@ -1,7 +1,7 @@
 (ns clj-yavl.events
   (:require [clj-yavl.presets :as presets]
             [clojure.edn :as edn]
-            [babashka.json :as json]
+            [clj-yavl.io :as io]
             [clojure.pprint :refer [pprint]]
             [clj-yavl.core :as-alias core]))
 
@@ -62,7 +62,7 @@
         new-input (cond
                     (and (= current-mode :json) (= new-mode :edn))
                     (try
-                      (let [obj (json/read-str current-input {:key-fn keyword})
+                      (let [obj (io/read-json-str current-input {:key-fn keyword})
                             edn-data obj]
                         (with-out-str (pprint edn-data)))
                       (catch #?(:clj Exception :cljs :default) _ current-input))
@@ -70,7 +70,7 @@
                     (and (= current-mode :edn) (= new-mode :json))
                     (try
                       (let [edn-data (edn/read-string current-input)]
-                        (json/write-str edn-data {:indent 2}))
+                        (io/write-json-str edn-data {:indent 2}))
                       (catch #?(:clj Exception :cljs :default) _ current-input))
 
                     :else current-input)]
@@ -85,11 +85,11 @@
         input (::core/config-input user-input)]
     (try
       (let [parsed (if (= mode :json)
-                     (json/read-str input {:key-fn keyword})
+                     (io/read-json-str input {:key-fn keyword})
                      (edn/read-string input))
             updated (assoc parsed prop-key value)
             new-input (if (= mode :json)
-                        (json/write-str updated {:indent 2})
+                        (io/write-json-str updated {:indent 2})
                         (with-out-str (pprint updated)))]
         (assoc-in db [:user-input :vega-lite :default ::core/config-input] new-input))
       (catch #?(:clj Exception :cljs :default) _ db))))
