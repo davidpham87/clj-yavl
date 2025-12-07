@@ -183,8 +183,8 @@
  (fn [db [_ index]]
    (let [path [:user-input :vega-lite :default ::transform-ops]]
      (update-in db path (fn [ops]
-                          (vec (concat (subvec ops 0 index)
-                                       (subvec ops (inc index)))))))))
+                          (let [[before after] (split-at index ops)]
+                            (vec (concat before (rest after)))))))))
 
 (rf/reg-event-db
  ::update-transform-op
