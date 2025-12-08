@@ -74,10 +74,11 @@
    Returns:
      A map representing a Vega-Lite calculate transform."
   [col-name mapping]
-  (let [expression (str/join " : "
+  (let [escape-val (fn [v] (str/replace (str v) "'" "\\'"))
+        expression (str/join " : "
                              (concat
                               (map (fn [[old new]]
-                                     (str "datum['" col-name "'] == '" old "' ? '" new "'"))
+                                     (str "datum['" col-name "'] == '" (escape-val old) "' ? '" (escape-val new) "'"))
                                    mapping)
                               [(str "datum['" col-name "']")]))]
     {:calculate expression :as col-name}))
