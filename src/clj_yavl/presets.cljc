@@ -15,6 +15,7 @@
   (let [encodings (cond-> {:x x :y y}
                     color (assoc :color color)
                     size (assoc :size size))
+        mark (if (keyword? mark) (name mark) mark)
         common-specs {:mark mark}]
     (-> (api/base-plot encodings common-specs {:data-schema data-schema})
         (with-title title))))
