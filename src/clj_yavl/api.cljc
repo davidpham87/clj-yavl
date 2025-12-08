@@ -7,7 +7,7 @@
   ["#4285F4" "#DB4437" "#F4B400" "#0F9D58"])
 
 (def default-config
-  {:config {:range {:category google-colors}
+  {:config {:range {:category google-colors} ;; [:scale :range] - Google corporate colors
             :axis {:labelFontSize 12 :titleFontSize 14}
             :header {:labelFontSize 12 :titleFontSize 14}
             :legend {:labelFontSize 12 :titleFontSize 14}
