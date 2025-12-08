@@ -7,34 +7,16 @@
 
 ;; --- State ---
 
-(def default-config-json "{\n  \"$schema\": \"https://vega.github.io/schema/vega-lite/v5.json\",\n  \"mark\": \"bar\",\n  \"encoding\": {\n    \"x\": {\"field\": \"col1\", \"type\": \"ordinal\"},\n    \"y\": {\"field\": \"col2\", \"type\": \"quantitative\"}\n  }\n}")
+(rf/reg-event-db ::initialize events/initialize-db)
+(rf/reg-event-db ::set-config-input events/set-config-input)
+(rf/reg-event-db ::set-config-mode events/set-config-mode)
+(rf/reg-event-db ::set-top-level-prop events/set-top-level-prop)
 
-(rf/reg-event-db
- ::initialize
- (fn [db _]
-   (let [user-input-exists? (get-in db [:user-input :vega-lite])
-         component-state-exists? (::vega-lite db)
-         unit-specs-exists? (get-in db [:user-input :unit-specs])]
-     (cond-> db
-       (not user-input-exists?)
-       (assoc-in [:user-input :vega-lite]
-                 {:saved-configs {}
-                  :default {::data-input ""
-                            ::config-input default-config-json
-                            ::config-mode :json
-                            ::active-config-name nil
-                            ::transform-ops []}})
+;; New DS Events
+(rf/reg-event-db ::update-mark events/update-mark)
+(rf/reg-event-db ::update-channel-field events/update-channel-field)
+(rf/reg-event-db ::update-tooltip events/update-tooltip)
 
-       (not component-state-exists?)
-       (assoc ::vega-lite
-              {::format :csv
-               ::structure :columnar
-               ::parsed-data nil
-               ::inferred-schema nil
-               ::active-left-tab :config})
-
-       (not unit-specs-exists?)
-       (assoc-in [:user-input :unit-specs] {})))))
 
 ;; --- Unit Specs Events & Subs ---
 
@@ -67,6 +49,13 @@
  ::top-level-prop
  :<- [::parsed-config]
  subs/top-level-prop)
+
+;; DS Subs
+(rf/reg-sub ::ds-db subs/ds-db)
+(rf/reg-sub ::mark :<- [::ds-db] subs/mark)
+(rf/reg-sub ::encoding :<- [::ds-db] subs/encoding)
+(rf/reg-sub ::tooltip :<- [::ds-db] subs/tooltip)
+
 
 (rf/reg-sub
  ::config-transform-raw

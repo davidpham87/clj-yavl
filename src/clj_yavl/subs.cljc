@@ -2,7 +2,8 @@
   (:require [clj-yavl.presets :as presets]
             [clojure.edn :as edn]
             [clj-yavl.io :as io]
-            [clj-yavl.core :as-alias core]))
+            [clj-yavl.core :as-alias core]
+            [clj-yavl.db :as db]))
 
 (defn unit-spec-ids
   [db _]
@@ -48,3 +49,32 @@
 (defn top-level-prop
   [config [_ prop-key]]
   (get config prop-key))
+
+;; DataScript Subscriptions
+
+(defn ds-db
+  [db _]
+  (get-in db [:user-input :vega-lite :default ::core/ds-db]))
+
+(defn mark
+  [ds-db _]
+  (when ds-db
+    (let [m (db/pull ds-db [:mark/type :mark/def] [:vl/id "default"])]
+      ;; Wait, :vl/mark is a ref. We need to follow it.
+      ;; Or pull from the root.
+      (let [root (db/pull ds-db [{:vl/mark [:mark/type :mark/def]}] [:vl/id "default"])]
+        (get-in root [:vl/mark :mark/type])))))
+
+(defn encoding
+  [ds-db _]
+  (when ds-db
+    (let [root (db/pull ds-db [{:vl/encoding [{:encoding/channels [:channel/name :channel/field :channel/type :channel/def]}]}] [:vl/id "default"])]
+      (into {} (map (fn [c]
+                      [(:channel/name c) (merge (:channel/def c)
+                                                (select-keys c [:channel/field :channel/type]))])
+                    (get-in root [:vl/encoding :encoding/channels]))))))
+
+(defn tooltip
+  [ds-db _]
+  (when ds-db
+    (:vl/tooltip (db/pull ds-db [:vl/tooltip] [:vl/id "default"]))))
