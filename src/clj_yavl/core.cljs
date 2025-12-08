@@ -7,7 +7,34 @@
 
 ;; --- State ---
 
-(rf/reg-event-db ::initialize events/initialize-db)
+(def default-config-json "{\n  \"$schema\": \"https://vega.github.io/schema/vega-lite/v5.json\",\n  \"mark\": \"bar\",\n  \"encoding\": {\n    \"x\": {\"field\": \"col1\", \"type\": \"ordinal\"},\n    \"y\": {\"field\": \"col2\", \"type\": \"quantitative\"}\n  }\n}")
+
+(rf/reg-event-db
+ ::initialize
+ (fn [db _]
+   (let [user-input-exists? (get-in db [:user-input :vega-lite])
+         component-state-exists? (::vega-lite db)
+         unit-specs-exists? (get-in db [:user-input :unit-specs])]
+     (cond-> db
+       (not user-input-exists?)
+       (assoc-in [:user-input :vega-lite]
+                 {:saved-configs {}
+                  :default {::data-input ""
+                            ::config-input default-config-json
+                            ::config-mode :json
+                            ::active-config-name nil
+                            ::transform-ops []}})
+
+       (not component-state-exists?)
+       (assoc ::vega-lite
+              {::format :csv
+               ::structure :columnar
+               ::parsed-data nil
+               ::inferred-schema nil
+               ::active-left-tab :config})
+
+       (not unit-specs-exists?)
+       (assoc-in [:user-input :unit-specs] {})))))
 
 ;; --- Unit Specs Events & Subs ---
 
@@ -41,9 +68,78 @@
  :<- [::parsed-config]
  subs/top-level-prop)
 
-(rf/reg-event-db ::set-top-level-prop events/set-top-level-prop)
-(rf/reg-event-db ::set-config-input events/set-config-input)
-(rf/reg-event-db ::set-config-mode events/set-config-mode)
+(rf/reg-sub
+ ::config-transform-raw
+ :<- [::config-input]
+ :<- [::config-mode]
+ (fn [[input mode] _]
+   (try
+     (case mode
+       :edn (get (edn/read-string input) :transform)
+       :json (get (js->clj (js/JSON.parse input) :keywordize-keys true) :transform)
+       nil)
+     (catch js/Error _ nil))))
+
+(rf/reg-event-db
+ ::set-config-transform-raw
+ (fn [db [_ new-transform]]
+   (let [user-input (get-in db [:user-input :vega-lite :default])
+         mode (::config-mode user-input)
+         input (::config-input user-input)
+         new-input (try
+                     (case mode
+                       :edn (let [data (edn/read-string input)
+                                  updated (assoc data :transform new-transform)]
+                              (with-out-str (pprint updated)))
+                       :json (let [data (js->clj (js/JSON.parse input) :keywordize-keys true)
+                                   updated (assoc data :transform new-transform)]
+                               (js/JSON.stringify (clj->js updated) nil 2))
+                       input)
+                     (catch js/Error _ input))]
+     (assoc-in db [:user-input :vega-lite :default ::config-input] new-input))))
+
+;; --- Transform Ops Events & Subs ---
+
+(rf/reg-sub
+ ::transform-ops
+ (fn [db _]
+   (get-in db [:user-input :vega-lite :default ::transform-ops])))
+
+(rf/reg-event-db
+ ::add-transform-op
+ (fn [db [_ op]]
+   (update-in db [:user-input :vega-lite :default ::transform-ops] conj op)))
+
+(rf/reg-event-db
+ ::remove-transform-op
+ (fn [db [_ index]]
+   (let [path [:user-input :vega-lite :default ::transform-ops]]
+     (update-in db path (fn [ops]
+                          (let [[before after] (split-at index ops)]
+                            (vec (concat before (rest after)))))))))
+
+(rf/reg-event-db
+ ::update-transform-op
+ (fn [db [_ index new-op]]
+   (assoc-in db [:user-input :vega-lite :default ::transform-ops index] new-op)))
+
+(rf/reg-event-db
+ ::reorder-transform-ops
+ (fn [db [_ from-index to-index]]
+   (let [path [:user-input :vega-lite :default ::transform-ops]]
+     (update-in db path (fn [ops]
+                          (let [item (nth ops from-index)
+                                removed (vec (concat (subvec ops 0 from-index)
+                                                     (subvec ops (inc from-index))))]
+                            (vec (concat (subvec removed 0 to-index)
+                                         [item]
+                                         (subvec removed to-index)))))))))
+
+(rf/reg-event-db
+ ::set-transform-ops
+ (fn [db [_ ops]]
+   (assoc-in db [:user-input :vega-lite :default ::transform-ops] ops)))
+
 
 ;; --- View ---
 
