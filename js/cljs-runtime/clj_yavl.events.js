@@ -8,21 +8,21 @@ var ds_conn = clj_yavl.db.init_db.cljs$core$IFn$_invoke$arity$0();
 var default_config = clj_yavl.io.read_json_str.cljs$core$IFn$_invoke$arity$2(clj_yavl.events.default_config_json,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key-fn","key-fn",-636154479),cljs.core.keyword], null));
 var ___$1 = clj_yavl.db.transact(ds_conn,clj_yavl.db.config__GT_tx_data("default",default_config));
 var ds_db = cljs.core.deref(ds_conn);
-var G__31183 = db;
-var G__31183__$1 = ((cljs.core.not(user_input_exists_QMARK_))?cljs.core.assoc_in(G__31183,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770)], null),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"saved-configs","saved-configs",1634320315),cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword("clj-yavl.core","data-input","clj-yavl.core/data-input",611355071),"",new cljs.core.Keyword("clj-yavl.core","config-input","clj-yavl.core/config-input",1110176655),clj_yavl.events.default_config_json,new cljs.core.Keyword("clj-yavl.core","config-mode","clj-yavl.core/config-mode",-1919291340),new cljs.core.Keyword(null,"json","json",1279968570),new cljs.core.Keyword("clj-yavl.core","active-config-name","clj-yavl.core/active-config-name",-1939900428),null,new cljs.core.Keyword("clj-yavl.core","ds-db","clj-yavl.core/ds-db",-1126598866),ds_db], null)], null)):G__31183);
-var G__31183__$2 = ((cljs.core.not(component_state_exists_QMARK_))?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__31183__$1,new cljs.core.Keyword("clj-yavl.core","vega-lite","clj-yavl.core/vega-lite",943809627),new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword("clj-yavl.core","format","clj-yavl.core/format",1360929541),new cljs.core.Keyword(null,"csv","csv",-1164440893),new cljs.core.Keyword("clj-yavl.core","structure","clj-yavl.core/structure",-30773006),new cljs.core.Keyword(null,"columnar","columnar",-1122999701),new cljs.core.Keyword("clj-yavl.core","parsed-data","clj-yavl.core/parsed-data",-1560578265),null,new cljs.core.Keyword("clj-yavl.core","inferred-schema","clj-yavl.core/inferred-schema",-1109150020),null,new cljs.core.Keyword("clj-yavl.core","active-left-tab","clj-yavl.core/active-left-tab",1685289502),new cljs.core.Keyword(null,"config","config",994861415)], null)):G__31183__$1);
+var G__31199 = db;
+var G__31199__$1 = ((cljs.core.not(user_input_exists_QMARK_))?cljs.core.assoc_in(G__31199,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770)], null),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"saved-configs","saved-configs",1634320315),cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword("clj-yavl.core","data-input","clj-yavl.core/data-input",611355071),"",new cljs.core.Keyword("clj-yavl.core","config-input","clj-yavl.core/config-input",1110176655),clj_yavl.events.default_config_json,new cljs.core.Keyword("clj-yavl.core","config-mode","clj-yavl.core/config-mode",-1919291340),new cljs.core.Keyword(null,"json","json",1279968570),new cljs.core.Keyword("clj-yavl.core","active-config-name","clj-yavl.core/active-config-name",-1939900428),null,new cljs.core.Keyword("clj-yavl.core","ds-db","clj-yavl.core/ds-db",-1126598866),ds_db], null)], null)):G__31199);
+var G__31199__$2 = ((cljs.core.not(component_state_exists_QMARK_))?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__31199__$1,new cljs.core.Keyword("clj-yavl.core","vega-lite","clj-yavl.core/vega-lite",943809627),new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword("clj-yavl.core","format","clj-yavl.core/format",1360929541),new cljs.core.Keyword(null,"csv","csv",-1164440893),new cljs.core.Keyword("clj-yavl.core","structure","clj-yavl.core/structure",-30773006),new cljs.core.Keyword(null,"columnar","columnar",-1122999701),new cljs.core.Keyword("clj-yavl.core","parsed-data","clj-yavl.core/parsed-data",-1560578265),null,new cljs.core.Keyword("clj-yavl.core","inferred-schema","clj-yavl.core/inferred-schema",-1109150020),null,new cljs.core.Keyword("clj-yavl.core","active-left-tab","clj-yavl.core/active-left-tab",1685289502),new cljs.core.Keyword(null,"config","config",994861415)], null)):G__31199__$1);
 if(cljs.core.not(unit_specs_exists_QMARK_)){
-return cljs.core.assoc_in(G__31183__$2,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"unit-specs","unit-specs",-530655085)], null),cljs.core.PersistentArrayMap.EMPTY);
+return cljs.core.assoc_in(G__31199__$2,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"unit-specs","unit-specs",-530655085)], null),cljs.core.PersistentArrayMap.EMPTY);
 } else {
-return G__31183__$2;
+return G__31199__$2;
 }
 });
-clj_yavl.events.init_unit_spec = (function clj_yavl$events$init_unit_spec(db,p__31184){
-var vec__31185 = p__31184;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31185,(0),null);
-var id = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31185,(1),null);
-var type = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31185,(2),null);
-var initial_input = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31185,(3),null);
+clj_yavl.events.init_unit_spec = (function clj_yavl$events$init_unit_spec(db,p__31201){
+var vec__31202 = p__31201;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31202,(0),null);
+var id = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31202,(1),null);
+var type = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31202,(2),null);
+var initial_input = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31202,(3),null);
 return cljs.core.assoc_in(db,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"unit-specs","unit-specs",-530655085),id], null),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"type","type",1174270348),type,new cljs.core.Keyword(null,"input","input",556931961),(function (){var or__5025__auto__ = initial_input;
 if(cljs.core.truth_(or__5025__auto__)){
 return or__5025__auto__;
@@ -31,113 +31,113 @@ return cljs.core.PersistentArrayMap.EMPTY;
 }
 })()], null));
 });
-clj_yavl.events.remove_unit_spec = (function clj_yavl$events$remove_unit_spec(db,p__31188){
-var vec__31189 = p__31188;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31189,(0),null);
-var id = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31189,(1),null);
+clj_yavl.events.remove_unit_spec = (function clj_yavl$events$remove_unit_spec(db,p__31206){
+var vec__31207 = p__31206;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31207,(0),null);
+var id = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31207,(1),null);
 return cljs.core.update_in.cljs$core$IFn$_invoke$arity$4(db,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"unit-specs","unit-specs",-530655085)], null),cljs.core.dissoc,id);
 });
-clj_yavl.events.update_unit_spec_input = (function clj_yavl$events$update_unit_spec_input(db,p__31192){
-var vec__31193 = p__31192;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31193,(0),null);
-var id = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31193,(1),null);
-var field = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31193,(2),null);
-var value = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31193,(3),null);
+clj_yavl.events.update_unit_spec_input = (function clj_yavl$events$update_unit_spec_input(db,p__31210){
+var vec__31211 = p__31210;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31211,(0),null);
+var id = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31211,(1),null);
+var field = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31211,(2),null);
+var value = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31211,(3),null);
 return cljs.core.assoc_in(db,new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"unit-specs","unit-specs",-530655085),id,new cljs.core.Keyword(null,"input","input",556931961),field], null),value);
 });
-clj_yavl.events.set_unit_spec_input = (function clj_yavl$events$set_unit_spec_input(db,p__31196){
-var vec__31197 = p__31196;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31197,(0),null);
-var id = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31197,(1),null);
-var input = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31197,(2),null);
+clj_yavl.events.set_unit_spec_input = (function clj_yavl$events$set_unit_spec_input(db,p__31214){
+var vec__31215 = p__31214;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31215,(0),null);
+var id = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31215,(1),null);
+var input = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31215,(2),null);
 return cljs.core.assoc_in(db,new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"unit-specs","unit-specs",-530655085),id,new cljs.core.Keyword(null,"input","input",556931961)], null),input);
 });
-clj_yavl.events.set_config_input = (function clj_yavl$events$set_config_input(db,p__31200){
-var vec__31201 = p__31200;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31201,(0),null);
-var val = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31201,(1),null);
+clj_yavl.events.set_config_input = (function clj_yavl$events$set_config_input(db,p__31223){
+var vec__31224 = p__31223;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31224,(0),null);
+var val = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31224,(1),null);
 var mode = cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(db,new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.Keyword("clj-yavl.core","config-mode","clj-yavl.core/config-mode",-1919291340)], null));
 var parsed = (function (){try{if(cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(mode,new cljs.core.Keyword(null,"json","json",1279968570))){
 return clj_yavl.io.read_json_str.cljs$core$IFn$_invoke$arity$2(val,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key-fn","key-fn",-636154479),cljs.core.keyword], null));
 } else {
 return clojure.edn.read_string.cljs$core$IFn$_invoke$arity$1(val);
 }
-}catch (e31204){var ___$1 = e31204;
+}catch (e31227){var ___$1 = e31227;
 return null;
 }})();
-var G__31205 = cljs.core.assoc_in(db,new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.Keyword("clj-yavl.core","config-input","clj-yavl.core/config-input",1110176655)], null),val);
+var G__31229 = cljs.core.assoc_in(db,new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.Keyword("clj-yavl.core","config-input","clj-yavl.core/config-input",1110176655)], null),val);
 if(cljs.core.truth_(parsed)){
-return cljs.core.update_in.cljs$core$IFn$_invoke$arity$3(G__31205,new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.Keyword("clj-yavl.core","ds-db","clj-yavl.core/ds-db",-1126598866)], null),(function (old_db){
+return cljs.core.update_in.cljs$core$IFn$_invoke$arity$3(G__31229,new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.Keyword("clj-yavl.core","ds-db","clj-yavl.core/ds-db",-1126598866)], null),(function (old_db){
 var conn = clj_yavl.db.init_db.cljs$core$IFn$_invoke$arity$0();
 clj_yavl.db.transact(conn,clj_yavl.db.config__GT_tx_data("default",parsed));
 
 return cljs.core.deref(conn);
 }));
 } else {
-return G__31205;
+return G__31229;
 }
 });
-clj_yavl.events.set_config_mode = (function clj_yavl$events$set_config_mode(db,p__31206){
-var vec__31207 = p__31206;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31207,(0),null);
-var new_mode = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31207,(1),null);
+clj_yavl.events.set_config_mode = (function clj_yavl$events$set_config_mode(db,p__31233){
+var vec__31234 = p__31233;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31234,(0),null);
+var new_mode = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31234,(1),null);
 var user_input = cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(db,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328)], null));
 var current_mode = new cljs.core.Keyword("clj-yavl.core","config-mode","clj-yavl.core/config-mode",-1919291340).cljs$core$IFn$_invoke$arity$1(user_input);
 var current_input = new cljs.core.Keyword("clj-yavl.core","config-input","clj-yavl.core/config-input",1110176655).cljs$core$IFn$_invoke$arity$1(user_input);
 var new_input = ((((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(current_mode,new cljs.core.Keyword(null,"json","json",1279968570))) && (cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(new_mode,new cljs.core.Keyword(null,"edn","edn",1317840885)))))?(function (){try{var obj = clj_yavl.io.read_json_str.cljs$core$IFn$_invoke$arity$2(current_input,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key-fn","key-fn",-636154479),cljs.core.keyword], null));
 var edn_data = obj;
 var sb__5670__auto__ = (new goog.string.StringBuffer());
-var _STAR_print_newline_STAR__orig_val__31211_31279 = cljs.core._STAR_print_newline_STAR_;
-var _STAR_print_fn_STAR__orig_val__31212_31280 = cljs.core._STAR_print_fn_STAR_;
-var _STAR_print_newline_STAR__temp_val__31213_31281 = true;
-var _STAR_print_fn_STAR__temp_val__31214_31282 = (function (x__5671__auto__){
+var _STAR_print_newline_STAR__orig_val__31238_31293 = cljs.core._STAR_print_newline_STAR_;
+var _STAR_print_fn_STAR__orig_val__31239_31294 = cljs.core._STAR_print_fn_STAR_;
+var _STAR_print_newline_STAR__temp_val__31240_31295 = true;
+var _STAR_print_fn_STAR__temp_val__31241_31296 = (function (x__5671__auto__){
 return sb__5670__auto__.append(x__5671__auto__);
 });
-(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__temp_val__31213_31281);
+(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__temp_val__31240_31295);
 
-(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__temp_val__31214_31282);
+(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__temp_val__31241_31296);
 
 try{cljs.pprint.pprint.cljs$core$IFn$_invoke$arity$1(edn_data);
-}finally {(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__orig_val__31212_31280);
+}finally {(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__orig_val__31239_31294);
 
-(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__orig_val__31211_31279);
+(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__orig_val__31238_31293);
 }
 return cljs.core.str.cljs$core$IFn$_invoke$arity$1(sb__5670__auto__);
-}catch (e31210){var ___$1 = e31210;
+}catch (e31237){var ___$1 = e31237;
 return current_input;
 }})():((((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(current_mode,new cljs.core.Keyword(null,"edn","edn",1317840885))) && (cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(new_mode,new cljs.core.Keyword(null,"json","json",1279968570)))))?(function (){try{var edn_data = clojure.edn.read_string.cljs$core$IFn$_invoke$arity$1(current_input);
 return clj_yavl.io.write_json_str.cljs$core$IFn$_invoke$arity$2(edn_data,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"indent","indent",-148200125),(2)], null));
-}catch (e31215){var ___$1 = e31215;
+}catch (e31242){var ___$1 = e31242;
 return current_input;
 }})():current_input
 ));
 return cljs.core.assoc_in(cljs.core.assoc_in(db,new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.Keyword("clj-yavl.core","config-mode","clj-yavl.core/config-mode",-1919291340)], null),new_mode),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.Keyword("clj-yavl.core","config-input","clj-yavl.core/config-input",1110176655)], null),new_input);
 });
-clj_yavl.events.set_top_level_prop = (function clj_yavl$events$set_top_level_prop(db,p__31216){
-var vec__31217 = p__31216;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31217,(0),null);
-var prop_key = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31217,(1),null);
-var value = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31217,(2),null);
+clj_yavl.events.set_top_level_prop = (function clj_yavl$events$set_top_level_prop(db,p__31243){
+var vec__31244 = p__31243;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31244,(0),null);
+var prop_key = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31244,(1),null);
+var value = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31244,(2),null);
 var user_input = cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(db,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328)], null));
 var mode = new cljs.core.Keyword("clj-yavl.core","config-mode","clj-yavl.core/config-mode",-1919291340).cljs$core$IFn$_invoke$arity$1(user_input);
 var input = new cljs.core.Keyword("clj-yavl.core","config-input","clj-yavl.core/config-input",1110176655).cljs$core$IFn$_invoke$arity$1(user_input);
 try{var parsed = ((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(mode,new cljs.core.Keyword(null,"json","json",1279968570)))?clj_yavl.io.read_json_str.cljs$core$IFn$_invoke$arity$2(input,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key-fn","key-fn",-636154479),cljs.core.keyword], null)):clojure.edn.read_string.cljs$core$IFn$_invoke$arity$1(input));
 var updated = cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(parsed,prop_key,value);
 var new_input = ((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(mode,new cljs.core.Keyword(null,"json","json",1279968570)))?clj_yavl.io.write_json_str.cljs$core$IFn$_invoke$arity$2(updated,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"indent","indent",-148200125),(2)], null)):(function (){var sb__5670__auto__ = (new goog.string.StringBuffer());
-var _STAR_print_newline_STAR__orig_val__31221_31286 = cljs.core._STAR_print_newline_STAR_;
-var _STAR_print_fn_STAR__orig_val__31222_31287 = cljs.core._STAR_print_fn_STAR_;
-var _STAR_print_newline_STAR__temp_val__31223_31288 = true;
-var _STAR_print_fn_STAR__temp_val__31224_31289 = (function (x__5671__auto__){
+var _STAR_print_newline_STAR__orig_val__31248_31297 = cljs.core._STAR_print_newline_STAR_;
+var _STAR_print_fn_STAR__orig_val__31249_31298 = cljs.core._STAR_print_fn_STAR_;
+var _STAR_print_newline_STAR__temp_val__31250_31299 = true;
+var _STAR_print_fn_STAR__temp_val__31251_31300 = (function (x__5671__auto__){
 return sb__5670__auto__.append(x__5671__auto__);
 });
-(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__temp_val__31223_31288);
+(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__temp_val__31250_31299);
 
-(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__temp_val__31224_31289);
+(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__temp_val__31251_31300);
 
 try{cljs.pprint.pprint.cljs$core$IFn$_invoke$arity$1(updated);
-}finally {(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__orig_val__31222_31287);
+}finally {(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__orig_val__31249_31298);
 
-(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__orig_val__31221_31286);
+(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__orig_val__31248_31297);
 }
 return cljs.core.str.cljs$core$IFn$_invoke$arity$1(sb__5670__auto__);
 })());
@@ -147,7 +147,7 @@ clj_yavl.db.transact(conn,clj_yavl.db.config__GT_tx_data("default",updated));
 
 return cljs.core.deref(conn);
 }));
-}catch (e31220){var ___$1 = e31220;
+}catch (e31247){var ___$1 = e31247;
 return db;
 }});
 /**
@@ -158,29 +158,29 @@ var ds_db = cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(db,new cljs.core.Pers
 var config = clj_yavl.db.pull_config(ds_db,"default");
 var mode = cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(db,new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.Keyword("clj-yavl.core","config-mode","clj-yavl.core/config-mode",-1919291340)], null));
 var new_input = ((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(mode,new cljs.core.Keyword(null,"json","json",1279968570)))?clj_yavl.io.write_json_str.cljs$core$IFn$_invoke$arity$2(config,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"indent","indent",-148200125),(2)], null)):(function (){var sb__5670__auto__ = (new goog.string.StringBuffer());
-var _STAR_print_newline_STAR__orig_val__31225_31290 = cljs.core._STAR_print_newline_STAR_;
-var _STAR_print_fn_STAR__orig_val__31226_31291 = cljs.core._STAR_print_fn_STAR_;
-var _STAR_print_newline_STAR__temp_val__31227_31292 = true;
-var _STAR_print_fn_STAR__temp_val__31228_31293 = (function (x__5671__auto__){
+var _STAR_print_newline_STAR__orig_val__31252_31301 = cljs.core._STAR_print_newline_STAR_;
+var _STAR_print_fn_STAR__orig_val__31253_31302 = cljs.core._STAR_print_fn_STAR_;
+var _STAR_print_newline_STAR__temp_val__31254_31303 = true;
+var _STAR_print_fn_STAR__temp_val__31255_31304 = (function (x__5671__auto__){
 return sb__5670__auto__.append(x__5671__auto__);
 });
-(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__temp_val__31227_31292);
+(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__temp_val__31254_31303);
 
-(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__temp_val__31228_31293);
+(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__temp_val__31255_31304);
 
 try{cljs.pprint.pprint.cljs$core$IFn$_invoke$arity$1(config);
-}finally {(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__orig_val__31226_31291);
+}finally {(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__orig_val__31253_31302);
 
-(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__orig_val__31225_31290);
+(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__orig_val__31252_31301);
 }
 return cljs.core.str.cljs$core$IFn$_invoke$arity$1(sb__5670__auto__);
 })());
 return cljs.core.assoc_in(db,new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.Keyword("clj-yavl.core","config-input","clj-yavl.core/config-input",1110176655)], null),new_input);
 });
-clj_yavl.events.update_mark = (function clj_yavl$events$update_mark(db,p__31229){
-var vec__31230 = p__31229;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31230,(0),null);
-var mark_type = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31230,(1),null);
+clj_yavl.events.update_mark = (function clj_yavl$events$update_mark(db,p__31256){
+var vec__31257 = p__31256;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31257,(0),null);
+var mark_type = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31257,(1),null);
 var ds_db = cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(db,new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.Keyword("clj-yavl.core","ds-db","clj-yavl.core/ds-db",-1126598866)], null));
 var mark_eid = cljs.core.ffirst(clj_yavl.db.q(new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"find","find",496279456),new cljs.core.Symbol(null,"?e","?e",-1194391683,null),new cljs.core.Keyword(null,"where","where",-2044795965),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Symbol(null,"?root","?root",892945137,null),new cljs.core.Keyword("vl","mark","vl/mark",-373754579),new cljs.core.Symbol(null,"?e","?e",-1194391683,null)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Symbol(null,"?root","?root",892945137,null),new cljs.core.Keyword("vl","id","vl/id",-1388397698),"default"], null)], null),ds_db));
 var tx_data = (cljs.core.truth_(mark_eid)?new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword("db","id","db/id",-1388397098),mark_eid,new cljs.core.Keyword("mark","type","mark/type",1170405465),mark_type], null)], null):(function (){var new_mark_id = (-1);
@@ -189,25 +189,25 @@ return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMP
 var new_ds_db = (clj_yavl.db.with$.cljs$core$IFn$_invoke$arity$2 ? clj_yavl.db.with$.cljs$core$IFn$_invoke$arity$2(ds_db,tx_data) : clj_yavl.db.with$.call(null,ds_db,tx_data));
 return clj_yavl.events.sync_config_from_db(cljs.core.assoc_in(db,new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.Keyword("clj-yavl.core","ds-db","clj-yavl.core/ds-db",-1126598866)], null),new_ds_db));
 });
-rf.reg_event_db(new cljs.core.Keyword("clj-yavl.events","set-dataset-url-input","clj-yavl.events/set-dataset-url-input",-1979763890),(function (db,p__31233){
-var vec__31234 = p__31233;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31234,(0),null);
-var val = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31234,(1),null);
+rf.reg_event_db(new cljs.core.Keyword("clj-yavl.events","set-dataset-url-input","clj-yavl.events/set-dataset-url-input",-1979763890),(function (db,p__31260){
+var vec__31261 = p__31260;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31261,(0),null);
+var val = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31261,(1),null);
 return cljs.core.assoc_in(db,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"dataset-url-input","dataset-url-input",-505073218)], null),val);
 }));
-rf.reg_event_fx(new cljs.core.Keyword("clj-yavl.events","fetch-dataset","clj-yavl.events/fetch-dataset",-896793732),(function (p__31237,p__31238){
-var map__31239 = p__31237;
-var map__31239__$1 = cljs.core.__destructure_map(map__31239);
-var db = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__31239__$1,new cljs.core.Keyword(null,"db","db",993250759));
-var vec__31240 = p__31238;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31240,(0),null);
-var url = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31240,(1),null);
+rf.reg_event_fx(new cljs.core.Keyword("clj-yavl.events","fetch-dataset","clj-yavl.events/fetch-dataset",-896793732),(function (p__31264,p__31265){
+var map__31266 = p__31264;
+var map__31266__$1 = cljs.core.__destructure_map(map__31266);
+var db = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__31266__$1,new cljs.core.Keyword(null,"db","db",993250759));
+var vec__31267 = p__31265;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31267,(0),null);
+var url = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31267,(1),null);
 return new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword("promise","fetch","promise/fetch",-566993641),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"url","url",276297046),url,new cljs.core.Keyword(null,"on-success","on-success",1786904109),new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("clj-yavl.events","fetch-dataset-success","clj-yavl.events/fetch-dataset-success",1402343088)], null),new cljs.core.Keyword(null,"on-failure","on-failure",842888245),new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("clj-yavl.events","fetch-dataset-failure","clj-yavl.events/fetch-dataset-failure",-962316695)], null)], null)], null);
 }));
-rf.reg_event_db(new cljs.core.Keyword("clj-yavl.events","fetch-dataset-success","clj-yavl.events/fetch-dataset-success",1402343088),(function (db,p__31243){
-var vec__31244 = p__31243;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31244,(0),null);
-var data = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31244,(1),null);
+rf.reg_event_db(new cljs.core.Keyword("clj-yavl.events","fetch-dataset-success","clj-yavl.events/fetch-dataset-success",1402343088),(function (db,p__31270){
+var vec__31271 = p__31270;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31271,(0),null);
+var data = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31271,(1),null);
 var user_input = cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(db,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328)], null));
 var mode = new cljs.core.Keyword("clj-yavl.core","config-mode","clj-yavl.core/config-mode",-1919291340).cljs$core$IFn$_invoke$arity$1(user_input);
 var input = new cljs.core.Keyword("clj-yavl.core","config-input","clj-yavl.core/config-input",1110176655).cljs$core$IFn$_invoke$arity$1(user_input);
@@ -216,25 +216,25 @@ return clj_yavl.io.read_json_str.cljs$core$IFn$_invoke$arity$2(input,new cljs.co
 } else {
 return clojure.edn.read_string.cljs$core$IFn$_invoke$arity$1(input);
 }
-}catch (e31247){var ___$1 = e31247;
+}catch (e31274){var ___$1 = e31274;
 return null;
 }})();
 var updated = (cljs.core.truth_(parsed)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(parsed,new cljs.core.Keyword(null,"data","data",-232669377),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"values","values",372645556),data], null)):null);
 var new_input = (cljs.core.truth_(updated)?((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(mode,new cljs.core.Keyword(null,"json","json",1279968570)))?clj_yavl.io.write_json_str.cljs$core$IFn$_invoke$arity$2(updated,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"indent","indent",-148200125),(2)], null)):(function (){var sb__5670__auto__ = (new goog.string.StringBuffer());
-var _STAR_print_newline_STAR__orig_val__31248_31294 = cljs.core._STAR_print_newline_STAR_;
-var _STAR_print_fn_STAR__orig_val__31249_31295 = cljs.core._STAR_print_fn_STAR_;
-var _STAR_print_newline_STAR__temp_val__31250_31296 = true;
-var _STAR_print_fn_STAR__temp_val__31251_31297 = (function (x__5671__auto__){
+var _STAR_print_newline_STAR__orig_val__31275_31305 = cljs.core._STAR_print_newline_STAR_;
+var _STAR_print_fn_STAR__orig_val__31276_31306 = cljs.core._STAR_print_fn_STAR_;
+var _STAR_print_newline_STAR__temp_val__31277_31307 = true;
+var _STAR_print_fn_STAR__temp_val__31278_31308 = (function (x__5671__auto__){
 return sb__5670__auto__.append(x__5671__auto__);
 });
-(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__temp_val__31250_31296);
+(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__temp_val__31277_31307);
 
-(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__temp_val__31251_31297);
+(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__temp_val__31278_31308);
 
 try{cljs.pprint.pprint.cljs$core$IFn$_invoke$arity$1(updated);
-}finally {(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__orig_val__31249_31295);
+}finally {(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__orig_val__31276_31306);
 
-(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__orig_val__31248_31294);
+(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__orig_val__31275_31305);
 }
 return cljs.core.str.cljs$core$IFn$_invoke$arity$1(sb__5670__auto__);
 })()):null);
@@ -249,20 +249,20 @@ return cljs.core.deref(conn);
 return db;
 }
 }));
-rf.reg_event_db(new cljs.core.Keyword("clj-yavl.events","fetch-dataset-failure","clj-yavl.events/fetch-dataset-failure",-962316695),(function (db,p__31252){
-var vec__31253 = p__31252;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31253,(0),null);
-var err = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31253,(1),null);
+rf.reg_event_db(new cljs.core.Keyword("clj-yavl.events","fetch-dataset-failure","clj-yavl.events/fetch-dataset-failure",-962316695),(function (db,p__31279){
+var vec__31280 = p__31279;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31280,(0),null);
+var err = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31280,(1),null);
 console.error("Failed to fetch dataset:",err);
 
 return db;
 }));
-rf.reg_fx(new cljs.core.Keyword("promise","fetch","promise/fetch",-566993641),(function (p__31256){
-var map__31257 = p__31256;
-var map__31257__$1 = cljs.core.__destructure_map(map__31257);
-var url = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__31257__$1,new cljs.core.Keyword(null,"url","url",276297046));
-var on_success = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__31257__$1,new cljs.core.Keyword(null,"on-success","on-success",1786904109));
-var on_failure = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__31257__$1,new cljs.core.Keyword(null,"on-failure","on-failure",842888245));
+rf.reg_fx(new cljs.core.Keyword("promise","fetch","promise/fetch",-566993641),(function (p__31283){
+var map__31284 = p__31283;
+var map__31284__$1 = cljs.core.__destructure_map(map__31284);
+var url = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__31284__$1,new cljs.core.Keyword(null,"url","url",276297046));
+var on_success = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__31284__$1,new cljs.core.Keyword(null,"on-success","on-success",1786904109));
+var on_failure = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__31284__$1,new cljs.core.Keyword(null,"on-failure","on-failure",842888245));
 return fetch(url).then((function (resp){
 if(cljs.core.truth_(resp.ok)){
 return resp.json();
@@ -275,11 +275,11 @@ return rf.dispatch(cljs.core.conj.cljs$core$IFn$_invoke$arity$2(on_success,cljs.
 return rf.dispatch(cljs.core.conj.cljs$core$IFn$_invoke$arity$2(on_failure,err));
 }));
 }));
-clj_yavl.events.update_channel_field = (function clj_yavl$events$update_channel_field(db,p__31258){
-var vec__31259 = p__31258;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31259,(0),null);
-var channel = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31259,(1),null);
-var field = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31259,(2),null);
+clj_yavl.events.update_channel_field = (function clj_yavl$events$update_channel_field(db,p__31285){
+var vec__31286 = p__31285;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31286,(0),null);
+var channel = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31286,(1),null);
+var field = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31286,(2),null);
 var ds_db = cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(db,new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.Keyword("clj-yavl.core","ds-db","clj-yavl.core/ds-db",-1126598866)], null));
 var channel_eid = cljs.core.ffirst(clj_yavl.db.q.cljs$core$IFn$_invoke$arity$variadic(new cljs.core.PersistentVector(null, 10, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"find","find",496279456),new cljs.core.Symbol(null,"?c","?c",870679775,null),new cljs.core.Keyword(null,"in","in",-1531184865),new cljs.core.Symbol(null,"$","$",-1580747756,null),new cljs.core.Symbol(null,"?channel-name","?channel-name",-1729442583,null),new cljs.core.Keyword(null,"where","where",-2044795965),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Symbol(null,"?root","?root",892945137,null),new cljs.core.Keyword("vl","encoding","vl/encoding",1728582698),new cljs.core.Symbol(null,"?enc","?enc",523306083,null)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Symbol(null,"?root","?root",892945137,null),new cljs.core.Keyword("vl","id","vl/id",-1388397698),"default"], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Symbol(null,"?enc","?enc",523306083,null),new cljs.core.Keyword("encoding","channels","encoding/channels",-578464551),new cljs.core.Symbol(null,"?c","?c",870679775,null)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Symbol(null,"?c","?c",870679775,null),new cljs.core.Keyword("channel","name","channel/name",-1177043666),new cljs.core.Symbol(null,"?channel-name","?channel-name",-1729442583,null)], null)], null),ds_db,cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2([cljs.core.name(channel)], 0)));
 var tx_data = (cljs.core.truth_(channel_eid)?new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword("db","id","db/id",-1388397098),channel_eid,new cljs.core.Keyword("channel","field","channel/field",107679349),field], null)], null):(function (){var enc_eid = cljs.core.ffirst(clj_yavl.db.q(new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"find","find",496279456),new cljs.core.Symbol(null,"?e","?e",-1194391683,null),new cljs.core.Keyword(null,"where","where",-2044795965),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Symbol(null,"?root","?root",892945137,null),new cljs.core.Keyword("vl","encoding","vl/encoding",1728582698),new cljs.core.Symbol(null,"?e","?e",-1194391683,null)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Symbol(null,"?root","?root",892945137,null),new cljs.core.Keyword("vl","id","vl/id",-1388397698),"default"], null)], null),ds_db));
@@ -294,10 +294,10 @@ return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMP
 var new_ds_db = (clj_yavl.db.with$.cljs$core$IFn$_invoke$arity$2 ? clj_yavl.db.with$.cljs$core$IFn$_invoke$arity$2(ds_db,tx_data) : clj_yavl.db.with$.call(null,ds_db,tx_data));
 return clj_yavl.events.sync_config_from_db(cljs.core.assoc_in(db,new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.Keyword("clj-yavl.core","ds-db","clj-yavl.core/ds-db",-1126598866)], null),new_ds_db));
 });
-clj_yavl.events.update_tooltip = (function clj_yavl$events$update_tooltip(db,p__31266){
-var vec__31267 = p__31266;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31267,(0),null);
-var tooltip_def = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31267,(1),null);
+clj_yavl.events.update_tooltip = (function clj_yavl$events$update_tooltip(db,p__31289){
+var vec__31290 = p__31289;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31290,(0),null);
+var tooltip_def = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31290,(1),null);
 var ds_db = cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(db,new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.Keyword("clj-yavl.core","ds-db","clj-yavl.core/ds-db",-1126598866)], null));
 var tx_data = new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword("db","id","db/id",-1388397098),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("vl","id","vl/id",-1388397698),"default"], null),new cljs.core.Keyword("vl","tooltip","vl/tooltip",-1809678764),tooltip_def], null)], null);
 var new_ds_db = (clj_yavl.db.with$.cljs$core$IFn$_invoke$arity$2 ? clj_yavl.db.with$.cljs$core$IFn$_invoke$arity$2(ds_db,tx_data) : clj_yavl.db.with$.call(null,ds_db,tx_data));
