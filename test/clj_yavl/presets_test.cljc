@@ -15,7 +15,17 @@
                                    :x {:field "A" :type "quantitative"}
                                    :y {:field "B" :type "nominal"}})]
       (is (= "quantitative" (get-in spec [:encoding :x :type])))
-      (is (= "nominal" (get-in spec [:encoding :y :type]))))))
+      (is (= "nominal" (get-in spec [:encoding :y :type])))))
+
+  (testing "XY plot with faceting"
+    (let [spec (presets/unit-spec {:type :xyplot :x "A" :y "B" :row "R" :column "C"})]
+      (is (= "R" (get-in spec [:encoding :row :field])))
+      (is (= "C" (get-in spec [:encoding :column :field])))))
+
+  (testing "XY plot with wrapped facet"
+    (let [spec (presets/unit-spec {:type :xyplot :x "A" :y "B" :facet "F" :columns 2})]
+      (is (= "F" (get-in spec [:encoding :facet :field])))
+      (is (= 2 (get-in spec [:encoding :facet :columns]))))))
 
 (deftest pie-chart-test
   (testing "Basic Pie chart"
@@ -26,7 +36,11 @@
 
   (testing "Doughnut chart"
     (let [spec (presets/unit-spec {:type :pie :category "C" :value "V" :inner-radius 50})]
-      (is (= 50 (get-in spec [:mark :innerRadius]))))))
+      (is (= 50 (get-in spec [:mark :innerRadius])))))
+
+  (testing "Faceted Pie chart"
+    (let [spec (presets/unit-spec {:type :pie :category "C" :value "V" :facet "F"})]
+      (is (= "F" (get-in spec [:encoding :facet :field]))))))
 
 (deftest bar-chart-test
   (testing "Basic Bar chart"
@@ -40,21 +54,8 @@
 
   (testing "Grouped Horizontal Bar chart"
     (let [spec (presets/unit-spec {:type :bar :x "X" :y "Y" :group "G" :grouped? true :orientation :horizontal})]
-      (is (= "G" (get-in spec [:encoding :yOffset :field]))))))
+      (is (= "G" (get-in spec [:encoding :yOffset :field])))))
 
-(deftest facet-plot-test
-  (testing "Trellis plot (Row/Column)"
-    (let [spec (presets/unit-spec {:type :facet :x "X" :y "Y" :row "R" :column "C"})]
-      (is (= "R" (get-in spec [:encoding :row :field])))
-      (is (= "C" (get-in spec [:encoding :column :field])))))
-
-  (testing "Wrapped Facet"
-    (let [spec (presets/unit-spec {:type :facet :x "X" :y "Y" :facet "F" :columns 3})]
-      (is (= "F" (get-in spec [:encoding :facet :field])))
-      (is (= 3 (get-in spec [:encoding :facet :columns])))))
-
-  (testing "Facet with existing map definition"
-    (let [spec (presets/unit-spec {:type :facet :x "X" :y "Y" :facet {:field "F" :sort "desc"} :columns 2})]
-      (is (= "F" (get-in spec [:encoding :facet :field])))
-      (is (= "desc" (get-in spec [:encoding :facet :sort])))
-      (is (= 2 (get-in spec [:encoding :facet :columns]))))))
+  (testing "Faceted Bar chart"
+    (let [spec (presets/unit-spec {:type :bar :x "X" :y "Y" :row "R"})]
+      (is (= "R" (get-in spec [:encoding :row :field]))))))
