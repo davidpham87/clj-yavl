@@ -78,3 +78,8 @@
   [ds-db _]
   (when ds-db
     (:vl/tooltip (db/pull ds-db [:vl/tooltip] [:vl/id "default"]))))
+
+(rf/reg-sub
+ ::dataset-url-input
+ (fn [db _]
+   (get-in db [:user-input :dataset-url-input] "")))
