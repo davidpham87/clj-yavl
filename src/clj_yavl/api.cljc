@@ -228,3 +228,50 @@
     (merge final-specs
            (when (seq processed-encodings)
              {:encoding processed-encodings}))))
+
+(defn- lift-config-from-specs
+  "Helper to lift and merge :config from a list of specs.
+   Returns [merged-config specs-without-config]."
+  [specs]
+  (let [configs (keep :config specs)
+        merged-config (when (seq configs) (apply deep-merge configs))
+        clean-specs (mapv #(dissoc % :config) specs)]
+    [merged-config clean-specs]))
+
+(defn layer
+  "Creates a Layered View (LayerSpec) from a sequence of specs.
+   Lifts and merges :config from children to the top level."
+  [specs]
+  (let [[config children] (lift-config-from-specs specs)]
+    (cond-> {:layer children}
+      config (assoc :config config))))
+
+(defn hconcat
+  "Creates a Horizontally Concatenated View (HConcatSpec).
+   Lifts and merges :config from children to the top level."
+  [specs]
+  (let [[config children] (lift-config-from-specs specs)]
+    (cond-> {:hconcat children}
+      config (assoc :config config))))
+
+(defn vconcat
+  "Creates a Vertically Concatenated View (VConcatSpec).
+   Lifts and merges :config from children to the top level."
+  [specs]
+  (let [[config children] (lift-config-from-specs specs)]
+    (cond-> {:vconcat children}
+      config (assoc :config config))))
+
+(defn concat-specs
+  "Creates a General Concatenated View (ConcatSpec).
+   Lifts and merges :config from children to the top level."
+  [specs]
+  (let [[config children] (lift-config-from-specs specs)]
+    (cond-> {:concat children}
+      config (assoc :config config))))
+
+(defn spec
+  "Returns the provided map as a Vega-Lite specification.
+   Useful for explicit clarity or future validation."
+  [m]
+  m)
