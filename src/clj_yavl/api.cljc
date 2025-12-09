@@ -128,6 +128,67 @@
          (= inferred-type "quantitative") (assoc field-def :format "s")
          :else field-def)))))
 
+(defn wrap-with-facet
+  "Wraps a Vega-Lite spec with a facet operator.
+   Lifts :config to the top level.
+
+   opts keys: :row, :column, :facet, :columns"
+  [spec {:keys [row column facet columns]}]
+  (if (or row column facet)
+    (let [config (:config spec)
+          ;; We keep width/height in the child spec (cell size)
+          inner-spec (dissoc spec :config)
+          facet-prop (if facet
+                       (let [base (if (map? facet) facet {:field facet})]
+                         (cond-> base
+                           columns (assoc :columns columns)))
+                       ;; else row/column
+                       (cond-> {}
+                         row (assoc :row (if (map? row) row {:field row}))
+                         column (assoc :column (if (map? column) column {:field column}))))
+          res {:facet facet-prop
+               :spec inner-spec}]
+      (cond-> res
+        config (assoc :config config)))
+    spec))
+
+(defn wrap-with-repeat
+  "Wraps a Vega-Lite spec with a repeat operator.
+   Lifts :config to the top level.
+
+   opts keys: :repeat, :columns (if repeat is array)"
+  [spec {:keys [repeat columns]}]
+  (if repeat
+    (let [config (:config spec)
+          inner-spec (dissoc spec :config)
+          repeat-prop (cond
+                        (and (map? repeat) (or (:row repeat) (:column repeat))) repeat
+                        (vector? repeat) repeat
+                        (string? repeat) [repeat]
+                        :else repeat)
+          res (cond-> {:repeat repeat-prop
+                       :spec inner-spec}
+                (and (vector? repeat-prop) columns) (assoc :columns columns))]
+      (cond-> res
+        config (assoc :config config)))
+    spec))
+
+(defn add-transforms
+  "Adds transform operations to a Vega-Lite spec.
+
+   opts keys: :transform (vector of maps), :calculate (map or vector of maps)"
+  [spec {:keys [transform calculate]}]
+  (let [calc-transforms (when calculate
+                          (if (vector? calculate)
+                            calculate
+                            [calculate]))
+        existing (or (:transform spec) [])
+        additional (concat (or transform []) (or calc-transforms []))
+        all-transforms (vec (concat existing additional))]
+    (if (seq all-transforms)
+      (assoc spec :transform all-transforms)
+      spec)))
+
 (defn- deep-merge
   "Recursively merges maps."
   [& maps]

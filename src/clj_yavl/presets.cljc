@@ -11,7 +11,7 @@
     spec))
 
 (defmethod unit-spec :xyplot
-  [{:keys [x y mark color size title data-schema width height config] :or {mark :point}}]
+  [{:keys [x y mark color size title data-schema width height config] :as opts :or {mark :point}}]
   (let [encodings (cond-> {:x x :y y}
                     color (assoc :color color)
                     size (assoc :size size))
@@ -21,10 +21,13 @@
                        height (assoc :height height)
                        config (assoc :config config))]
     (-> (api/base-plot encodings common-specs {:data-schema data-schema})
+        (api/add-transforms opts)
+        (api/wrap-with-facet opts)
+        (api/wrap-with-repeat opts)
         (with-title title))))
 
 (defmethod unit-spec :pie
-  [{:keys [category value inner-radius title data-schema width height config]}]
+  [{:keys [category value inner-radius title data-schema width height config] :as opts}]
   (let [encodings {:theta {:field value :type "quantitative" :stack true}
                    :color {:field category :type "nominal"}}
         mark-def (cond-> {:type "arc"}
@@ -34,10 +37,13 @@
                        height (assoc :height height)
                        config (assoc :config config))]
     (-> (api/base-plot encodings common-specs {:data-schema data-schema})
+        (api/add-transforms opts)
+        (api/wrap-with-facet opts)
+        (api/wrap-with-repeat opts)
         (with-title title))))
 
 (defmethod unit-spec :bar
-  [{:keys [x y color group grouped? orientation title data-schema width height config] :or {orientation :vertical}}]
+  [{:keys [x y color group grouped? orientation title data-schema width height config] :as opts :or {orientation :vertical}}]
   (let [is-horizontal (= orientation :horizontal)
         ;; For vertical bar: x is categorical usually, y is quantitative
         ;; For grouped vertical: x is main group, xOffset is subgroup (group param)
@@ -58,4 +64,7 @@
                        height (assoc :height height)
                        config (assoc :config config))]
     (-> (api/base-plot encodings common-specs {:data-schema data-schema})
+        (api/add-transforms opts)
+        (api/wrap-with-facet opts)
+        (api/wrap-with-repeat opts)
         (with-title title))))
