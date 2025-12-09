@@ -31,6 +31,14 @@
                            x))
                  m))
 
+(defn remove-nils [m]
+  (walk/postwalk
+   (fn [x]
+     (if (map? x)
+       (into {} (remove (comp nil? val)) x)
+       x))
+   m))
+
 (deftest vega-lite-examples-round-trip-test
   (testing "Round trip for real Vega-Lite examples"
     (let [files (take 20 (get-example-specs)) ;; Test with first 20 examples to start
@@ -46,7 +54,8 @@
                 (let [db @conn
                       pulled-config (db/pull-config db filename)
                       ;; Normalize keys to strings for comparison since pull-config returns strings
-                      original-subset (normalize-keys (filter-supported original-config))
+                      ;; Also remove nils from original because DB drops them
+                      original-subset (remove-nils (normalize-keys (filter-supported original-config)))
                       pulled-subset (normalize-keys pulled-config)]
 
                   ;; Only compare if there is something to compare

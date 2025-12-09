@@ -1,5 +1,6 @@
 (ns clj-yavl.db
-  (:require [datascript.core :as d]))
+  (:require [datascript.core :as d]
+            [clojure.walk :as walk]))
 
 (def vega-lite-schema
   {;; Top Level
@@ -194,8 +195,13 @@
 (defn q [query db & args]
   (apply d/q query db args))
 
-(defn- clean-map [m]
-  (into {} (remove (comp nil? val)) m))
+(defn- remove-nils [m]
+  (walk/postwalk
+   (fn [x]
+     (if (map? x)
+       (into {} (remove (comp nil? val)) x)
+       x))
+   m))
 
 (defn config->tx-data
   "Converts a Vega-Lite config map to transaction data.
@@ -208,31 +214,31 @@
         mark-eid -2
         encoding-eid -3
 
-        tx (cond-> [(clean-map {:vl/id id
-                                :vl/tooltip tooltip})]
+        tx (cond-> [{:vl/id id
+                     :vl/tooltip tooltip}]
              ;; Mark
              mark
-             (conj (clean-map {:db/id mark-eid
-                               :mark/type (if (map? mark) (get mark "type" (get mark :type)) mark)
-                               :mark/def (when (map? mark) mark)}))
+             (conj {:db/id mark-eid
+                    :mark/type (if (map? mark) (get mark "type" (get mark :type)) mark)
+                    :mark/def (when (map? mark) mark)})
              mark
              (conj {:db/id [:vl/id id] :vl/mark mark-eid})
 
              ;; Encoding
              encoding
              (into (let [channels (vec (map-indexed
-                                         (fn [i [k v]]
-                                           (clean-map {:db/id (- -10 i)
-                                                       :channel/name (name k)
-                                                       :channel/field (get v "field" (get v :field))
-                                                       :channel/type (get v "type" (get v :type))
-                                                       :channel/def v}))
-                                         encoding))]
+                                        (fn [i [k v]]
+                                          {:db/id (- -10 i)
+                                           :channel/name (name k)
+                                           :channel/field (get v "field" (get v :field))
+                                           :channel/type (get v "type" (get v :type))
+                                           :channel/def v})
+                                        encoding))]
                      (conj channels
-                           (clean-map {:db/id encoding-eid
-                                       :encoding/channels (map :db/id channels)})
+                           {:db/id encoding-eid
+                            :encoding/channels (map :db/id channels)}
                            {:db/id [:vl/id id] :vl/encoding encoding-eid}))))]
-    tx))
+    (remove-nils tx)))
 
 (defn pull-config
   "Reconstructs the Vega-Lite config map from the DB."
