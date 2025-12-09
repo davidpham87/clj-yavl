@@ -1,6 +1,7 @@
 (ns clj-yavl.api
   (:require [malli.core :as m]
-            [clojure.string :as str]))
+            [clojure.string :as str])
+  (:refer-clojure :exclude [repeat]))
 
 ;; Google Corporate Colors
 (def google-colors
@@ -275,3 +276,7 @@
    Useful for explicit clarity or future validation."
   [m]
   m)
+
+;; Aliases for consistency and ease of use
+(def facet wrap-with-facet)
+(def repeat wrap-with-repeat)
