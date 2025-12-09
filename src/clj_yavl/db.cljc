@@ -1,5 +1,6 @@
 (ns clj-yavl.db
-  (:require [datascript.core :as d]))
+  (:require [datascript.core :as d]
+            [clojure.walk :as walk]))
 
 (def vega-lite-schema
   {;; Top Level
@@ -194,6 +195,14 @@
 (defn q [query db & args]
   (apply d/q query db args))
 
+(defn- remove-nils [m]
+  (walk/postwalk
+   (fn [x]
+     (if (map? x)
+       (into {} (remove (comp nil? val)) x)
+       x))
+   m))
+
 (defn config->tx-data
   "Converts a Vega-Lite config map to transaction data.
    'id' identifies the top-level config entity."
@@ -218,18 +227,18 @@
              ;; Encoding
              encoding
              (into (let [channels (vec (map-indexed
-                                         (fn [i [k v]]
-                                           {:db/id (- -10 i)
-                                            :channel/name (name k)
-                                            :channel/field (get v "field" (get v :field))
-                                            :channel/type (get v "type" (get v :type))
-                                            :channel/def v})
-                                         encoding))]
+                                        (fn [i [k v]]
+                                          {:db/id (- -10 i)
+                                           :channel/name (name k)
+                                           :channel/field (get v "field" (get v :field))
+                                           :channel/type (get v "type" (get v :type))
+                                           :channel/def v})
+                                        encoding))]
                      (conj channels
                            {:db/id encoding-eid
                             :encoding/channels (map :db/id channels)}
                            {:db/id [:vl/id id] :vl/encoding encoding-eid}))))]
-    tx))
+    (remove-nils tx)))
 
 (defn pull-config
   "Reconstructs the Vega-Lite config map from the DB."
