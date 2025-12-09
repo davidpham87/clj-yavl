@@ -6,8 +6,8 @@ clj_yavl.api.default_config = new cljs.core.PersistentArrayMap(null, 3, [new clj
  */
 clj_yavl.api.infer_vl_type = (function clj_yavl$api$infer_vl_type(schema_node){
 var t = malli.core.type.cljs$core$IFn$_invoke$arity$1(schema_node);
-if(cljs.core.truth_((function (){var fexpr__25081 = new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 9, [new cljs.core.Keyword(null,"double","double",884886883),null,new cljs.core.Symbol(null,"int?","int?",1799729645,null),null,new cljs.core.Keyword(null,"int","int",-1741416922),null,new cljs.core.Keyword(null,"number","number",1570378438),null,new cljs.core.Symbol(null,"float?","float?",673884616,null),null,new cljs.core.Keyword(null,"float","float",-1732389368),null,new cljs.core.Symbol(null,"integer?","integer?",1303791671,null),null,new cljs.core.Symbol(null,"number?","number?",-1747282210,null),null,new cljs.core.Symbol(null,"double?","double?",-2146564276,null),null], null), null);
-return (fexpr__25081.cljs$core$IFn$_invoke$arity$1 ? fexpr__25081.cljs$core$IFn$_invoke$arity$1(t) : fexpr__25081.call(null,t));
+if(cljs.core.truth_((function (){var fexpr__25077 = new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 9, [new cljs.core.Keyword(null,"double","double",884886883),null,new cljs.core.Symbol(null,"int?","int?",1799729645,null),null,new cljs.core.Keyword(null,"int","int",-1741416922),null,new cljs.core.Keyword(null,"number","number",1570378438),null,new cljs.core.Symbol(null,"float?","float?",673884616,null),null,new cljs.core.Keyword(null,"float","float",-1732389368),null,new cljs.core.Symbol(null,"integer?","integer?",1303791671,null),null,new cljs.core.Symbol(null,"number?","number?",-1747282210,null),null,new cljs.core.Symbol(null,"double?","double?",-2146564276,null),null], null), null);
+return (fexpr__25077.cljs$core$IFn$_invoke$arity$1 ? fexpr__25077.cljs$core$IFn$_invoke$arity$1(t) : fexpr__25077.call(null,t));
 })())){
 return "quantitative";
 } else {
@@ -44,15 +44,15 @@ return null;
 clj_yavl.api.get_field_schema = (function clj_yavl$api$get_field_schema(dataset_schema,field_name){
 var schema = malli.core.schema.cljs$core$IFn$_invoke$arity$1(dataset_schema);
 var t = malli.core.type.cljs$core$IFn$_invoke$arity$1(schema);
-var map_schema = (cljs.core.truth_((function (){var fexpr__25095 = new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"sequential","sequential",-1082983960),null,new cljs.core.Keyword(null,"vector","vector",1902966158),null,new cljs.core.Keyword(null,"list","list",765357683),null,new cljs.core.Keyword(null,"set","set",304602554),null], null), null);
-return (fexpr__25095.cljs$core$IFn$_invoke$arity$1 ? fexpr__25095.cljs$core$IFn$_invoke$arity$1(t) : fexpr__25095.call(null,t));
+var map_schema = (cljs.core.truth_((function (){var fexpr__25085 = new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"sequential","sequential",-1082983960),null,new cljs.core.Keyword(null,"vector","vector",1902966158),null,new cljs.core.Keyword(null,"list","list",765357683),null,new cljs.core.Keyword(null,"set","set",304602554),null], null), null);
+return (fexpr__25085.cljs$core$IFn$_invoke$arity$1 ? fexpr__25085.cljs$core$IFn$_invoke$arity$1(t) : fexpr__25085.call(null,t));
 })())?cljs.core.first(malli.core.children.cljs$core$IFn$_invoke$arity$1(schema)):schema);
 if(cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(malli.core.type.cljs$core$IFn$_invoke$arity$1(map_schema),new cljs.core.Keyword(null,"map","map",1371690461))){
-return cljs.core.some((function (p__25103){
-var vec__25109 = p__25103;
-var k = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25109,(0),null);
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25109,(1),null);
-var v = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25109,(2),null);
+return cljs.core.some((function (p__25092){
+var vec__25098 = p__25092;
+var k = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25098,(0),null);
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25098,(1),null);
+var v = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25098,(2),null);
 if(cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(cljs.core.name(k),field_name)){
 return v;
 } else {
@@ -112,10 +112,10 @@ clj_yavl.api.rename_column_values = (function clj_yavl$api$rename_column_values(
 var escape_val = (function (v){
 return clojure.string.replace(cljs.core.str.cljs$core$IFn$_invoke$arity$1(v),"'","\\'");
 });
-var expression = clojure.string.join.cljs$core$IFn$_invoke$arity$2(" : ",cljs.core.concat.cljs$core$IFn$_invoke$arity$2(cljs.core.map.cljs$core$IFn$_invoke$arity$2((function (p__25145){
-var vec__25146 = p__25145;
-var old = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25146,(0),null);
-var new$ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25146,(1),null);
+var expression = clojure.string.join.cljs$core$IFn$_invoke$arity$2(" : ",cljs.core.concat.cljs$core$IFn$_invoke$arity$2(cljs.core.map.cljs$core$IFn$_invoke$arity$2((function (p__25123){
+var vec__25124 = p__25123;
+var old = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25124,(0),null);
+var new$ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25124,(1),null);
 return ["datum['",cljs.core.str.cljs$core$IFn$_invoke$arity$1(col_name),"'] == '",escape_val(old),"' ? '",escape_val(new$),"'"].join('');
 }),mapping),new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [["datum['",cljs.core.str.cljs$core$IFn$_invoke$arity$1(col_name),"']"].join('')], null)));
 return new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"calculate","calculate",-1224644403),expression,new cljs.core.Keyword(null,"as","as",1148689641),col_name], null);
@@ -156,22 +156,22 @@ return new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"fi
  *   A vector of maps, where each map matches StringFieldDef.
  */
 clj_yavl.api.tooltip_def = (function clj_yavl$api$tooltip_def(keys,dataset_schema){
-return cljs.core.vec((function (){var iter__5503__auto__ = (function clj_yavl$api$tooltip_def_$_iter__25173(s__25174){
+return cljs.core.vec((function (){var iter__5503__auto__ = (function clj_yavl$api$tooltip_def_$_iter__25155(s__25156){
 return (new cljs.core.LazySeq(null,(function (){
-var s__25174__$1 = s__25174;
+var s__25156__$1 = s__25156;
 while(true){
-var temp__5825__auto__ = cljs.core.seq(s__25174__$1);
+var temp__5825__auto__ = cljs.core.seq(s__25156__$1);
 if(temp__5825__auto__){
-var s__25174__$2 = temp__5825__auto__;
-if(cljs.core.chunked_seq_QMARK_(s__25174__$2)){
-var c__5501__auto__ = cljs.core.chunk_first(s__25174__$2);
+var s__25156__$2 = temp__5825__auto__;
+if(cljs.core.chunked_seq_QMARK_(s__25156__$2)){
+var c__5501__auto__ = cljs.core.chunk_first(s__25156__$2);
 var size__5502__auto__ = cljs.core.count(c__5501__auto__);
-var b__25176 = cljs.core.chunk_buffer(size__5502__auto__);
-if((function (){var i__25175 = (0);
+var b__25158 = cljs.core.chunk_buffer(size__5502__auto__);
+if((function (){var i__25157 = (0);
 while(true){
-if((i__25175 < size__5502__auto__)){
-var k = cljs.core._nth(c__5501__auto__,i__25175);
-cljs.core.chunk_append(b__25176,(function (){var inferred_type = clj_yavl.api.infer_type_for_field(dataset_schema,k);
+if((i__25157 < size__5502__auto__)){
+var k = cljs.core._nth(c__5501__auto__,i__25157);
+cljs.core.chunk_append(b__25158,(function (){var inferred_type = clj_yavl.api.infer_type_for_field(dataset_schema,k);
 var field_props = clj_yavl.api.get_field_props(dataset_schema,k);
 var custom_format = new cljs.core.Keyword(null,"format","format",-1306924766).cljs$core$IFn$_invoke$arity$1(field_props);
 var field_def = new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"field","field",-1302436500),k,new cljs.core.Keyword(null,"type","type",1174270348),inferred_type], null);
@@ -187,8 +187,8 @@ return field_def;
 }
 })());
 
-var G__25249 = (i__25175 + (1));
-i__25175 = G__25249;
+var G__25249 = (i__25157 + (1));
+i__25157 = G__25249;
 continue;
 } else {
 return true;
@@ -196,12 +196,12 @@ return true;
 break;
 }
 })()){
-return cljs.core.chunk_cons(cljs.core.chunk(b__25176),clj_yavl$api$tooltip_def_$_iter__25173(cljs.core.chunk_rest(s__25174__$2)));
+return cljs.core.chunk_cons(cljs.core.chunk(b__25158),clj_yavl$api$tooltip_def_$_iter__25155(cljs.core.chunk_rest(s__25156__$2)));
 } else {
-return cljs.core.chunk_cons(cljs.core.chunk(b__25176),null);
+return cljs.core.chunk_cons(cljs.core.chunk(b__25158),null);
 }
 } else {
-var k = cljs.core.first(s__25174__$2);
+var k = cljs.core.first(s__25156__$2);
 return cljs.core.cons((function (){var inferred_type = clj_yavl.api.infer_type_for_field(dataset_schema,k);
 var field_props = clj_yavl.api.get_field_props(dataset_schema,k);
 var custom_format = new cljs.core.Keyword(null,"format","format",-1306924766).cljs$core$IFn$_invoke$arity$1(field_props);
@@ -216,7 +216,7 @@ return field_def;
 
 }
 }
-})(),clj_yavl$api$tooltip_def_$_iter__25173(cljs.core.rest(s__25174__$2)));
+})(),clj_yavl$api$tooltip_def_$_iter__25155(cljs.core.rest(s__25156__$2)));
 }
 } else {
 return null;

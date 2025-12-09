@@ -51,11 +51,11 @@ datascript.util.squuid_time_millis = (function datascript$util$squuid_time_milli
 return (parseInt(cljs.core.subs.cljs$core$IFn$_invoke$arity$3(cljs.core.str.cljs$core$IFn$_invoke$arity$1(uuid),(0),(8)),(16)) * (1000));
 });
 datascript.util.distinct_by = (function datascript$util$distinct_by(f,coll){
-return cljs.core.persistent_BANG_(cljs.core.second(cljs.core.reduce.cljs$core$IFn$_invoke$arity$3((function (p__25234,el){
-var vec__25235 = p__25234;
-var seen = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25235,(0),null);
-var res = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25235,(1),null);
-var acc = vec__25235;
+return cljs.core.persistent_BANG_(cljs.core.second(cljs.core.reduce.cljs$core$IFn$_invoke$arity$3((function (p__25236,el){
+var vec__25237 = p__25236;
+var seen = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25237,(0),null);
+var res = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25237,(1),null);
+var acc = vec__25237;
 var key = (f.cljs$core$IFn$_invoke$arity$1 ? f.cljs$core$IFn$_invoke$arity$1(el) : f.call(null,el));
 if(cljs.core.contains_QMARK_(seen,key)){
 return acc;
@@ -108,28 +108,28 @@ return cljs.core.into.cljs$core$IFn$_invoke$arity$3(cljs.core.PersistentVector.E
 (datascript.util.concatv.cljs$lang$maxFixedArity = (0));
 
 /** @this {Function} */
-(datascript.util.concatv.cljs$lang$applyTo = (function (seq25248){
+(datascript.util.concatv.cljs$lang$applyTo = (function (seq25247){
 var self__5735__auto__ = this;
-return self__5735__auto__.cljs$core$IFn$_invoke$arity$variadic(cljs.core.seq(seq25248));
+return self__5735__auto__.cljs$core$IFn$_invoke$arity$variadic(cljs.core.seq(seq25247));
 }));
 
 datascript.util.zip = (function datascript$util$zip(var_args){
-var G__25255 = arguments.length;
-switch (G__25255) {
+var G__25254 = arguments.length;
+switch (G__25254) {
 case 2:
 return datascript.util.zip.cljs$core$IFn$_invoke$arity$2((arguments[(0)]),(arguments[(1)]));
 
 break;
 default:
 var args_arr__5774__auto__ = [];
-var len__5749__auto___25268 = arguments.length;
-var i__5750__auto___25269 = (0);
+var len__5749__auto___25270 = arguments.length;
+var i__5750__auto___25271 = (0);
 while(true){
-if((i__5750__auto___25269 < len__5749__auto___25268)){
-args_arr__5774__auto__.push((arguments[i__5750__auto___25269]));
+if((i__5750__auto___25271 < len__5749__auto___25270)){
+args_arr__5774__auto__.push((arguments[i__5750__auto___25271]));
 
-var G__25270 = (i__5750__auto___25269 + (1));
-i__5750__auto___25269 = G__25270;
+var G__25272 = (i__5750__auto___25271 + (1));
+i__5750__auto___25271 = G__25272;
 continue;
 } else {
 }
@@ -151,13 +151,13 @@ return cljs.core.apply.cljs$core$IFn$_invoke$arity$5(cljs.core.mapv,cljs.core.ve
 }));
 
 /** @this {Function} */
-(datascript.util.zip.cljs$lang$applyTo = (function (seq25252){
-var G__25253 = cljs.core.first(seq25252);
-var seq25252__$1 = cljs.core.next(seq25252);
-var G__25254 = cljs.core.first(seq25252__$1);
-var seq25252__$2 = cljs.core.next(seq25252__$1);
+(datascript.util.zip.cljs$lang$applyTo = (function (seq25251){
+var G__25252 = cljs.core.first(seq25251);
+var seq25251__$1 = cljs.core.next(seq25251);
+var G__25253 = cljs.core.first(seq25251__$1);
+var seq25251__$2 = cljs.core.next(seq25251__$1);
 var self__5734__auto__ = this;
-return self__5734__auto__.cljs$core$IFn$_invoke$arity$variadic(G__25253,G__25254,seq25252__$2);
+return self__5734__auto__.cljs$core$IFn$_invoke$arity$variadic(G__25252,G__25253,seq25251__$2);
 }));
 
 (datascript.util.zip.cljs$lang$maxFixedArity = (2));

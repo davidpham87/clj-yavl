@@ -76,8 +76,8 @@ if(cljs.core.truth_(temp__5823__auto__)){
 var g = temp__5823__auto__;
 return (new datascript.lru.LRU(key_value,cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(cljs.core.dissoc.cljs$core$IFn$_invoke$arity$2(gen_key,g),gen,k),cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(key_gen,k,gen),(gen + (1)),limit));
 } else {
-var G__25182 = (new datascript.lru.LRU(cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(key_value,k,v),cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(gen_key,gen,k),cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(key_gen,k,gen),(gen + (1)),limit));
-return (datascript.lru.cleanup_lru.cljs$core$IFn$_invoke$arity$1 ? datascript.lru.cleanup_lru.cljs$core$IFn$_invoke$arity$1(G__25182) : datascript.lru.cleanup_lru.call(null,G__25182));
+var G__25159 = (new datascript.lru.LRU(cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(key_value,k,v),cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(gen_key,gen,k),cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(key_gen,k,gen),(gen + (1)),limit));
+return (datascript.lru.cleanup_lru.cljs$core$IFn$_invoke$arity$1 ? datascript.lru.cleanup_lru.cljs$core$IFn$_invoke$arity$1(G__25159) : datascript.lru.cleanup_lru.call(null,G__25159));
 }
 });
 datascript.lru.cleanup_lru = (function datascript$lru$cleanup_lru(lru){
@@ -87,9 +87,9 @@ var gen_key = lru.gen_key;
 var key_gen = lru.key_gen;
 var gen = lru.gen;
 var limit = lru.limit;
-var vec__25197 = cljs.core.first(gen_key);
-var g = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25197,(0),null);
-var k = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25197,(1),null);
+var vec__25174 = cljs.core.first(gen_key);
+var g = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25174,(0),null);
+var k = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__25174,(1),null);
 return (new datascript.lru.LRU(cljs.core.dissoc.cljs$core$IFn$_invoke$arity$2(key_value,k),cljs.core.dissoc.cljs$core$IFn$_invoke$arity$2(gen_key,g),cljs.core.dissoc.cljs$core$IFn$_invoke$arity$2(key_gen,k),gen,limit));
 } else {
 return lru;

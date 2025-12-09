@@ -34,22 +34,22 @@ var width = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__25233__$1,new cljs.
 var data_schema = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__25233__$1,new cljs.core.Keyword(null,"data-schema","data-schema",981553358));
 var title = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__25233__$1,new cljs.core.Keyword(null,"title","title",636505583));
 var size = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__25233__$1,new cljs.core.Keyword(null,"size","size",1098693007));
-var encodings = (function (){var G__25238 = new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"x","x",2099068185),x,new cljs.core.Keyword(null,"y","y",-1757859776),y], null);
-var G__25238__$1 = (cljs.core.truth_(color)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25238,new cljs.core.Keyword(null,"color","color",1011675173),color):G__25238);
+var encodings = (function (){var G__25234 = new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"x","x",2099068185),x,new cljs.core.Keyword(null,"y","y",-1757859776),y], null);
+var G__25234__$1 = (cljs.core.truth_(color)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25234,new cljs.core.Keyword(null,"color","color",1011675173),color):G__25234);
 if(cljs.core.truth_(size)){
-return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25238__$1,new cljs.core.Keyword(null,"size","size",1098693007),size);
+return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25234__$1,new cljs.core.Keyword(null,"size","size",1098693007),size);
 } else {
-return G__25238__$1;
+return G__25234__$1;
 }
 })();
 var mark__$1 = (((mark instanceof cljs.core.Keyword))?cljs.core.name(mark):mark);
-var common_specs = (function (){var G__25239 = new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"mark","mark",-373816345),mark__$1], null);
-var G__25239__$1 = (cljs.core.truth_(width)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25239,new cljs.core.Keyword(null,"width","width",-384071477),width):G__25239);
-var G__25239__$2 = (cljs.core.truth_(height)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25239__$1,new cljs.core.Keyword(null,"height","height",1025178622),height):G__25239__$1);
+var common_specs = (function (){var G__25235 = new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"mark","mark",-373816345),mark__$1], null);
+var G__25235__$1 = (cljs.core.truth_(width)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25235,new cljs.core.Keyword(null,"width","width",-384071477),width):G__25235);
+var G__25235__$2 = (cljs.core.truth_(height)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25235__$1,new cljs.core.Keyword(null,"height","height",1025178622),height):G__25235__$1);
 if(cljs.core.truth_(config)){
-return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25239__$2,new cljs.core.Keyword(null,"config","config",994861415),config);
+return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25235__$2,new cljs.core.Keyword(null,"config","config",994861415),config);
 } else {
-return G__25239__$2;
+return G__25235__$2;
 }
 })();
 return clj_yavl.presets.with_title(clj_yavl.api.base_plot(encodings,common_specs,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"data-schema","data-schema",981553358),data_schema], null)),title);
@@ -99,13 +99,13 @@ var data_schema = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__25246__$1,new
 var title = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__25246__$1,new cljs.core.Keyword(null,"title","title",636505583));
 var grouped_QMARK_ = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__25246__$1,new cljs.core.Keyword(null,"grouped?","grouped?",531080948));
 var is_horizontal = cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(orientation,new cljs.core.Keyword(null,"horizontal","horizontal",2062109475));
-var base_encodings = (function (){var G__25247 = cljs.core.PersistentArrayMap.EMPTY;
-var G__25247__$1 = (cljs.core.truth_(x)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25247,new cljs.core.Keyword(null,"x","x",2099068185),x):G__25247);
-var G__25247__$2 = (cljs.core.truth_(y)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25247__$1,new cljs.core.Keyword(null,"y","y",-1757859776),y):G__25247__$1);
+var base_encodings = (function (){var G__25248 = cljs.core.PersistentArrayMap.EMPTY;
+var G__25248__$1 = (cljs.core.truth_(x)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25248,new cljs.core.Keyword(null,"x","x",2099068185),x):G__25248);
+var G__25248__$2 = (cljs.core.truth_(y)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25248__$1,new cljs.core.Keyword(null,"y","y",-1757859776),y):G__25248__$1);
 if(cljs.core.truth_(color)){
-return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25247__$2,new cljs.core.Keyword(null,"color","color",1011675173),color);
+return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25248__$2,new cljs.core.Keyword(null,"color","color",1011675173),color);
 } else {
-return G__25247__$2;
+return G__25248__$2;
 }
 })();
 var encodings = (cljs.core.truth_((function (){var and__5023__auto__ = grouped_QMARK_;
@@ -115,13 +115,13 @@ return group;
 return and__5023__auto__;
 }
 })())?((is_horizontal)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(base_encodings,new cljs.core.Keyword(null,"yOffset","yOffset",628399000),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"field","field",-1302436500),group], null)):cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(base_encodings,new cljs.core.Keyword(null,"xOffset","xOffset",670845631),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"field","field",-1302436500),group], null))):base_encodings);
-var common_specs = (function (){var G__25250 = new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"mark","mark",-373816345),"bar"], null);
-var G__25250__$1 = (cljs.core.truth_(width)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25250,new cljs.core.Keyword(null,"width","width",-384071477),width):G__25250);
-var G__25250__$2 = (cljs.core.truth_(height)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25250__$1,new cljs.core.Keyword(null,"height","height",1025178622),height):G__25250__$1);
+var common_specs = (function (){var G__25255 = new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"mark","mark",-373816345),"bar"], null);
+var G__25255__$1 = (cljs.core.truth_(width)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25255,new cljs.core.Keyword(null,"width","width",-384071477),width):G__25255);
+var G__25255__$2 = (cljs.core.truth_(height)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25255__$1,new cljs.core.Keyword(null,"height","height",1025178622),height):G__25255__$1);
 if(cljs.core.truth_(config)){
-return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25250__$2,new cljs.core.Keyword(null,"config","config",994861415),config);
+return cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__25255__$2,new cljs.core.Keyword(null,"config","config",994861415),config);
 } else {
-return G__25250__$2;
+return G__25255__$2;
 }
 })();
 return clj_yavl.presets.with_title(clj_yavl.api.base_plot(encodings,common_specs,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"data-schema","data-schema",981553358),data_schema], null)),title);
