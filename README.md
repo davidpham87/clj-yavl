@@ -105,6 +105,28 @@ Add this to your `deps.edn`:
    :data-schema sales-schema})
 ```
 
+## Architecture & Development
+
+### How we made it
+
+This library is built on the philosophy of "Code Generation > Manual Maintenance". Instead of manually transcribing the massive Vega-Lite specification, we generate our Malli schema directly from the source.
+
+1.  **Schema Download**: We download the official [Vega-Lite v6 JSON Schema](https://vega.github.io/schema/vega-lite/v6.json).
+2.  **Parsing & Transformation**: The `scripts/generate_schema.clj` script parses this JSON schema. It walks the tree, converting JSON Schema constructs (like `definitions`, `anyOf`, `allOf`, `$ref`) into their Malli equivalents.
+    *   `$ref` becomes a registry lookup.
+    *   `enum` becomes `[:enum ...]`.
+    *   `anyOf` is optimized into `[:or ...]`.
+3.  **Topological Sort**: To ensure the generated Clojure file evaluates correctly, we perform a topological sort on the schema definitions. This ensures that any schema `A` that depends on `B` is defined *after* `B`.
+4.  **Code Generation**: Finally, we write the `src/clj_yavl/schema/vega_lite.cljc` file, which contains the full, statically defined Malli registry for Vega-Lite.
+
+### How we test it
+
+Testing a wrapper for a complex specification requires more than just unit tests.
+
+*   **Schema Validation**: We validate our schema generator (`test/clj_yavl/json_schema_test.cljc`) by ensuring it can successfully parse the official Vega-Lite JSON schema and produce a valid Malli registry.
+*   **Generative Testing**: Because we have a Malli schema, we can use `malli.generator` to create random, valid Vega-Lite specifications. We use this to verify that our Datascript storage layer can handle any valid Vega-Lite configuration without data loss (Round-trip tests).
+*   **API & Presets**: We test our high-level API (`base-plot` and presets) to ensure they correctly infer types from data schemas and apply our default configurations (like the Google color palette) as expected.
+
 ## Contributing
 
 Found a bug? Want to add a preset? Feel free to open a PR. If you break the tests, I will be very disappointed (and the CI will yell at you).
