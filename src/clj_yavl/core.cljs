@@ -2,6 +2,8 @@
   (:require [reagent.dom.client :as rdomc]
             [re-frame.core :as rf]
             [bb-web-ds-tools.components.editor :as editor]
+            [clojure.edn :as edn]
+            [cljs.pprint :refer [pprint]]
             [clj-yavl.events :as events]
             [clj-yavl.subs :as subs]
             [clj-yavl.viz :as viz]))
