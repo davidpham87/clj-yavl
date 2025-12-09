@@ -19,13 +19,15 @@
 
   (testing "XY plot with faceting"
     (let [spec (presets/unit-spec {:type :xyplot :x "A" :y "B" :row "R" :column "C"})]
-      (is (= "R" (get-in spec [:encoding :row :field])))
-      (is (= "C" (get-in spec [:encoding :column :field])))))
+      (is (= "R" (get-in spec [:facet :row :field])))
+      (is (= "C" (get-in spec [:facet :column :field])))
+      (is (some? (:spec spec)))))
 
   (testing "XY plot with wrapped facet"
     (let [spec (presets/unit-spec {:type :xyplot :x "A" :y "B" :facet "F" :columns 2})]
-      (is (= "F" (get-in spec [:encoding :facet :field])))
-      (is (= 2 (get-in spec [:encoding :facet :columns]))))))
+      (is (= "F" (get-in spec [:facet :field])))
+      (is (= 2 (get-in spec [:facet :columns])))
+      (is (some? (:spec spec))))))
 
 (deftest pie-chart-test
   (testing "Basic Pie chart"
@@ -40,7 +42,7 @@
 
   (testing "Faceted Pie chart"
     (let [spec (presets/unit-spec {:type :pie :category "C" :value "V" :facet "F"})]
-      (is (= "F" (get-in spec [:encoding :facet :field]))))))
+      (is (= "F" (get-in spec [:facet :field]))))))
 
 (deftest bar-chart-test
   (testing "Basic Bar chart"
@@ -58,4 +60,4 @@
 
   (testing "Faceted Bar chart"
     (let [spec (presets/unit-spec {:type :bar :x "X" :y "Y" :row "R"})]
-      (is (= "R" (get-in spec [:encoding :row :field]))))))
+      (is (= "R" (get-in spec [:facet :row :field]))))))
