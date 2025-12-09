@@ -41,3 +41,20 @@
   (testing "Grouped Horizontal Bar chart"
     (let [spec (presets/unit-spec {:type :bar :x "X" :y "Y" :group "G" :grouped? true :orientation :horizontal})]
       (is (= "G" (get-in spec [:encoding :yOffset :field]))))))
+
+(deftest facet-plot-test
+  (testing "Trellis plot (Row/Column)"
+    (let [spec (presets/unit-spec {:type :facet :x "X" :y "Y" :row "R" :column "C"})]
+      (is (= "R" (get-in spec [:encoding :row :field])))
+      (is (= "C" (get-in spec [:encoding :column :field])))))
+
+  (testing "Wrapped Facet"
+    (let [spec (presets/unit-spec {:type :facet :x "X" :y "Y" :facet "F" :columns 3})]
+      (is (= "F" (get-in spec [:encoding :facet :field])))
+      (is (= 3 (get-in spec [:encoding :facet :columns])))))
+
+  (testing "Facet with existing map definition"
+    (let [spec (presets/unit-spec {:type :facet :x "X" :y "Y" :facet {:field "F" :sort "desc"} :columns 2})]
+      (is (= "F" (get-in spec [:encoding :facet :field])))
+      (is (= "desc" (get-in spec [:encoding :facet :sort])))
+      (is (= 2 (get-in spec [:encoding :facet :columns]))))))

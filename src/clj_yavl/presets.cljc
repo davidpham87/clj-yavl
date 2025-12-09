@@ -23,6 +23,24 @@
     (-> (api/base-plot encodings common-specs {:data-schema data-schema})
         (with-title title))))
 
+(defmethod unit-spec :facet
+  [{:keys [x y mark color size row column facet columns title data-schema width height config] :or {mark :point}}]
+  (let [encodings (cond-> {:x x :y y}
+                    color (assoc :color color)
+                    size (assoc :size size)
+                    row (assoc :row row)
+                    column (assoc :column column)
+                    facet (assoc :facet (let [base (if (map? facet) facet {:field facet})]
+                                          (cond-> base
+                                            columns (assoc :columns columns)))))
+        mark (if (keyword? mark) (name mark) mark)
+        common-specs (cond-> {:mark mark}
+                       width (assoc :width width)
+                       height (assoc :height height)
+                       config (assoc :config config))]
+    (-> (api/base-plot encodings common-specs {:data-schema data-schema})
+        (with-title title))))
+
 (defmethod unit-spec :pie
   [{:keys [category value inner-radius title data-schema width height config]}]
   (let [encodings {:theta {:field value :type "quantitative" :stack true}
