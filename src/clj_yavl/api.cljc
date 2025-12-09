@@ -7,7 +7,7 @@
   ["#4285F4" "#DB4437" "#F4B400" "#0F9D58"])
 
 (def default-config
-  {:config {:range {:category google-colors}
+  {:config {:range {:category google-colors} ;; [:scale :range] - Google corporate colors
             :axis {:labelFontSize 12 :titleFontSize 14}
             :header {:labelFontSize 12 :titleFontSize 14}
             :legend {:labelFontSize 12 :titleFontSize 14}
@@ -43,6 +43,21 @@
                 v))
             (m/children map-schema)))))
 
+(defn- get-field-props
+  "Finds the properties for a specific field within a dataset schema."
+  [dataset-schema field-name]
+  (let [schema (m/schema dataset-schema)
+        t (m/type schema)
+        ;; Unwrap collection type if present
+        map-schema (if (#{:vector :sequential :set :list} t)
+                     (first (m/children schema))
+                     schema)]
+    (when (= (m/type map-schema) :map)
+      (some (fn [[k props _]]
+              (when (= (name k) field-name)
+                props))
+            (m/children map-schema)))))
+
 (defn- infer-type-for-field
   [dataset-schema field-name]
   (when-let [field-schema (get-field-schema dataset-schema field-name)]
@@ -59,10 +74,11 @@
    Returns:
      A map representing a Vega-Lite calculate transform."
   [col-name mapping]
-  (let [expression (str/join " : "
+  (let [escape-val (fn [v] (str/replace (str v) "'" "\\'"))
+        expression (str/join " : "
                              (concat
                               (map (fn [[old new]]
-                                     (str "datum['" col-name "'] == '" old "' ? '" new "'"))
+                                     (str "datum['" col-name "'] == '" (escape-val old) "' ? '" (escape-val new) "'"))
                                    mapping)
                               [(str "datum['" col-name "']")]))]
     {:calculate expression :as col-name}))
@@ -103,11 +119,14 @@
   (vec
    (for [k keys]
      (let [inferred-type (infer-type-for-field dataset-schema k)
+           field-props (get-field-props dataset-schema k)
+           custom-format (:format field-props)
            field-def {:field k
                       :type inferred-type}]
-       (if (= inferred-type "quantitative")
-         (assoc field-def :format "s")
-         field-def)))))
+       (cond
+         custom-format (assoc field-def :format custom-format)
+         (= inferred-type "quantitative") (assoc field-def :format "s")
+         :else field-def)))))
 
 (defn- deep-merge
   "Recursively merges maps."

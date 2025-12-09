@@ -11,26 +11,33 @@
     spec))
 
 (defmethod unit-spec :xyplot
-  [{:keys [x y mark color size title data-schema] :or {mark :point}}]
+  [{:keys [x y mark color size title data-schema width height config] :or {mark :point}}]
   (let [encodings (cond-> {:x x :y y}
                     color (assoc :color color)
                     size (assoc :size size))
-        common-specs {:mark mark}]
+        mark (if (keyword? mark) (name mark) mark)
+        common-specs (cond-> {:mark mark}
+                       width (assoc :width width)
+                       height (assoc :height height)
+                       config (assoc :config config))]
     (-> (api/base-plot encodings common-specs {:data-schema data-schema})
         (with-title title))))
 
 (defmethod unit-spec :pie
-  [{:keys [category value inner-radius title data-schema]}]
+  [{:keys [category value inner-radius title data-schema width height config]}]
   (let [encodings {:theta {:field value :type "quantitative" :stack true}
                    :color {:field category :type "nominal"}}
         mark-def (cond-> {:type "arc"}
                    inner-radius (assoc :innerRadius inner-radius))
-        common-specs {:mark mark-def}]
+        common-specs (cond-> {:mark mark-def}
+                       width (assoc :width width)
+                       height (assoc :height height)
+                       config (assoc :config config))]
     (-> (api/base-plot encodings common-specs {:data-schema data-schema})
         (with-title title))))
 
 (defmethod unit-spec :bar
-  [{:keys [x y color group grouped? orientation title data-schema] :or {orientation :vertical}}]
+  [{:keys [x y color group grouped? orientation title data-schema width height config] :or {orientation :vertical}}]
   (let [is-horizontal (= orientation :horizontal)
         ;; For vertical bar: x is categorical usually, y is quantitative
         ;; For grouped vertical: x is main group, xOffset is subgroup (group param)
@@ -46,6 +53,9 @@
                       (assoc base-encodings :xOffset {:field group})) ;; Grouped vertical bars use xOffset
                     base-encodings)
 
-        common-specs {:mark "bar"}]
+        common-specs (cond-> {:mark "bar"}
+                       width (assoc :width width)
+                       height (assoc :height height)
+                       config (assoc :config config))]
     (-> (api/base-plot encodings common-specs {:data-schema data-schema})
         (with-title title))))
