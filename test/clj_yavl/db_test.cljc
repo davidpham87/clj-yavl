@@ -7,25 +7,25 @@
             [malli.generator :as mg]
             [clj-yavl.schema.vega-lite :as vega-lite]))
 
-;; (deftest round-trip-test
-;;   (testing "Datascript round trip with Malli generated config"
-;;     (let [conn (db/init-db)
-;;           ;; Generate a random Vega-Lite config using Malli schema
-;;           ;; Using a smaller size to avoid massive configs and slow generation
-;;           config (mg/generate vega-lite/schema {:size 1})
-;;           ;; Use a temp id for the new entity
-;;           tx-data [{:db/id -1
-;;                     :config config}]]
-;;
-;;       (db/transact conn tx-data)
-;;
-;;       (let [db @conn
-;;             ;; Query to find the entity ID
-;;             eid (ffirst (db/q '[:find ?e :where [?e :config _]] db))
-;;             ;; Pull the entity
-;;             pulled (db/pull db [:config] eid)]
-;;
-;;         (is (= config (:config pulled)) "Pulled config should match generated config")))))
+(deftest round-trip-test
+  (testing "Datascript round trip with Malli generated config"
+    (let [conn (db/init-db)
+          ;; Generate a random Vega-Lite config using Malli schema
+          ;; Using a smaller size to avoid massive configs and slow generation
+          config (mg/generate vega-lite/schema {:size 1})
+          ;; Use a temp id for the new entity
+          tx-data [{:db/id -1
+                    :config config}]]
+
+      (db/transact conn tx-data)
+
+      (let [db @conn
+            ;; Query to find the entity ID
+            eid (ffirst (db/q '[:find ?e :where [?e :config _]] db))
+            ;; Pull the entity
+            pulled (db/pull db [:config] eid)]
+
+        (is (= config (:config pulled)) "Pulled config should match generated config")))))
 
 (deftest normalized-config-test
   (testing "Datascript round trip with normalized config"
