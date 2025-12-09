@@ -111,4 +111,4 @@ Found a bug? Want to add a preset? Feel free to open a PR. If you break the test
 
 ## License
 
-MIT (probably). Use it for good, not evil.
+Apache 2.0. Use it for good, not evil.
