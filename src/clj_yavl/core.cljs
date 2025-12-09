@@ -3,7 +3,8 @@
             [re-frame.core :as rf]
             [bb-web-ds-tools.components.editor :as editor]
             [clj-yavl.events :as events]
-            [clj-yavl.subs :as subs]))
+            [clj-yavl.subs :as subs]
+            [clj-yavl.viz :as viz]))
 
 ;; --- State ---
 
@@ -134,7 +135,9 @@
 
 (defn main-view []
   (let [config-input @(rf/subscribe [::config-input])
-        config-mode @(rf/subscribe [::config-mode])]
+        parsed-config @(rf/subscribe [::parsed-config])
+        config-mode @(rf/subscribe [::config-mode])
+        url-input (rf/subscribe [::dataset-url-input])]
     [:div {:class "flex h-screen w-screen overflow-hidden"}
      ;; Left Side: Editor
      [:div {:class "w-1/2 h-full border-r border-gray-700 flex flex-col bg-[#1e1e1e]"}
@@ -162,10 +165,19 @@
                    :minimap {:enabled false}}
          :on-change #(rf/dispatch [::set-config-input %])}]]]
 
-     ;; Right Side: Portal Iframe
-     [:div {:class "w-1/2 h-full bg-white"}
-      [:iframe {:src "http://localhost:5678"
-                :class "w-full h-full border-none"}]]]))
+     ;; Right Side: Visualization
+     [:div {:class "w-1/2 h-full bg-white flex flex-col"}
+      [:div {:class "p-2 bg-gray-100 border-b border-gray-300 flex items-center gap-2"}
+       [:input {:type "text"
+                :placeholder "Dataset URL (e.g. https://cdn.jsdelivr.net/npm/vega-datasets@v1.29.0/data/cars.json)"
+                :value @url-input
+                :on-change #(rf/dispatch [::set-dataset-url-input (-> % .-target .-value)])
+                :class "border p-1 flex-grow text-sm"}]
+       [:button {:on-click #(rf/dispatch [::fetch-dataset @url-input])
+                 :class "bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"}
+        "Load Data"]]
+      [:div {:class "flex-grow overflow-auto relative"}
+       [viz/vega-lite-viz parsed-config]]]]))
 
 
 (defonce react-root (rdomc/create-root (.getElementById js/document "app")))

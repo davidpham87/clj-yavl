@@ -172,6 +172,66 @@
         (assoc-in [:user-input :vega-lite :default ::core/ds-db] new-ds-db)
         (sync-config-from-db))))
 
+(rf/reg-event-db
+ ::set-dataset-url-input
+ (fn [db [_ val]]
+   (assoc-in db [:user-input :dataset-url-input] val)))
+
+(rf/reg-event-fx
+ ::fetch-dataset
+ (fn [{:keys [db]} [_ url]]
+   {:promise/fetch {:url url
+                    :on-success [::fetch-dataset-success]
+                    :on-failure [::fetch-dataset-failure]}}))
+
+(rf/reg-event-db
+ ::fetch-dataset-success
+ (fn [db [_ data]]
+   (let [user-input (get-in db [:user-input :vega-lite :default])
+         mode (::core/config-mode user-input)
+         input (::core/config-input user-input)
+         parsed (try
+                  (if (= mode :json)
+                    (io/read-json-str input {:key-fn keyword})
+                    (edn/read-string input))
+                  (catch #?(:clj Exception :cljs :default) _ nil))
+
+         updated (when parsed (assoc parsed :data {:values data}))
+
+         new-input (when updated
+                     (if (= mode :json)
+                       (io/write-json-str updated {:indent 2})
+                       (with-out-str (pprint updated))))]
+     (if new-input
+       (-> db
+           (assoc-in [:user-input :vega-lite :default ::core/config-input] new-input)
+           (update-in [:user-input :vega-lite :default ::core/ds-db]
+                      (fn [_]
+                        (let [conn (db/init-db)]
+                          (db/transact conn (db/config->tx-data "default" updated))
+                          @conn))))
+       db))))
+
+(rf/reg-event-db
+ ::fetch-dataset-failure
+ (fn [db [_ err]]
+   (js/console.error "Failed to fetch dataset:" err)
+   db))
+
+;; Custom Effect for Fetching
+(rf/reg-fx
+ :promise/fetch
+ (fn [{:keys [url on-success on-failure]}]
+   (-> (js/fetch url)
+       (.then (fn [resp]
+                (if (.-ok resp)
+                  (.json resp)
+                  (js/Promise.reject (str "Error: " (.-statusText resp))))))
+       (.then (fn [json]
+                (rf/dispatch (conj on-success (js->clj json :keywordize-keys true)))))
+       (.catch (fn [err]
+                 (rf/dispatch (conj on-failure err)))))))
+
 (defn update-channel-field
   [db [_ channel field]]
   (let [ds-db (get-in db [:user-input :vega-lite :default ::core/ds-db])
