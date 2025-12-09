@@ -3,6 +3,7 @@
             [clojure.edn :as edn]
             [clj-yavl.io :as io]
             [clojure.pprint :refer [pprint]]
+            [re-frame.core :as rf]
             [clj-yavl.core :as-alias core]
             [clj-yavl.db :as db]))
 

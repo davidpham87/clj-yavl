@@ -195,6 +195,9 @@
 (defn q [query db & args]
   (apply d/q query db args))
 
+(defn with [db tx-data]
+  (d/with db tx-data))
+
 (defn- remove-nils [m]
   (walk/postwalk
    (fn [x]
