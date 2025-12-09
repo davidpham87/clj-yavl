@@ -2,6 +2,8 @@
   (:require [reagent.dom.client :as rdomc]
             [re-frame.core :as rf]
             [bb-web-ds-tools.components.editor :as editor]
+            [bb-web-ds-tools.components.portal-to-top-bar :as portal-to-top-bar]
+            [bb-web-ds-tools.components.nav-tabs :as nav-tabs]
             [clj-yavl.events :as events]
             [clj-yavl.subs :as subs]
             [clj-yavl.viz :as viz]))
@@ -139,6 +141,8 @@
         config-mode @(rf/subscribe [::config-mode])
         url-input (rf/subscribe [::dataset-url-input])]
     [:div {:class "flex h-screen w-screen overflow-hidden"}
+     [portal-to-top-bar/portal-to-top-bar
+      [nav-tabs/nav-tabs]]
      ;; Left Side: Editor
      [:div {:class "w-1/2 h-full border-r border-gray-700 flex flex-col bg-[#1e1e1e]"}
        ;; Toolbar
