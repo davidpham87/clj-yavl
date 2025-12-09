@@ -10,25 +10,6 @@
     (assoc spec :title title)
     spec))
 
-(defn- wrap-with-facet [spec {:keys [row column facet columns]}]
-  (if (or row column facet)
-    (let [config (:config spec)
-          ;; We keep width/height in the child spec (cell size)
-          inner-spec (dissoc spec :config)
-          facet-prop (if facet
-                       (let [base (if (map? facet) facet {:field facet})]
-                         (cond-> base
-                           columns (assoc :columns columns)))
-                       ;; else row/column
-                       (cond-> {}
-                         row (assoc :row (if (map? row) row {:field row}))
-                         column (assoc :column (if (map? column) column {:field column}))))
-          res {:facet facet-prop
-               :spec inner-spec}]
-      (cond-> res
-        config (assoc :config config)))
-    spec))
-
 (defmethod unit-spec :xyplot
   [{:keys [x y mark color size title data-schema width height config] :as opts :or {mark :point}}]
   (let [encodings (cond-> {:x x :y y}
@@ -40,7 +21,9 @@
                        height (assoc :height height)
                        config (assoc :config config))]
     (-> (api/base-plot encodings common-specs {:data-schema data-schema})
-        (wrap-with-facet opts)
+        (api/add-transforms opts)
+        (api/wrap-with-facet opts)
+        (api/wrap-with-repeat opts)
         (with-title title))))
 
 (defmethod unit-spec :pie
@@ -54,7 +37,9 @@
                        height (assoc :height height)
                        config (assoc :config config))]
     (-> (api/base-plot encodings common-specs {:data-schema data-schema})
-        (wrap-with-facet opts)
+        (api/add-transforms opts)
+        (api/wrap-with-facet opts)
+        (api/wrap-with-repeat opts)
         (with-title title))))
 
 (defmethod unit-spec :bar
@@ -79,5 +64,7 @@
                        height (assoc :height height)
                        config (assoc :config config))]
     (-> (api/base-plot encodings common-specs {:data-schema data-schema})
-        (wrap-with-facet opts)
+        (api/add-transforms opts)
+        (api/wrap-with-facet opts)
+        (api/wrap-with-repeat opts)
         (with-title title))))
