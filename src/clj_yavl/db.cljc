@@ -29,6 +29,21 @@
    :vl/columns {} :vl/datasets {} :vl/description {} :vl/height {} :vl/name {}
    :vl/padding {} :vl/spacing {} :vl/usermeta {} :vl/view {} :vl/width {}
 
+   ;; Definitions for complex types stored as blobs or specific properties
+   :facet/def      {}
+   :repeat/def     {}
+   :resolve/def    {}
+   :params/def     {}
+   :transform/def  {}
+
+   ;; Title
+   :title/text     {}
+   :title/subtitle {}
+   :title/orient   {}
+   :title/anchor   {}
+   :title/offset   {}
+   :title/frame    {}
+
    ;; Mark
    :mark/type      {}
    :mark/def       {} ;; Keep existing blob behavior
@@ -154,6 +169,7 @@
 
    ;; Data
    :data/format    {:db/valueType :db.type/ref}
+   :data/format-blob {} ;; Blob for format definition
    :data/values    {} ;; Blob
    :data/url       {}
    :data/name      {}
@@ -206,65 +222,285 @@
        x))
    m))
 
+(defn- spec->tx-data
+  "Recursively converts a spec map into transaction data.
+   eid-or-ref: the entity ID or lookup ref for this spec."
+  [eid-or-ref spec]
+  (let [{:keys [mark encoding layer hconcat vconcat resolve title
+                width height background padding description] :as normalized-spec} (walk/keywordize-keys spec)
+        ;; Retrieve properties explicitly to avoid shadowing clojure.core functions
+        spec-name (:name normalized-spec)
+        concat-prop (:concat normalized-spec)
+        repeat-prop (:repeat normalized-spec)
+        facet-prop (:facet normalized-spec) ;; Not shadowing, but consistent style
+        data-prop (:data normalized-spec)
+        params-prop (:params normalized-spec)
+        transform-prop (:transform normalized-spec)
+
+        ;; Composition
+        composition-tx
+        (cond
+          layer
+          (let [child-eids (repeatedly (count layer) #(d/tempid :db.part/user))]
+            (into [{:db/id eid-or-ref :vl/layer child-eids}]
+                  (mapcat spec->tx-data child-eids layer)))
+
+          hconcat
+          (let [child-eids (repeatedly (count hconcat) #(d/tempid :db.part/user))]
+            (into [{:db/id eid-or-ref :vl/hconcat child-eids}]
+                  (mapcat spec->tx-data child-eids hconcat)))
+
+          vconcat
+          (let [child-eids (repeatedly (count vconcat) #(d/tempid :db.part/user))]
+            (into [{:db/id eid-or-ref :vl/vconcat child-eids}]
+                  (mapcat spec->tx-data child-eids vconcat)))
+
+          concat-prop
+          (let [child-eids (repeatedly (count concat-prop) #(d/tempid :db.part/user))]
+            (into [{:db/id eid-or-ref :vl/concat child-eids}]
+                  (mapcat spec->tx-data child-eids concat-prop)))
+
+          facet-prop
+          (let [facet-eid (d/tempid :db.part/user)
+                child-eid (d/tempid :db.part/user)]
+            (into [{:db/id eid-or-ref
+                    :vl/facet facet-eid
+                    :vl/spec child-eid}
+                   {:db/id facet-eid :facet/def facet-prop}]
+                  (spec->tx-data child-eid (:spec spec))))
+
+          repeat-prop
+          (let [repeat-eid (d/tempid :db.part/user)
+                child-eid (d/tempid :db.part/user)]
+            (into [{:db/id eid-or-ref
+                    :vl/repeat repeat-eid
+                    :vl/spec child-eid}
+                   {:db/id repeat-eid :repeat/def repeat-prop}]
+                  (spec->tx-data child-eid (:spec spec)))))
+
+        ;; Mark
+        mark-tx
+        (when mark
+          (let [mark-eid (d/tempid :db.part/user)]
+            [{:db/id eid-or-ref :vl/mark mark-eid}
+             {:db/id mark-eid
+              :mark/type (if (map? mark) (:type mark) mark)
+              :mark/def (when (map? mark) mark)}]))
+
+        ;; Encoding
+        encoding-tx
+        (when (not-empty encoding)
+          (let [encoding-eid (d/tempid :db.part/user)
+                channels (vec (map-indexed
+                               (fn [i [k v]]
+                                 {:db/id (d/tempid :db.part/user)
+                                  :channel/name (name k)
+                                  :channel/field (:field v)
+                                  :channel/type (:type v)
+                                  :channel/def v})
+                               encoding))]
+            (conj channels
+                  {:db/id encoding-eid
+                   :encoding/channels (map :db/id channels)}
+                  {:db/id eid-or-ref :vl/encoding encoding-eid})))
+
+        ;; Resolve
+        resolve-tx
+        (when resolve
+          (let [resolve-eid (d/tempid :db.part/user)]
+            [{:db/id eid-or-ref :vl/resolve resolve-eid}
+             {:db/id resolve-eid :resolve/def resolve}]))
+
+        ;; Params
+        params-tx
+        (when (seq params-prop)
+          (mapcat (fn [p]
+                    (let [p-eid (d/tempid :db.part/user)]
+                      [{:db/id eid-or-ref :vl/params p-eid}
+                       {:db/id p-eid :params/def p}]))
+                  params-prop))
+
+        ;; Transform
+        transform-tx
+        (when (seq transform-prop)
+          (mapcat (fn [t]
+                    (let [t-eid (d/tempid :db.part/user)]
+                      [{:db/id eid-or-ref :vl/transform t-eid}
+                       {:db/id t-eid :transform/def t}]))
+                  transform-prop))
+
+        ;; Data
+        data-tx
+        (when data-prop
+          (let [data-eid (d/tempid :db.part/user)]
+            [{:db/id eid-or-ref :vl/data data-eid}
+             (cond-> {:db/id data-eid}
+               (:values data-prop) (assoc :data/values (:values data-prop))
+               (:url data-prop) (assoc :data/url (:url data-prop))
+               (:name data-prop) (assoc :data/name (:name data-prop))
+               (:format data-prop) (assoc :data/format-blob (:format data-prop))
+               (:generator data-prop) (assoc :data/generator (:generator data-prop)))]))
+
+        ;; Title
+        title-tx
+        (when title
+          (let [title-eid (d/tempid :db.part/user)]
+            (if (map? title)
+              [{:db/id eid-or-ref :vl/title title-eid}
+               (merge {:db/id title-eid}
+                      (select-keys title [:text :subtitle :orient :anchor :offset :frame]))]
+              [{:db/id eid-or-ref :vl/title title-eid}
+               {:db/id title-eid :title/text title}])))
+
+        ;; Top Level Props
+        props-tx
+        (let [props (select-keys normalized-spec [:width :height :background :padding :description :name])]
+          (when (seq props)
+            (map (fn [[k v]]
+                   {:db/id eid-or-ref (keyword "vl" (name k)) v})
+                 props)))]
+
+    (concat
+     ;; Base entity creation (needed if it's not the top level existing ref)
+     ;; For nested specs, eid-or-ref is a tempid, so we just use it in other datoms.
+     ;; But if it's the root spec, it's passed as [:vl/id id], which exists.
+
+     composition-tx
+     mark-tx
+     encoding-tx
+     resolve-tx
+     params-tx
+     transform-tx
+     data-tx
+     title-tx
+     props-tx)))
+
 (defn config->tx-data
   "Converts a Vega-Lite config map to transaction data.
    'id' identifies the top-level config entity."
   [id config]
-  (let [mark (get config "mark" (get config :mark))
-        encoding (get config "encoding" (get config :encoding))
-        tooltip (get config "tooltip" (get config :tooltip))
+  (let [root-eid (d/tempid :db.part/user)
+        tx (spec->tx-data root-eid (assoc config :id id))]
+    (conj (vec (remove-nils tx))
+          {:db/id root-eid :vl/id id}))) ;; Ensure root exists and binds to tempid
 
-        mark-eid -2
-        encoding-eid -3
+(defn- entity->spec
+  "Recursively converts an entity to a spec map."
+  [entity]
+  (when entity
+    (let [;; Top Level Props
+          base-spec (reduce (fn [acc k]
+                              (if-let [v (get entity (keyword "vl" (name k)))]
+                                (assoc acc (name k) v)
+                                acc))
+                            {}
+                            [:width :height :background :padding :description :name])
 
-        tx (cond-> [{:vl/id id
-                     :vl/tooltip tooltip}]
-             ;; Mark
-             mark
-             (conj {:db/id mark-eid
-                    :mark/type (if (map? mark) (get mark "type" (get mark :type)) mark)
-                    :mark/def (when (map? mark) mark)})
-             mark
-             (conj {:db/id [:vl/id id] :vl/mark mark-eid})
+          ;; Title
+          title (when-let [t (:vl/title entity)]
+                  (if (:title/text t)
+                     (cond-> {"text" (:title/text t)}
+                       (:title/subtitle t) (assoc "subtitle" (:title/subtitle t))
+                       (:title/orient t) (assoc "orient" (:title/orient t))
+                       (:title/anchor t) (assoc "anchor" (:title/anchor t))
+                       (:title/offset t) (assoc "offset" (:title/offset t))
+                       (:title/frame t) (assoc "frame" (:title/frame t)))
+                     (if (and (:title/text t) (empty? (dissoc t :db/id :title/text)))
+                       (:title/text t)
+                       (walk/stringify-keys (dissoc t :db/id)))))
 
-             ;; Encoding
-             (not-empty encoding)
-             (into (let [channels (vec (map-indexed
-                                        (fn [i [k v]]
-                                          {:db/id (- -10 i)
-                                           :channel/name (name k)
-                                           :channel/field (get v "field" (get v :field))
-                                           :channel/type (get v "type" (get v :type))
-                                           :channel/def v})
-                                        encoding))]
-                     (conj channels
-                           {:db/id encoding-eid
-                            :encoding/channels (map :db/id channels)}
-                           {:db/id [:vl/id id] :vl/encoding encoding-eid}))))]
-    (remove-nils tx)))
+          ;; Mark
+          mark (when-let [m (:vl/mark entity)]
+                 (let [{:keys [mark/type mark/def]} m]
+                   (if def
+                     (assoc (walk/stringify-keys def) "type" type)
+                     type)))
+
+          ;; Encoding
+          encoding (when-let [enc (:vl/encoding entity)]
+                     (into {} (map (fn [{:keys [channel/name channel/def channel/field channel/type]}]
+                                     [name (cond-> (walk/stringify-keys (or def {}))
+                                             field (assoc "field" field)
+                                             type (assoc "type" type))])
+                                   (:encoding/channels enc))))
+
+          ;; Resolve
+          resolve (when-let [r (:vl/resolve entity)]
+                    (walk/stringify-keys (:resolve/def r)))
+
+          ;; Params
+          params (when-let [ps (:vl/params entity)]
+                   (mapv (comp walk/stringify-keys :params/def) ps))
+
+          ;; Transform
+          transform (when-let [ts (:vl/transform entity)]
+                      (mapv (comp walk/stringify-keys :transform/def) ts))
+
+          ;; Data
+          data (when-let [d (:vl/data entity)]
+                 (cond-> {}
+                   (:data/values d) (assoc "values" (:data/values d))
+                   (:data/url d) (assoc "url" (:data/url d))
+                   (:data/name d) (assoc "name" (:data/name d))
+                   (:data/format-blob d) (assoc "format" (walk/stringify-keys (:data/format-blob d)))
+                   (:data/generator d) (assoc "generator" (:data/generator d))))
+
+          ;; Layers/Composition
+          composition
+          (cond
+            (:vl/layer entity)
+            {"layer" (mapv entity->spec (:vl/layer entity))}
+
+            (:vl/hconcat entity)
+            {"hconcat" (mapv entity->spec (:vl/hconcat entity))}
+
+            (:vl/vconcat entity)
+            {"vconcat" (mapv entity->spec (:vl/vconcat entity))}
+
+            (:vl/concat entity)
+            {"concat" (mapv entity->spec (:vl/concat entity))}
+
+            (:vl/facet entity)
+            {"facet" (walk/stringify-keys (:facet/def (:vl/facet entity)))
+             "spec" (entity->spec (:vl/spec entity))}
+
+            (:vl/repeat entity)
+            {"repeat" (if (map? (:repeat/def (:vl/repeat entity)))
+                        (walk/stringify-keys (:repeat/def (:vl/repeat entity)))
+                        (:repeat/def (:vl/repeat entity)))
+             "spec" (entity->spec (:vl/spec entity))})
+
+          spec (merge base-spec
+                      composition
+                      (when (not-empty data) {"data" data})
+                      (when (seq params) {"params" params})
+                      (when (seq transform) {"transform" transform})
+                      (when title {"title" title})
+                      (when mark {"mark" mark})
+                      (when encoding {"encoding" encoding})
+                      (when resolve {"resolve" resolve})
+                      (when-let [tt (:vl/tooltip entity)] {"tooltip" tt}))]
+
+      spec)))
 
 (defn pull-config
   "Reconstructs the Vega-Lite config map from the DB."
   [db id]
-  (let [entity (d/pull db
-                       [:vl/tooltip
-                        {:vl/mark [:mark/type :mark/def]}
-                        {:vl/encoding [{:encoding/channels [:channel/name :channel/field :channel/type :channel/def]}]}]
-                       [:vl/id id])]
-    (when entity
-      (cond-> {}
-        (:vl/mark entity)
-        (assoc "mark" (let [{:keys [mark/type mark/def]} (:vl/mark entity)]
-                        (if def
-                          (assoc def "type" type)
-                          type)))
-
-        (:vl/encoding entity)
-        (assoc "encoding" (into {} (map (fn [{:keys [channel/name channel/def channel/field channel/type]}]
-                                          [name (cond-> (or def {})
-                                                  field (assoc "field" field)
-                                                  type (assoc "type" type))])
-                                        (get-in entity [:vl/encoding :encoding/channels]))))
-
-        (:vl/tooltip entity)
-        (assoc "tooltip" (:vl/tooltip entity))))))
+  (let [selector '[*
+                   {:vl/mark [*]}
+                   {:vl/mark [*]}
+                   {:vl/encoding [{:encoding/channels [*]}]}
+                   {:vl/resolve [*]}
+                   {:vl/data [*]}
+                   {:vl/params [*]}
+                   {:vl/transform [*]}
+                   {:vl/facet [*]}
+                   {:vl/repeat [*]}
+                   {:vl/title [*]}
+                   {:vl/spec ...} ;; Recursive
+                   {:vl/layer ...}
+                   {:vl/hconcat ...}
+                   {:vl/vconcat ...}
+                   {:vl/concat ...}]]
+    (let [entity (d/pull db selector [:vl/id id])]
+      (entity->spec entity))))
