@@ -137,20 +137,23 @@
   [spec {:keys [row column facet columns]}]
   (if (or row column facet)
     (let [config (:config spec)
+          data (:data spec)
           ;; We keep width/height in the child spec (cell size)
-          inner-spec (dissoc spec :config)
+          inner-spec (dissoc spec :config :data)
           facet-prop (if facet
-                       (let [base (if (map? facet) facet {:field facet})]
-                         (cond-> base
-                           columns (assoc :columns columns)))
+                       (if (map? facet) facet {:field facet})
                        ;; else row/column
                        (cond-> {}
                          row (assoc :row (if (map? row) row {:field row}))
                          column (assoc :column (if (map? column) column {:field column}))))
-          res {:facet facet-prop
-               :spec inner-spec}]
-      (cond-> res
-        config (assoc :config config)))
+          res (cond-> {:facet facet-prop
+                       :spec inner-spec}
+                config (assoc :config config)
+                ;; Lift columns if using wrapped facet
+                (and facet columns) (assoc :columns columns)
+                ;; Ensure data is at top level for FacetSpec
+                true (assoc :data data))]
+      res)
     spec))
 
 (defn wrap-with-repeat
@@ -226,7 +229,8 @@
          encodings)
         ;; Merge defaults into common-specs
         final-specs (deep-merge default-config common-specs)]
-    (merge final-specs
+    (merge {:data nil}
+           final-specs
            (when (seq processed-encodings)
              {:encoding processed-encodings}))))
 
@@ -241,10 +245,12 @@
 
 (defn layer
   "Creates a Layered View (LayerSpec) from a sequence of specs.
-   Lifts and merges :config from children to the top level."
+   Lifts and merges :config from children to the top level.
+   Removes :width and :height from children as they are not valid in LayerSpec units."
   [specs]
-  (let [[config children] (lift-config-from-specs specs)]
-    (cond-> {:layer children}
+  (let [[config children] (lift-config-from-specs specs)
+        clean-children (mapv #(dissoc % :width :height) children)]
+    (cond-> {:layer clean-children}
       config (assoc :config config))))
 
 (defn hconcat
