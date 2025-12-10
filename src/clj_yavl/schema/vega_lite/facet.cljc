@@ -1,5 +1,6 @@
 (ns clj-yavl.schema.vega-lite.facet
-  (:require [clj-yavl.schema.vega-lite.primitives :as primitives]
+  (:require [malli.util :as mu]
+            [clj-yavl.schema.vega-lite.primitives :as primitives]
             [clj-yavl.schema.vega-lite.expr :as expr]
             [clj-yavl.schema.vega-lite.common :as common]
             [clj-yavl.schema.vega-lite.unit :as unit]
@@ -166,20 +167,20 @@
    [:transform {:optional true} [:vector [:ref #'Transform]]]])
 
 (def TopLevelFacetSpec
-  [:merge toplevel/TopLevelProps
-   [:map {:closed true}
-    [:align {:optional true}
-     [:or [:ref #'LayoutAlign]
-      [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
-       #'RowCol_LayoutAlign_]]]
-    [:bounds {:optional true} [:enum "full" "flush"]]
-    [:center {:optional true}
-     [:or boolean?
-      [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
-    [:columns {:optional true} number?]
-    [:data [:or [:ref #'Data] nil?]]
-    [:facet [:or [:ref #'FacetFieldDef] [:ref #'FacetMapping]]]
-    [:spacing {:optional true}
-     [:or number?
-      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
-    [:spec [:or [:ref #'LayerSpec] [:ref #'unit/UnitSpecWithFrame]]]]])
+  (mu/merge toplevel/TopLevelProps
+            [:map {:closed true}
+             [:align {:optional true}
+              [:or [:ref #'LayoutAlign]
+               [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
+                #'RowCol_LayoutAlign_]]]
+             [:bounds {:optional true} [:enum "full" "flush"]]
+             [:center {:optional true}
+              [:or boolean?
+               [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
+             [:columns {:optional true} number?]
+             [:data [:or [:ref #'Data] nil?]]
+             [:facet [:or [:ref #'FacetFieldDef] [:ref #'FacetMapping]]]
+             [:spacing {:optional true}
+              [:or number?
+               [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
+             [:spec [:or [:ref #'LayerSpec] [:ref #'unit/UnitSpecWithFrame]]]]))

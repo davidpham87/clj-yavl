@@ -6,3 +6,7 @@ target/
 resources/vega-lite-v6.json
 test-resources/
 public/js/
+bin/
+lib/
+share/
+clojure-tools*

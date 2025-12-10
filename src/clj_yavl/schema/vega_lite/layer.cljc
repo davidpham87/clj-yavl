@@ -1,5 +1,6 @@
 (ns clj-yavl.schema.vega-lite.layer
-  (:require [clj-yavl.schema.vega-lite.primitives :as primitives]
+  (:require [malli.util :as mu]
+            [clj-yavl.schema.vega-lite.primitives :as primitives]
             [clj-yavl.schema.vega-lite.expr :as expr]
             [clj-yavl.schema.vega-lite.common :as common]
             [clj-yavl.schema.vega-lite.unit :as unit]
@@ -888,11 +889,11 @@
    [:width {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]])
 
 (def TopLevelLayerSpec
-  [:merge toplevel/TopLevelProps
-   [:map {:closed true}
-    [:encoding {:optional true} [:ref #'SharedEncoding]]
-    [:height {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]
-    [:layer [:vector [:or [:ref #'LayerSpec] [:ref #'UnitSpec]]]]
-    [:projection {:optional true} [:ref #'Projection]]
-    [:view {:optional true} [:ref #'ViewBackground]]
-    [:width {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]]])
+  (mu/merge toplevel/TopLevelProps
+            [:map {:closed true}
+             [:encoding {:optional true} [:ref #'SharedEncoding]]
+             [:height {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]
+             [:layer [:vector [:or [:ref #'LayerSpec] [:ref #'UnitSpec]]]]
+             [:projection {:optional true} [:ref #'Projection]]
+             [:view {:optional true} [:ref #'ViewBackground]]
+             [:width {:optional true} [:or number? [:ref #'Step] [:enum "container"]]]]))

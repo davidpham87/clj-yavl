@@ -1,5 +1,6 @@
 (ns clj-yavl.schema.vega-lite.common
-  (:require [clj-yavl.schema.vega-lite.primitives :as primitives]))
+  (:require [malli.util :as mu]
+            [clj-yavl.schema.vega-lite.primitives :as primitives]))
 
 (def FieldName primitives/FieldName)
 
@@ -138,17 +139,17 @@
    [:strokeWidth {:optional true} [:ref #'ResolveMode]]
    [:time {:optional true} [:ref #'ResolveMode]]])
 
-(def LegendResolveMap [:merge BaseResolveMap [:map {:closed true}]])
+(def LegendResolveMap (mu/merge BaseResolveMap [:map {:closed true}]))
 
 (def ScaleResolveMap
-  [:merge BaseResolveMap
-   [:map {:closed true}
-    [:radius {:optional true} [:ref #'ResolveMode]]
-    [:theta {:optional true} [:ref #'ResolveMode]]
-    [:x {:optional true} [:ref #'ResolveMode]]
-    [:xOffset {:optional true} [:ref #'ResolveMode]]
-    [:y {:optional true} [:ref #'ResolveMode]]
-    [:yOffset {:optional true} [:ref #'ResolveMode]]]])
+  (mu/merge BaseResolveMap
+            [:map {:closed true}
+             [:radius {:optional true} [:ref #'ResolveMode]]
+             [:theta {:optional true} [:ref #'ResolveMode]]
+             [:x {:optional true} [:ref #'ResolveMode]]
+             [:xOffset {:optional true} [:ref #'ResolveMode]]
+             [:y {:optional true} [:ref #'ResolveMode]]
+             [:yOffset {:optional true} [:ref #'ResolveMode]]]))
 
 (def Resolve
   [:map {:closed true}

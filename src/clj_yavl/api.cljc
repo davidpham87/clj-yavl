@@ -133,32 +133,36 @@
   "Wraps a Vega-Lite spec with a facet operator.
    Lifts :config to the top level.
 
-   opts keys: :row, :column, :facet, :columns"
-  [spec {:keys [row column facet columns]}]
+   opts keys: :row, :column, :facet, :columns, :resolve"
+  [spec {:keys [row column facet columns resolve]}]
   (if (or row column facet)
     (let [config (:config spec)
+          data (:data spec)
           ;; We keep width/height in the child spec (cell size)
-          inner-spec (dissoc spec :config)
+          inner-spec (dissoc spec :config :data)
           facet-prop (if facet
-                       (let [base (if (map? facet) facet {:field facet})]
-                         (cond-> base
-                           columns (assoc :columns columns)))
+                       (if (map? facet) facet {:field facet})
                        ;; else row/column
                        (cond-> {}
                          row (assoc :row (if (map? row) row {:field row}))
                          column (assoc :column (if (map? column) column {:field column}))))
-          res {:facet facet-prop
-               :spec inner-spec}]
-      (cond-> res
-        config (assoc :config config)))
+          res (cond-> {:facet facet-prop
+                       :spec inner-spec}
+                config (assoc :config config)
+                ;; Lift columns if using wrapped facet
+                (and facet columns) (assoc :columns columns)
+                resolve (assoc :resolve resolve)
+                ;; Ensure data is at top level for FacetSpec
+                true (assoc :data data))]
+      res)
     spec))
 
 (defn wrap-with-repeat
   "Wraps a Vega-Lite spec with a repeat operator.
    Lifts :config to the top level.
 
-   opts keys: :repeat, :columns (if repeat is array)"
-  [spec {:keys [repeat columns]}]
+   opts keys: :repeat, :columns (if repeat is array), :resolve"
+  [spec {:keys [repeat columns resolve]}]
   (if repeat
     (let [config (:config spec)
           inner-spec (dissoc spec :config)
@@ -169,7 +173,8 @@
                         :else repeat)
           res (cond-> {:repeat repeat-prop
                        :spec inner-spec}
-                (and (vector? repeat-prop) columns) (assoc :columns columns))]
+                (and (vector? repeat-prop) columns) (assoc :columns columns)
+                resolve (assoc :resolve resolve))]
       (cond-> res
         config (assoc :config config)))
     spec))
@@ -189,6 +194,15 @@
     (if (seq all-transforms)
       (assoc spec :transform all-transforms)
       spec)))
+
+(defn add-params
+  "Adds parameters to a Vega-Lite spec.
+
+   Args:
+     spec: The Vega-Lite spec.
+     params: A vector of parameter definitions."
+  [spec params]
+  (assoc spec :params params))
 
 (defn- deep-merge
   "Recursively merges maps."
@@ -226,7 +240,8 @@
          encodings)
         ;; Merge defaults into common-specs
         final-specs (deep-merge default-config common-specs)]
-    (merge final-specs
+    (merge {:data nil}
+           final-specs
            (when (seq processed-encodings)
              {:encoding processed-encodings}))))
 
@@ -241,35 +256,45 @@
 
 (defn layer
   "Creates a Layered View (LayerSpec) from a sequence of specs.
-   Lifts and merges :config from children to the top level."
-  [specs]
-  (let [[config children] (lift-config-from-specs specs)]
-    (cond-> {:layer children}
-      config (assoc :config config))))
+   Lifts and merges :config from children to the top level.
+   Removes :width and :height from children as they are not valid in LayerSpec units.
+   Accepts optional :resolve kwarg."
+  [specs & {:keys [resolve]}]
+  (let [[config children] (lift-config-from-specs specs)
+        clean-children (mapv #(dissoc % :width :height) children)]
+    (cond-> {:layer clean-children}
+      config (assoc :config config)
+      resolve (assoc :resolve resolve))))
 
 (defn hconcat
   "Creates a Horizontally Concatenated View (HConcatSpec).
-   Lifts and merges :config from children to the top level."
-  [specs]
+   Lifts and merges :config from children to the top level.
+   Accepts optional :resolve kwarg."
+  [specs & {:keys [resolve]}]
   (let [[config children] (lift-config-from-specs specs)]
     (cond-> {:hconcat children}
-      config (assoc :config config))))
+      config (assoc :config config)
+      resolve (assoc :resolve resolve))))
 
 (defn vconcat
   "Creates a Vertically Concatenated View (VConcatSpec).
-   Lifts and merges :config from children to the top level."
-  [specs]
+   Lifts and merges :config from children to the top level.
+   Accepts optional :resolve kwarg."
+  [specs & {:keys [resolve]}]
   (let [[config children] (lift-config-from-specs specs)]
     (cond-> {:vconcat children}
-      config (assoc :config config))))
+      config (assoc :config config)
+      resolve (assoc :resolve resolve))))
 
 (defn concat-specs
   "Creates a General Concatenated View (ConcatSpec).
-   Lifts and merges :config from children to the top level."
-  [specs]
+   Lifts and merges :config from children to the top level.
+   Accepts optional :resolve kwarg."
+  [specs & {:keys [resolve]}]
   (let [[config children] (lift-config-from-specs specs)]
     (cond-> {:concat children}
-      config (assoc :config config))))
+      config (assoc :config config)
+      resolve (assoc :resolve resolve))))
 
 (defn spec
   "Returns the provided map as a Vega-Lite specification.
