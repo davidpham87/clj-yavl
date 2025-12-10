@@ -11,7 +11,7 @@
 
 ;; Keys supported by the current clj-yavl.db implementation
 ;; We only test round-trip for these because the DB logic currently only persists them
-(def supported-keys #{:mark :encoding :tooltip})
+(def supported-keys #{:mark :encoding :tooltip :width :height :background :padding :description :name :title :resolve :facet :repeat :layer :hconcat :vconcat :concat :spec :data :transform :params})
 
 (defn filter-supported [config]
   (select-keys config supported-keys))

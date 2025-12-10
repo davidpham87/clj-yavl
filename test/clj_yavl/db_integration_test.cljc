@@ -20,7 +20,7 @@
     files))
 
 ;; Keys supported by the current clj-yavl.db implementation
-(def supported-keys #{:mark :encoding :tooltip})
+(def supported-keys #{:mark :encoding :tooltip :width :height :background :padding :description :name :title :resolve :facet :repeat :layer :hconcat :vconcat :concat :spec :data :transform :params})
 
 (defn filter-supported [config]
   (select-keys config supported-keys))
@@ -92,7 +92,7 @@
 
           (let [db @conn
                 pulled-config (db/pull-config db id)
-                original-subset (normalize-keys (filter-supported spec))
+                original-subset (remove-nils (normalize-keys (filter-supported spec)))
                 pulled-subset (normalize-keys pulled-config)]
 
             (is (= original-subset pulled-subset)
