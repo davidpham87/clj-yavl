@@ -32,7 +32,7 @@
     (let [spec (presets/unit-spec {:type :xyplot :x "A" :y "B" :facet "F" :columns 2})]
       (is (m/validate vls/schema spec))
       (is (= "F" (get-in spec [:facet :field])))
-      (is (= 2 (get-in spec [:facet :columns])))
+      (is (= 2 (:columns spec)))
       (is (some? (:spec spec))))))
 
 (deftest pie-chart-test

@@ -49,12 +49,12 @@
       (is (m/validate vls/schema res))
       (is (:facet res))
       (is (= {:row {:field "r"} :column {:field "c"}} (:facet res)))
-      (is (= (dissoc spec :config) (:spec res)))
+      (is (= (dissoc spec :config :data) (:spec res)))
       (is (= (:config spec) (:config res))))))
 
 (deftest repeat-preset-test
   (testing "repeat operator with presets"
-    (let [spec (presets/unit-spec {:type :xyplot :x "a" :y {:repeat "row"}})
+    (let [spec (presets/unit-spec {:type :xyplot :x "a" :y {:field {:repeat "row"}}})
           res (api/repeat spec {:repeat {:row ["b" "c"]}})]
       (is (m/validate vls/schema res))
       (is (:repeat res))
