@@ -228,7 +228,7 @@
              (conj {:db/id [:vl/id id] :vl/mark mark-eid})
 
              ;; Encoding
-             encoding
+             (not-empty encoding)
              (into (let [channels (vec (map-indexed
                                         (fn [i [k v]]
                                           {:db/id (- -10 i)
