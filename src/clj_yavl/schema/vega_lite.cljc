@@ -1,5 +1,6 @@
 (ns clj-yavl.schema.vega-lite
   (:require [malli.core :as m]
+            [malli.util :as mu]
             [clj-yavl.schema.vega-lite.primitives :as primitives]
             [clj-yavl.schema.vega-lite.expr :as expr]
             [clj-yavl.schema.vega-lite.common :as common]
@@ -105,34 +106,34 @@
    [:transform {:optional true} [:vector [:ref #'Transform]]]])
 
 (def HConcatSpec_GenericSpec_
-  [:merge BaseConcatSpec
-   [:map {:closed true, :json-schema/original-name "HConcatSpec<GenericSpec>"}
-    [:center {:optional true} boolean?]
-    [:hconcat [:vector [:ref #'Spec]]]
-    [:spacing {:optional true} number?]]])
+  (mu/merge BaseConcatSpec
+            [:map {:closed true, :json-schema/original-name "HConcatSpec<GenericSpec>"}
+             [:center {:optional true} boolean?]
+             [:hconcat [:vector [:ref #'Spec]]]
+             [:spacing {:optional true} number?]]))
 
 (def VConcatSpec_GenericSpec_
-  [:merge BaseConcatSpec
-   [:map {:closed true, :json-schema/original-name "VConcatSpec<GenericSpec>"}
-    [:center {:optional true} boolean?]
-    [:spacing {:optional true} number?]
-    [:vconcat [:vector [:ref #'Spec]]]]])
+  (mu/merge BaseConcatSpec
+            [:map {:closed true, :json-schema/original-name "VConcatSpec<GenericSpec>"}
+             [:center {:optional true} boolean?]
+             [:spacing {:optional true} number?]
+             [:vconcat [:vector [:ref #'Spec]]]]))
 
 (def ConcatSpec_GenericSpec_
-  [:merge BaseConcatSpec
-   [:map {:closed true, :json-schema/original-name "ConcatSpec<GenericSpec>"}
-    [:align {:optional true}
-     [:or [:ref #'LayoutAlign]
-      [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
-       #'RowCol_LayoutAlign_]]]
-    [:center {:optional true}
-     [:or boolean?
-      [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
-    [:columns {:optional true} number?]
-    [:concat [:vector [:ref #'Spec]]]
-    [:spacing {:optional true}
-     [:or number?
-      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]]])
+  (mu/merge BaseConcatSpec
+            [:map {:closed true, :json-schema/original-name "ConcatSpec<GenericSpec>"}
+             [:align {:optional true}
+              [:or [:ref #'LayoutAlign]
+               [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
+                #'RowCol_LayoutAlign_]]]
+             [:center {:optional true}
+              [:or boolean?
+               [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
+             [:columns {:optional true} number?]
+             [:concat [:vector [:ref #'Spec]]]
+             [:spacing {:optional true}
+              [:or number?
+               [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]]))
 
 (def Spec
   [:or [:ref #'FacetedUnitSpec] [:ref #'LayerSpec] [:ref #'RepeatSpec]
@@ -146,71 +147,71 @@
 
 (def TopLevelRepeatSpec
   [:or
-   [:merge toplevel/TopLevelProps
-    [:map {:closed true}
-     [:align {:optional true}
-      [:or [:ref #'LayoutAlign]
-       [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
-        #'RowCol_LayoutAlign_]]]
-     [:bounds {:optional true} [:enum "full" "flush"]]
-     [:center {:optional true}
-      [:or boolean?
-       [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
-     [:columns {:optional true} number?]
-     [:repeat [:or [:vector string?] [:ref #'RepeatMapping]]]
-     [:spacing {:optional true}
-      [:or number?
-       [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
-     [:spec [:ref #'NonNormalizedSpec]]]]
-   [:merge toplevel/TopLevelProps
-    [:map {:closed true}
-     [:align {:optional true}
-      [:or [:ref #'LayoutAlign]
-       [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
-        #'RowCol_LayoutAlign_]]]
-     [:bounds {:optional true} [:enum "full" "flush"]]
-     [:center {:optional true}
-      [:or boolean?
-       [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
-     [:columns {:optional true} number?]
-     [:repeat [:ref #'LayerRepeatMapping]]
-     [:spacing {:optional true}
-      [:or number?
-       [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
-     [:spec [:or [:ref #'LayerSpec] [:ref #'UnitSpecWithFrame]]]]]])
+   (mu/merge toplevel/TopLevelProps
+             [:map {:closed true}
+              [:align {:optional true}
+               [:or [:ref #'LayoutAlign]
+                [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
+                 #'RowCol_LayoutAlign_]]]
+              [:bounds {:optional true} [:enum "full" "flush"]]
+              [:center {:optional true}
+               [:or boolean?
+                [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
+              [:columns {:optional true} number?]
+              [:repeat [:or [:vector string?] [:ref #'RepeatMapping]]]
+              [:spacing {:optional true}
+               [:or number?
+                [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
+              [:spec [:ref #'NonNormalizedSpec]]])
+   (mu/merge toplevel/TopLevelProps
+             [:map {:closed true}
+              [:align {:optional true}
+               [:or [:ref #'LayoutAlign]
+                [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
+                 #'RowCol_LayoutAlign_]]]
+              [:bounds {:optional true} [:enum "full" "flush"]]
+              [:center {:optional true}
+               [:or boolean?
+                [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
+              [:columns {:optional true} number?]
+              [:repeat [:ref #'LayerRepeatMapping]]
+              [:spacing {:optional true}
+               [:or number?
+                [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]
+              [:spec [:or [:ref #'LayerSpec] [:ref #'UnitSpecWithFrame]]]])])
 
 (def TopLevelConcatSpec
-  [:merge toplevel/TopLevelProps
-   [:map {:closed true}
-    [:align {:optional true}
-     [:or [:ref #'LayoutAlign]
-      [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
-       #'RowCol_LayoutAlign_]]]
-    [:bounds {:optional true} [:enum "full" "flush"]]
-    [:center {:optional true}
-     [:or boolean?
-      [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
-    [:columns {:optional true} number?]
-    [:concat [:vector [:ref #'NonNormalizedSpec]]]
-    [:spacing {:optional true}
-     [:or number?
-      [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]]])
+  (mu/merge toplevel/TopLevelProps
+            [:map {:closed true}
+             [:align {:optional true}
+              [:or [:ref #'LayoutAlign]
+               [:ref {:json-schema/original-name "RowCol<LayoutAlign>"}
+                #'RowCol_LayoutAlign_]]]
+             [:bounds {:optional true} [:enum "full" "flush"]]
+             [:center {:optional true}
+              [:or boolean?
+               [:ref {:json-schema/original-name "RowCol<boolean>"} #'RowCol_boolean_]]]
+             [:columns {:optional true} number?]
+             [:concat [:vector [:ref #'NonNormalizedSpec]]]
+             [:spacing {:optional true}
+              [:or number?
+               [:ref {:json-schema/original-name "RowCol<number>"} #'RowCol_number_]]]]))
 
 (def TopLevelHConcatSpec
-  [:merge toplevel/TopLevelProps
-   [:map {:closed true}
-    [:bounds {:optional true} [:enum "full" "flush"]]
-    [:center {:optional true} boolean?]
-    [:hconcat [:vector [:ref #'NonNormalizedSpec]]]
-    [:spacing {:optional true} number?]]])
+  (mu/merge toplevel/TopLevelProps
+            [:map {:closed true}
+             [:bounds {:optional true} [:enum "full" "flush"]]
+             [:center {:optional true} boolean?]
+             [:hconcat [:vector [:ref #'NonNormalizedSpec]]]
+             [:spacing {:optional true} number?]]))
 
 (def TopLevelVConcatSpec
-  [:merge toplevel/TopLevelProps
-   [:map {:closed true}
-    [:bounds {:optional true} [:enum "full" "flush"]]
-    [:center {:optional true} boolean?]
-    [:spacing {:optional true} number?]
-    [:vconcat [:vector [:ref #'NonNormalizedSpec]]]]])
+  (mu/merge toplevel/TopLevelProps
+            [:map {:closed true}
+             [:bounds {:optional true} [:enum "full" "flush"]]
+             [:center {:optional true} boolean?]
+             [:spacing {:optional true} number?]
+             [:vconcat [:vector [:ref #'NonNormalizedSpec]]]]))
 
 (def TopLevelSpec
   [:or [:ref #'TopLevelUnitSpec] [:ref #'TopLevelFacetSpec]
