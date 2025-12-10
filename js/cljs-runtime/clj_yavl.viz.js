@@ -33,8 +33,8 @@ return cljs.core.deref(view_ref).finalize();
 return null;
 }
 }),new cljs.core.Keyword(null,"reagent-render","reagent-render",-985383853),(function (spec__$1){
-return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"class","class",-2030961996),"w-full h-full overflow-auto p-4",new cljs.core.Keyword(null,"ref","ref",1289896967),(function (p1__31211_SHARP_){
-return cljs.core.reset_BANG_(container_ref,p1__31211_SHARP_);
+return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"class","class",-2030961996),"w-full h-full overflow-auto p-4",new cljs.core.Keyword(null,"ref","ref",1289896967),(function (p1__31312_SHARP_){
+return cljs.core.reset_BANG_(container_ref,p1__31312_SHARP_);
 })], null)], null);
 })], null));
 });
