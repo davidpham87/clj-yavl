@@ -1,12 +1,14 @@
 (ns clj-yavl.core
   (:require [reagent.dom.client :as rdomc]
+            [reagent.core :as r]
             [re-frame.core :as rf]
             [bb-web-ds-tools.components.editor :as editor]
             [clojure.edn :as edn]
             [cljs.pprint :refer [pprint]]
             [clj-yavl.events :as events]
             [clj-yavl.subs :as subs]
-            [clj-yavl.viz :as viz]))
+            [clj-yavl.viz :as viz]
+            [clj-yavl.ui-schema :as ui-schema]))
 
 ;; --- State ---
 
@@ -135,39 +137,119 @@
 
 ;; --- View ---
 
+(defn ui-builder-view []
+  (let [mock-schema [:map
+                     [:Name :string]
+                     [:Miles_per_Gallon :int]
+                     [:Cylinders :int]
+                     [:Displacement :int]
+                     [:Horsepower :int]
+                     [:Weight_in_lbs :int]
+                     [:Acceleration :int]
+                     [:Year :string]
+                     [:Origin :string]]
+        preset-key (r/atom :xyplot)
+        current-opts (r/atom {})]
+    (fn []
+      (let [ui-def (ui-schema/generate-ui-schema @preset-key mock-schema @current-opts)]
+        [:div {:class "p-4 text-gray-300 overflow-auto h-full bg-[#1e1e1e]"}
+         [:h2 {:class "text-lg font-bold mb-4"} "UI Builder (Trivial Implementation)"]
+         [:div {:class "mb-4"}
+          [:label "Preset: "]
+          [:select {:class "bg-gray-700 text-white p-1"
+                    :value @preset-key
+                    :on-change #(reset! preset-key (keyword (-> % .-target .-value)))}
+           [:option {:value "xyplot"} "XY Plot"]
+           [:option {:value "pie"} "Pie Chart"]
+           [:option {:value "bar"} "Bar Chart"]]]
+
+         [:div {:class "space-y-4"}
+          (for [item ui-def]
+            ^{:key (:arg item)}
+            [:div {:class "border border-gray-600 p-2 rounded"}
+             [:div {:class "font-bold text-sm mb-2 text-blue-400"}
+              (name (:arg item))
+              [:span {:class "text-gray-500 text-xs ml-2"} (name (:scope item))]]
+
+             (into [:div {:class "grid grid-cols-2 gap-2"}]
+                   (for [[prop conf] (:main item)]
+                     [:div {:class "flex flex-col"}
+                      [:label {:class "text-xs mb-1"} (name prop)]
+                      (case (get-in conf [:type])
+                        :select
+                        [:select {:class "bg-gray-800 border border-gray-600 text-xs p-1"
+                                  :on-change #(swap! current-opts assoc-in [(:arg item) prop] (-> % .-target .-value))}
+                         [:option {:value ""} "-"]
+                         (for [opt (:options conf)]
+                           ^{:key opt}
+                           [:option {:value opt} opt])]
+
+                        :text-input
+                        [:input {:type "text"
+                                 :class "bg-gray-800 border border-gray-600 text-xs p-1"}]
+
+                        :number-input
+                        [:input {:type "number"
+                                 :class "bg-gray-800 border border-gray-600 text-xs p-1"}]
+
+                        :boolean
+                        [:input {:type "checkbox"}]
+
+                        :multi-select
+                        [:select {:multiple true :class "bg-gray-800 border border-gray-600 text-xs p-1 h-20"}
+                         (for [opt (:options conf)]
+                           ^{:key opt}
+                           [:option {:value opt} opt])]
+
+                        :json-editor
+                        [:textarea {:class "bg-gray-800 border border-gray-600 text-xs p-1 h-10" :placeholder "JSON..."}]
+
+                        [:div (str "Unknown type: " (get-in conf [:type]))])]))])]]))))
+
 (defn main-view []
-  (let [config-input @(rf/subscribe [::config-input])
-        parsed-config @(rf/subscribe [::parsed-config])
-        config-mode @(rf/subscribe [::config-mode])
-        url-input (rf/subscribe [::dataset-url-input])]
-    [:div {:class "flex h-screen w-screen overflow-hidden"}
-     ;; Left Side: Editor
-     [:div {:class "w-1/2 h-full border-r border-gray-700 flex flex-col bg-[#1e1e1e]"}
-       ;; Toolbar
-       [:div {:class "flex items-center justify-between p-2 bg-[#2d2d2d] border-b border-gray-700 text-gray-300"}
-        [:span "Vega-Lite Configuration"]
-        [:div {:class "flex space-x-2 text-xs"}
-          [:label {:class "cursor-pointer flex items-center space-x-1"}
-           [:input {:type "radio" :name "mode" :checked (= config-mode :json)
-                    :on-change #(rf/dispatch [::set-config-mode :json])}]
-           [:span "JSON"]]
-          [:label {:class "cursor-pointer flex items-center space-x-1"}
-           [:input {:type "radio" :name "mode" :checked (= config-mode :edn)
-                    :on-change #(rf/dispatch [::set-config-mode :edn])}]
-           [:span "EDN"]]]]
+  (r/with-let [view-mode (r/atom :code)]
+    (let [config-input @(rf/subscribe [::config-input])
+          parsed-config @(rf/subscribe [::parsed-config])
+          config-mode @(rf/subscribe [::config-mode])
+          url-input (rf/subscribe [::dataset-url-input])]
+      [:div {:class "flex h-screen w-screen overflow-hidden"}
+       ;; Left Side: Editor
+       [:div {:class "w-1/2 h-full border-r border-gray-700 flex flex-col bg-[#1e1e1e]"}
+        ;; Toolbar
+        [:div {:class "flex items-center justify-between p-2 bg-[#2d2d2d] border-b border-gray-700 text-gray-300"}
+         [:div {:class "flex space-x-4"}
+          [:span "Vega-Lite Configuration"]
+          [:div {:class "flex bg-gray-700 rounded p-0.5"}
+           [:button {:class (str "px-2 py-0.5 text-xs rounded " (if (= @view-mode :code) "bg-blue-600 text-white" "text-gray-300"))
+                     :on-click #(reset! view-mode :code)} "Code"]
+           [:button {:class (str "px-2 py-0.5 text-xs rounded " (if (= @view-mode :ui) "bg-blue-600 text-white" "text-gray-300"))
+                     :on-click #(reset! view-mode :ui)} "UI Builder"]]]
 
-      ;; Editor
-      [:div {:class "flex-grow relative"}
-       [editor/monaco-editor
-        {:value config-input
-         :language (if (= config-mode :json) "json" "clojure")
-         :options {:fontSize 15
-                   :fontFamily "monospace"
-                   :rulers [80]
-                   :minimap {:enabled false}}
-         :on-change #(rf/dispatch [::set-config-input %])}]]]
+         (when (= @view-mode :code)
+           [:div {:class "flex space-x-2 text-xs"}
+            [:label {:class "cursor-pointer flex items-center space-x-1"}
+             [:input {:type "radio" :name "mode" :checked (= config-mode :json)
+                      :on-change #(rf/dispatch [::set-config-mode :json])}]
+             [:span "JSON"]]
+            [:label {:class "cursor-pointer flex items-center space-x-1"}
+             [:input {:type "radio" :name "mode" :checked (= config-mode :edn)
+                      :on-change #(rf/dispatch [::set-config-mode :edn])}]
+             [:span "EDN"]]])]
 
-     ;; Right Side: Visualization
+        ;; Editor or UI Builder
+        [:div {:class "flex-grow relative overflow-hidden"}
+         (if (= @view-mode :code)
+           [editor/monaco-editor
+            {:value config-input
+             :language (if (= config-mode :json) "json" "clojure")
+             :options {:fontSize 15
+                       :fontFamily "monospace"
+                       :rulers [80]
+                       :minimap {:enabled false}}
+             :on-change #(rf/dispatch [::set-config-input %])}]
+           [ui-builder-view])]]
+
+       ;; Right Side: Visualization
      [:div {:class "w-1/2 h-full bg-white flex flex-col"}
       [:div {:class "p-2 bg-gray-100 border-b border-gray-300 flex items-center gap-2"}
        [:input {:type "text"
@@ -179,7 +261,7 @@
                  :class "bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"}
         "Load Data"]]
       [:div {:class "flex-grow overflow-auto relative"}
-       [viz/vega-lite-viz parsed-config]]]]))
+       [viz/vega-lite-viz parsed-config]]]])))
 
 
 (defonce react-root (rdomc/create-root (.getElementById js/document "app")))
