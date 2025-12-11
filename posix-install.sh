@@ -26,8 +26,8 @@ if [ "$prefix_param" = "-p" -o "$prefix_param" = "--prefix" ]; then
 fi
 
 echo "Downloading and expanding tar"
-curl -L -O https://github.com/clojure/brew-install/releases/download/1.12.3.1577/clojure-tools-1.12.3.1577.tar.gz
-tar xzf clojure-tools-1.12.3.1577.tar.gz
+curl -L -O https://github.com/clojure/brew-install/releases/download/1.12.4.1582/clojure-tools-1.12.4.1582.tar.gz
+tar xzf clojure-tools-1.12.4.1582.tar.gz
 
 lib_dir="$prefix_dir/lib"
 bin_dir="$prefix_dir/bin"
@@ -50,7 +50,7 @@ do_install 644 clojure-tools/deps.edn "$clojure_lib_dir/deps.edn"
 do_install 644 clojure-tools/example-deps.edn "$clojure_lib_dir/example-deps.edn"
 do_install 644 clojure-tools/tools.edn "$clojure_lib_dir/tools.edn"
 do_install 644 clojure-tools/exec.jar "$clojure_lib_dir/libexec/exec.jar"
-do_install 644 clojure-tools/clojure-tools-1.12.3.1577.jar "$clojure_lib_dir/libexec/clojure-tools-1.12.3.1577.jar"
+do_install 644 clojure-tools/clojure-tools-1.12.4.1582.jar "$clojure_lib_dir/libexec/clojure-tools-1.12.4.1582.jar"
 
 echo "Installing clojure and clj into $bin_dir"
 sed -i -e 's@PREFIX@'"$clojure_lib_dir"'@g' clojure-tools/clojure
@@ -64,6 +64,6 @@ do_install 644 clojure-tools/clj.1 "$man_dir/clj.1"
 
 echo "Removing download"
 rm -rf clojure-tools
-rm -rf clojure-tools-1.12.3.1577.tar.gz
+rm -rf clojure-tools-1.12.4.1582.tar.gz
 
 echo "Use clj -h for help."
