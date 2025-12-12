@@ -4,18 +4,24 @@
 
 (deftest default-config-test
   (testing "Google corporate colors are set in default config"
-    (let [expected-colors ["#4285F4" "#DB4437" "#F4B400" "#0F9D58"]]
-      (is (= expected-colors (get-in api/default-config [:config :range :category])))))
-
-  (testing "Font sizes are set in default config"
-    (is (= 12 (get-in api/default-config [:config :axis :labelFontSize])))
-    (is (= 14 (get-in api/default-config [:config :axis :titleFontSize])))
-    (is (= 12 (get-in api/default-config [:config :legend :labelFontSize])))
-    (is (= 12 (get-in api/default-config [:config :text :fontSize])))))
+    (is (= {:config {:range {:category ["#4285F4" "#DB4437" "#F4B400" "#0F9D58"]}
+                     :axis {:labelFontSize 12 :titleFontSize 14}
+                     :header {:labelFontSize 12 :titleFontSize 14}
+                     :legend {:labelFontSize 12 :titleFontSize 14}
+                     :text {:fontSize 12}}
+            :width 400
+            :height 300}
+           api/default-config))))
 
 (deftest base-plot-defaults-test
   (testing "base-plot applies defaults"
-    (let [spec (api/base-plot {} {:mark "point"} {})]
-      (is (= ["#4285F4" "#DB4437" "#F4B400" "#0F9D58"]
-             (get-in spec [:config :range :category])))
-      (is (= 12 (get-in spec [:config :axis :labelFontSize]))))))
+    (is (= {:data nil
+            :mark "point"
+            :config {:range {:category ["#4285F4" "#DB4437" "#F4B400" "#0F9D58"]}
+                     :axis {:labelFontSize 12 :titleFontSize 14}
+                     :header {:labelFontSize 12 :titleFontSize 14}
+                     :legend {:labelFontSize 12 :titleFontSize 14}
+                     :text {:fontSize 12}}
+            :width 400
+            :height 300}
+           (api/base-plot {} {:mark "point"} {})))))
