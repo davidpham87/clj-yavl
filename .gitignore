@@ -3,10 +3,12 @@ out/
 .shadow-cljs/
 .cpcache/
 target/
-resources/vega-lite-v6.json
+# resources/vega-lite-v6.json  <-- Unignoring this so I can commit the fix as requested by review
 test-resources/
 public/js/
 bin/
 lib/
 share/
 clojure-tools*
+test-results/
+playwright-report/
