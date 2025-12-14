@@ -138,7 +138,7 @@
 ;; --- View ---
 
 (defn ui-builder-view []
-  (let [mock-schema [:map
+  (let [default-mock-schema [:map
                      [:Name :string]
                      [:Miles_per_Gallon :int]
                      [:Cylinders :int]
@@ -151,9 +151,14 @@
         preset-key (r/atom :xyplot)
         current-opts (r/atom {})]
     (fn []
-      (let [ui-def (ui-schema/generate-ui-schema @preset-key mock-schema @current-opts)]
+      (let [inferred-schema @(rf/subscribe [::subs/inferred-schema])
+            schema (or inferred-schema default-mock-schema)
+            ui-def (ui-schema/generate-ui-schema @preset-key schema @current-opts)]
         [:div {:class "p-4 text-gray-300 overflow-auto h-full bg-[#1e1e1e]"}
-         [:h2 {:class "text-lg font-bold mb-4"} "UI Builder (Trivial Implementation)"]
+         [:h2 {:class "text-lg font-bold mb-4"} "UI Builder"]
+         (when inferred-schema
+           [:div {:class "mb-4 text-green-400 text-xs"}
+            "Schema inferred from loaded dataset."])
          [:div {:class "mb-4"}
           [:label "Preset: "]
           [:select {:class "bg-gray-700 text-white p-1"
@@ -211,7 +216,8 @@
     (let [config-input @(rf/subscribe [::config-input])
           parsed-config @(rf/subscribe [::parsed-config])
           config-mode @(rf/subscribe [::config-mode])
-          url-input (rf/subscribe [::subs/dataset-url-input])]
+          url-input (rf/subscribe [::subs/dataset-url-input])
+          dataset-list (rf/subscribe [::subs/dataset-list])]
       [:div {:class "flex h-screen w-screen overflow-hidden"}
        ;; Left Side: Editor
        [:div {:class "w-1/2 h-full border-r border-gray-700 flex flex-col bg-[#1e1e1e]"}
@@ -252,14 +258,31 @@
        ;; Right Side: Visualization
      [:div {:class "w-1/2 h-full bg-white flex flex-col"}
       [:div {:class "p-2 bg-gray-100 border-b border-gray-300 flex items-center gap-2"}
-       [:input {:type "text"
-                :placeholder "Dataset URL (e.g. https://cdn.jsdelivr.net/npm/vega-datasets@v1.29.0/data/cars.json)"
-                :value @url-input
-                :on-change #(rf/dispatch [::events/set-dataset-url-input (-> % .-target .-value)])
-                :class "border p-1 flex-grow text-sm"}]
-       [:button {:on-click #(rf/dispatch [::events/fetch-dataset @url-input])
-                 :class "bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"}
-        "Load Data"]]
+       [:div {:class "flex flex-col flex-grow gap-1"}
+        [:div {:class "flex gap-2"}
+         [:select {:class "border p-1 text-sm w-32"
+                   :on-change (fn [e]
+                                (let [val (-> e .-target .-value)]
+                                  (when (not-empty val)
+                                    (let [dataset (some #(when (= (:name %) val) %) @dataset-list)]
+                                      (when dataset
+                                        (let [url (str "https://cdn.jsdelivr.net/npm/vega-datasets/" (:path dataset))]
+                                          (rf/dispatch [::events/set-dataset-url-input url])
+                                          (rf/dispatch [::events/fetch-dataset url])))))))}
+          [:option {:value ""} "Select Dataset..."]
+          (for [ds (sort-by :name @dataset-list)]
+            ^{:key (:name ds)}
+            [:option {:value (:name ds)} (:name ds)])]
+
+         [:input {:type "text"
+                  :placeholder "Dataset URL"
+                  :value @url-input
+                  :on-change #(rf/dispatch [::events/set-dataset-url-input (-> % .-target .-value)])
+                  :class "border p-1 flex-grow text-sm"}]]
+
+        [:button {:on-click #(rf/dispatch [::events/fetch-dataset @url-input])
+                  :class "bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"}
+         "Load Data"]]]
       [:div {:class "flex-grow overflow-auto relative"}
        [viz/vega-lite-viz parsed-config]]]])))
 
@@ -269,4 +292,5 @@
 
 (defn ^:export init []
   (rf/dispatch-sync [::initialize])
+  (rf/dispatch [::events/fetch-dataset-list])
   (run))
