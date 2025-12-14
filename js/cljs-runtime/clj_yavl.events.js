@@ -10,14 +10,14 @@ var ds_conn = clj_yavl.db.init_db.cljs$core$IFn$_invoke$arity$0();
 var default_config = clj_yavl.io.read_json_str.cljs$core$IFn$_invoke$arity$2(clj_yavl.events.default_config_json,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key-fn","key-fn",-636154479),cljs.core.keyword], null));
 var ___$1 = clj_yavl.db.transact(ds_conn,clj_yavl.db.config__GT_tx_data("default",default_config));
 var ds_db = cljs.core.deref(ds_conn);
-var G__28458 = db;
-var G__28458__$1 = ((cljs.core.not(user_input_exists_QMARK_))?cljs.core.assoc_in(G__28458,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770)], null),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"saved-configs","saved-configs",1634320315),cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword("clj-yavl.core","data-input","clj-yavl.core/data-input",611355071),"",new cljs.core.Keyword("clj-yavl.core","config-input","clj-yavl.core/config-input",1110176655),clj_yavl.events.default_config_json,new cljs.core.Keyword("clj-yavl.core","config-mode","clj-yavl.core/config-mode",-1919291340),new cljs.core.Keyword(null,"json","json",1279968570),new cljs.core.Keyword("clj-yavl.core","active-config-name","clj-yavl.core/active-config-name",-1939900428),null,new cljs.core.Keyword("clj-yavl.core","ds-db","clj-yavl.core/ds-db",-1126598866),ds_db], null)], null)):G__28458);
-var G__28458__$2 = ((cljs.core.not(component_state_exists_QMARK_))?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__28458__$1,new cljs.core.Keyword("clj-yavl.core","vega-lite","clj-yavl.core/vega-lite",943809627),new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword("clj-yavl.core","format","clj-yavl.core/format",1360929541),new cljs.core.Keyword(null,"csv","csv",-1164440893),new cljs.core.Keyword("clj-yavl.core","structure","clj-yavl.core/structure",-30773006),new cljs.core.Keyword(null,"columnar","columnar",-1122999701),new cljs.core.Keyword("clj-yavl.core","parsed-data","clj-yavl.core/parsed-data",-1560578265),null,new cljs.core.Keyword("clj-yavl.core","inferred-schema","clj-yavl.core/inferred-schema",-1109150020),null,new cljs.core.Keyword("clj-yavl.core","active-left-tab","clj-yavl.core/active-left-tab",1685289502),new cljs.core.Keyword(null,"config","config",994861415)], null)):G__28458__$1);
-var G__28458__$3 = ((cljs.core.not(unit_specs_exists_QMARK_))?cljs.core.assoc_in(G__28458__$2,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"unit-specs","unit-specs",-530655085)], null),cljs.core.PersistentArrayMap.EMPTY):G__28458__$2);
+var G__28459 = db;
+var G__28459__$1 = ((cljs.core.not(user_input_exists_QMARK_))?cljs.core.assoc_in(G__28459,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770)], null),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"saved-configs","saved-configs",1634320315),cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword("clj-yavl.core","data-input","clj-yavl.core/data-input",611355071),"",new cljs.core.Keyword("clj-yavl.core","config-input","clj-yavl.core/config-input",1110176655),clj_yavl.events.default_config_json,new cljs.core.Keyword("clj-yavl.core","config-mode","clj-yavl.core/config-mode",-1919291340),new cljs.core.Keyword(null,"json","json",1279968570),new cljs.core.Keyword("clj-yavl.core","active-config-name","clj-yavl.core/active-config-name",-1939900428),null,new cljs.core.Keyword("clj-yavl.core","ds-db","clj-yavl.core/ds-db",-1126598866),ds_db], null)], null)):G__28459);
+var G__28459__$2 = ((cljs.core.not(component_state_exists_QMARK_))?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(G__28459__$1,new cljs.core.Keyword("clj-yavl.core","vega-lite","clj-yavl.core/vega-lite",943809627),new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword("clj-yavl.core","format","clj-yavl.core/format",1360929541),new cljs.core.Keyword(null,"csv","csv",-1164440893),new cljs.core.Keyword("clj-yavl.core","structure","clj-yavl.core/structure",-30773006),new cljs.core.Keyword(null,"columnar","columnar",-1122999701),new cljs.core.Keyword("clj-yavl.core","parsed-data","clj-yavl.core/parsed-data",-1560578265),null,new cljs.core.Keyword("clj-yavl.core","inferred-schema","clj-yavl.core/inferred-schema",-1109150020),null,new cljs.core.Keyword("clj-yavl.core","active-left-tab","clj-yavl.core/active-left-tab",1685289502),new cljs.core.Keyword(null,"config","config",994861415)], null)):G__28459__$1);
+var G__28459__$3 = ((cljs.core.not(unit_specs_exists_QMARK_))?cljs.core.assoc_in(G__28459__$2,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"unit-specs","unit-specs",-530655085)], null),cljs.core.PersistentArrayMap.EMPTY):G__28459__$2);
 if(cljs.core.not(dataset_list_exists_QMARK_)){
-return cljs.core.assoc_in(G__28458__$3,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"dataset-list","dataset-list",683219302)], null),cljs.core.PersistentVector.EMPTY);
+return cljs.core.assoc_in(G__28459__$3,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"dataset-list","dataset-list",683219302)], null),cljs.core.PersistentVector.EMPTY);
 } else {
-return G__28458__$3;
+return G__28459__$3;
 }
 });
 clj_yavl.events.init_unit_spec = (function clj_yavl$events$init_unit_spec(db,p__28460){
@@ -127,20 +127,20 @@ var input = new cljs.core.Keyword("clj-yavl.core","config-input","clj-yavl.core/
 try{var parsed = ((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(mode,new cljs.core.Keyword(null,"json","json",1279968570)))?clj_yavl.io.read_json_str.cljs$core$IFn$_invoke$arity$2(input,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key-fn","key-fn",-636154479),cljs.core.keyword], null)):clojure.edn.read_string.cljs$core$IFn$_invoke$arity$1(input));
 var updated = cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(parsed,prop_key,value);
 var new_input = ((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(mode,new cljs.core.Keyword(null,"json","json",1279968570)))?clj_yavl.io.write_json_str.cljs$core$IFn$_invoke$arity$2(updated,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"indent","indent",-148200125),(2)], null)):(function (){var sb__5670__auto__ = (new goog.string.StringBuffer());
-var _STAR_print_newline_STAR__orig_val__28497_28560 = cljs.core._STAR_print_newline_STAR_;
-var _STAR_print_fn_STAR__orig_val__28498_28561 = cljs.core._STAR_print_fn_STAR_;
-var _STAR_print_newline_STAR__temp_val__28499_28562 = true;
-var _STAR_print_fn_STAR__temp_val__28500_28563 = (function (x__5671__auto__){
+var _STAR_print_newline_STAR__orig_val__28497_28556 = cljs.core._STAR_print_newline_STAR_;
+var _STAR_print_fn_STAR__orig_val__28498_28557 = cljs.core._STAR_print_fn_STAR_;
+var _STAR_print_newline_STAR__temp_val__28499_28558 = true;
+var _STAR_print_fn_STAR__temp_val__28500_28559 = (function (x__5671__auto__){
 return sb__5670__auto__.append(x__5671__auto__);
 });
-(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__temp_val__28499_28562);
+(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__temp_val__28499_28558);
 
-(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__temp_val__28500_28563);
+(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__temp_val__28500_28559);
 
 try{cljs.pprint.pprint.cljs$core$IFn$_invoke$arity$1(updated);
-}finally {(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__orig_val__28498_28561);
+}finally {(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__orig_val__28498_28557);
 
-(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__orig_val__28497_28560);
+(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__orig_val__28497_28556);
 }
 return cljs.core.str.cljs$core$IFn$_invoke$arity$1(sb__5670__auto__);
 })());
@@ -161,20 +161,20 @@ var ds_db = cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(db,new cljs.core.Pers
 var config = clj_yavl.db.pull_config(ds_db,"default");
 var mode = cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(db,new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"vega-lite","vega-lite",-650304770),new cljs.core.Keyword(null,"default","default",-1987822328),new cljs.core.Keyword("clj-yavl.core","config-mode","clj-yavl.core/config-mode",-1919291340)], null));
 var new_input = ((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(mode,new cljs.core.Keyword(null,"json","json",1279968570)))?clj_yavl.io.write_json_str.cljs$core$IFn$_invoke$arity$2(config,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"indent","indent",-148200125),(2)], null)):(function (){var sb__5670__auto__ = (new goog.string.StringBuffer());
-var _STAR_print_newline_STAR__orig_val__28501_28568 = cljs.core._STAR_print_newline_STAR_;
-var _STAR_print_fn_STAR__orig_val__28502_28569 = cljs.core._STAR_print_fn_STAR_;
-var _STAR_print_newline_STAR__temp_val__28503_28570 = true;
-var _STAR_print_fn_STAR__temp_val__28504_28571 = (function (x__5671__auto__){
+var _STAR_print_newline_STAR__orig_val__28501_28560 = cljs.core._STAR_print_newline_STAR_;
+var _STAR_print_fn_STAR__orig_val__28502_28561 = cljs.core._STAR_print_fn_STAR_;
+var _STAR_print_newline_STAR__temp_val__28503_28562 = true;
+var _STAR_print_fn_STAR__temp_val__28504_28563 = (function (x__5671__auto__){
 return sb__5670__auto__.append(x__5671__auto__);
 });
-(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__temp_val__28503_28570);
+(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__temp_val__28503_28562);
 
-(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__temp_val__28504_28571);
+(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__temp_val__28504_28563);
 
 try{cljs.pprint.pprint.cljs$core$IFn$_invoke$arity$1(config);
-}finally {(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__orig_val__28502_28569);
+}finally {(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__orig_val__28502_28561);
 
-(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__orig_val__28501_28568);
+(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__orig_val__28501_28560);
 }
 return cljs.core.str.cljs$core$IFn$_invoke$arity$1(sb__5670__auto__);
 })());
@@ -225,20 +225,20 @@ return null;
 var updated = (cljs.core.truth_(parsed)?cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(parsed,new cljs.core.Keyword(null,"data","data",-232669377),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"values","values",372645556),data], null)):null);
 var inferred_schema = ((((cljs.core.seq(data)) && (cljs.core.map_QMARK_(cljs.core.first(data)))))?clj_yavl.infer.infer_schema(data):null);
 var new_input = (cljs.core.truth_(updated)?((cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(mode,new cljs.core.Keyword(null,"json","json",1279968570)))?clj_yavl.io.write_json_str.cljs$core$IFn$_invoke$arity$2(updated,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"indent","indent",-148200125),(2)], null)):(function (){var sb__5670__auto__ = (new goog.string.StringBuffer());
-var _STAR_print_newline_STAR__orig_val__28524_28580 = cljs.core._STAR_print_newline_STAR_;
-var _STAR_print_fn_STAR__orig_val__28525_28581 = cljs.core._STAR_print_fn_STAR_;
-var _STAR_print_newline_STAR__temp_val__28526_28582 = true;
-var _STAR_print_fn_STAR__temp_val__28527_28583 = (function (x__5671__auto__){
+var _STAR_print_newline_STAR__orig_val__28524_28568 = cljs.core._STAR_print_newline_STAR_;
+var _STAR_print_fn_STAR__orig_val__28525_28569 = cljs.core._STAR_print_fn_STAR_;
+var _STAR_print_newline_STAR__temp_val__28526_28570 = true;
+var _STAR_print_fn_STAR__temp_val__28527_28571 = (function (x__5671__auto__){
 return sb__5670__auto__.append(x__5671__auto__);
 });
-(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__temp_val__28526_28582);
+(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__temp_val__28526_28570);
 
-(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__temp_val__28527_28583);
+(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__temp_val__28527_28571);
 
 try{cljs.pprint.pprint.cljs$core$IFn$_invoke$arity$1(updated);
-}finally {(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__orig_val__28525_28581);
+}finally {(cljs.core._STAR_print_fn_STAR_ = _STAR_print_fn_STAR__orig_val__28525_28569);
 
-(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__orig_val__28524_28580);
+(cljs.core._STAR_print_newline_STAR_ = _STAR_print_newline_STAR__orig_val__28524_28568);
 }
 return cljs.core.str.cljs$core$IFn$_invoke$arity$1(sb__5670__auto__);
 })()):null);
