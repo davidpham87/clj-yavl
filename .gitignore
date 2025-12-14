@@ -12,3 +12,4 @@ share/
 clojure-tools*
 test-results/
 playwright-report/
+gemini/
