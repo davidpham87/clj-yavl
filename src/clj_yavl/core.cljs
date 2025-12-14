@@ -266,7 +266,7 @@
                                   (when (not-empty val)
                                     (let [dataset (some #(when (= (:name %) val) %) @dataset-list)]
                                       (when dataset
-                                        (let [url (str "https://cdn.jsdelivr.net/npm/vega-datasets@3.2.1/" (:path dataset))]
+                                        (let [url (str "https://cdn.jsdelivr.net/npm/vega-datasets@3.2.1/data/" (:path dataset))]
                                           (rf/dispatch [::events/set-dataset-url-input url])
                                           (rf/dispatch [::events/fetch-dataset url])))))))}
           [:option {:value ""} "Select Dataset..."]
