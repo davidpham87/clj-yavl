@@ -211,7 +211,7 @@
     (let [config-input @(rf/subscribe [::config-input])
           parsed-config @(rf/subscribe [::parsed-config])
           config-mode @(rf/subscribe [::config-mode])
-          url-input (rf/subscribe [::dataset-url-input])]
+          url-input (rf/subscribe [::subs/dataset-url-input])]
       [:div {:class "flex h-screen w-screen overflow-hidden"}
        ;; Left Side: Editor
        [:div {:class "w-1/2 h-full border-r border-gray-700 flex flex-col bg-[#1e1e1e]"}
@@ -255,9 +255,9 @@
        [:input {:type "text"
                 :placeholder "Dataset URL (e.g. https://cdn.jsdelivr.net/npm/vega-datasets@v1.29.0/data/cars.json)"
                 :value @url-input
-                :on-change #(rf/dispatch [::set-dataset-url-input (-> % .-target .-value)])
+                :on-change #(rf/dispatch [::events/set-dataset-url-input (-> % .-target .-value)])
                 :class "border p-1 flex-grow text-sm"}]
-       [:button {:on-click #(rf/dispatch [::fetch-dataset @url-input])
+       [:button {:on-click #(rf/dispatch [::events/fetch-dataset @url-input])
                  :class "bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"}
         "Load Data"]]
       [:div {:class "flex-grow overflow-auto relative"}
