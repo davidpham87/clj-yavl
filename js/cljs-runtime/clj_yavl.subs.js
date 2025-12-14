@@ -13,12 +13,12 @@ return cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(db,new cljs.core.Persisten
 });
 clj_yavl.subs.compiled_unit_spec_fn = (function clj_yavl$subs$compiled_unit_spec_fn(spec,_){
 if(cljs.core.truth_(spec)){
-var map__31253 = spec;
-var map__31253__$1 = cljs.core.__destructure_map(map__31253);
-var type = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__31253__$1,new cljs.core.Keyword(null,"type","type",1174270348));
-var input = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__31253__$1,new cljs.core.Keyword(null,"input","input",556931961));
+var map__31256 = spec;
+var map__31256__$1 = cljs.core.__destructure_map(map__31256);
+var type = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__31256__$1,new cljs.core.Keyword(null,"type","type",1174270348));
+var input = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__31256__$1,new cljs.core.Keyword(null,"input","input",556931961));
 try{return clj_yavl.presets.unit_spec.cljs$core$IFn$_invoke$arity$1(cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(input,new cljs.core.Keyword(null,"type","type",1174270348),type));
-}catch (e31258){var e = e31258;
+}catch (e31257){var e = e31257;
 return new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"error","error",-978969032),["Error compiling spec: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(e)].join('')], null);
 }} else {
 return null;
@@ -33,22 +33,22 @@ return new cljs.core.Keyword("clj-yavl.core","config-input","clj-yavl.core/confi
 clj_yavl.subs.config_mode = (function clj_yavl$subs$config_mode(root){
 return new cljs.core.Keyword("clj-yavl.core","config-mode","clj-yavl.core/config-mode",-1919291340).cljs$core$IFn$_invoke$arity$1(root);
 });
-clj_yavl.subs.parsed_config = (function clj_yavl$subs$parsed_config(p__31267,_){
-var vec__31268 = p__31267;
-var input = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31268,(0),null);
-var mode = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31268,(1),null);
+clj_yavl.subs.parsed_config = (function clj_yavl$subs$parsed_config(p__31259,_){
+var vec__31260 = p__31259;
+var input = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31260,(0),null);
+var mode = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31260,(1),null);
 try{if(cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(mode,new cljs.core.Keyword(null,"json","json",1279968570))){
 return clj_yavl.io.read_json_str.cljs$core$IFn$_invoke$arity$2(input,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key-fn","key-fn",-636154479),cljs.core.keyword], null));
 } else {
 return clojure.edn.read_string.cljs$core$IFn$_invoke$arity$1(input);
 }
-}catch (e31271){var ___$1 = e31271;
+}catch (e31263){var ___$1 = e31263;
 return null;
 }});
-clj_yavl.subs.top_level_prop = (function clj_yavl$subs$top_level_prop(config,p__31273){
-var vec__31274 = p__31273;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31274,(0),null);
-var prop_key = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31274,(1),null);
+clj_yavl.subs.top_level_prop = (function clj_yavl$subs$top_level_prop(config,p__31264){
+var vec__31265 = p__31264;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31265,(0),null);
+var prop_key = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31265,(1),null);
 return cljs.core.get.cljs$core$IFn$_invoke$arity$2(config,prop_key);
 });
 clj_yavl.subs.ds_db = (function clj_yavl$subs$ds_db(db,_){
