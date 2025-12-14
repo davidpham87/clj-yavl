@@ -8,6 +8,7 @@
             [clj-yavl.core :as-alias core]
             [clj-yavl.db :as db]
             [clj-yavl.infer :as infer]
+            [bb-web-ds-tools.components.malli :as bb-malli]
             ["papaparse" :as Papa]))
 
 (def default-config-json "{\n  \"$schema\": \"https://vega.github.io/schema/vega-lite/v5.json\",\n  \"mark\": \"bar\",\n  \"encoding\": {\n    \"x\": {\"field\": \"col1\", \"type\": \"ordinal\"},\n    \"y\": {\"field\": \"col2\", \"type\": \"quantitative\"}\n  }\n}")
@@ -208,7 +209,9 @@
 
          ;; Infer schema from data
          inferred-schema (when (and (seq data) (map? (first data)))
-                           (infer/infer-schema data))
+                           (let [result (bb-malli/infer-schema data)]
+                             (when (:success result)
+                               (edn/read-string (:schema-str result)))))
 
          new-input (when updated
                      (if (= mode :json)

@@ -9,7 +9,9 @@
             [clj-yavl.subs :as subs]
             [clj-yavl.viz :as viz]
             [clj-yavl.ui-schema :as ui-schema]
-            [clj-yavl.infer :as infer]))
+            [clj-yavl.infer :as infer]
+            [clj-yavl.presets :as presets]
+            [malli.core :as m]))
 
 ;; --- State ---
 
@@ -138,91 +140,123 @@
 
 ;; --- View ---
 
+(defn- malli-type->vega-type [m-type]
+  (let [t (if (vector? m-type) (first m-type) m-type)]
+    (.log js/console t)
+    (case t
+      :int "quantitative"
+      :double "quantitative"
+      :string "nominal"
+      :boolean "nominal"
+      :inst "temporal"
+      :enum "nominal"
+      "nominal")))
+
+(defn- infer-field-type [field-name schema]
+  (let [m-type (get (m/children (m/schema schema))
+                    (keyword field-name))]
+    (if schema
+      (let [child (some #(when (= (name (first %)) field-name) (second %)) (m/children (m/schema schema)))]
+        (malli-type->vega-type child))
+      "nominal")))
+
 (defn ui-builder-view []
-  (let [default-mock-schema [:map
-                     [:Name :string]
-                     [:Miles_per_Gallon :int]
-                     [:Cylinders :int]
-                     [:Displacement :int]
-                     [:Horsepower :int]
-                     [:Weight_in_lbs :int]
-                     [:Acceleration :int]
-                     [:Year :string]
-                     [:Origin :string]]
-        preset-key (r/atom :xyplot)
-        current-opts (r/atom {})]
-    (fn []
-      (let [inferred-schema @(rf/subscribe [::subs/inferred-schema])
-            schema (or inferred-schema default-mock-schema)
-            ui-def (ui-schema/generate-ui-schema @preset-key schema @current-opts)]
-        [:div {:class "p-4 text-gray-300 overflow-auto h-full bg-[#1e1e1e]"}
-         [:h2 {:class "text-lg font-bold mb-4"} "UI Builder"]
-         (when inferred-schema
-           [:div {:class "mb-4 text-green-400 text-xs"}
-            "Schema inferred from loaded dataset."])
-         [:div {:class "mb-4"}
-          [:label "Preset: "]
-          [:select {:class "bg-gray-700 text-white p-1"
-                    :value @preset-key
-                    :on-change #(reset! preset-key (keyword (-> % .-target .-value)))}
-           [:option {:value "xyplot"} "XY Plot"]
-           [:option {:value "pie"} "Pie Chart"]
-           [:option {:value "bar"} "Bar Chart"]]]
+  (r/with-let [preset-key (r/atom :xyplot)
+               current-opts (r/atom {})]
+    (let [inferred-schema @(rf/subscribe [::subs/inferred-schema])
+          default-mock-schema [:map [:Name :string]]
+          schema (or inferred-schema default-mock-schema)
 
-         [:div {:class "space-y-4"}
-          (for [item ui-def]
-            ^{:key (:arg item)}
-            [:div {:class "border border-gray-600 p-2 rounded"}
-             [:div {:class "font-bold text-sm mb-2 text-blue-400"}
-              (name (:arg item))
-              [:span {:class "text-gray-500 text-xs ml-2"} (name (:scope item))]]
+          sync! (fn []
+                  (let [spec (presets/unit-spec (assoc @current-opts :type @preset-key :data-schema schema))
+                        ;; Merge with existing config to preserve data/mark if needed?
+                        ;; Actually presets/unit-spec generates a full unit spec.
+                        ;; We probably want to keep the data property if it exists in the global config.
+                        ;; The preset generator creates a full view.
+                        json-str (js/JSON.stringify (clj->js spec) nil 2)]
+                    (rf/dispatch [::set-config-input json-str])))]
 
-             (into [:div {:class "grid grid-cols-2 gap-2"}]
-                   (for [[prop conf] (:main item)]
-                     [:div {:class "flex flex-col"}
-                      [:label {:class "text-xs mb-1"} (name prop)]
-                      (case (get-in conf [:type])
-                        :select
-                        [:select {:class "bg-gray-800 border border-gray-600 text-xs p-1"
-                                  :on-change #(swap! current-opts assoc-in [(:arg item) prop] (-> % .-target .-value))}
-                         [:option {:value ""} "-"]
-                         (for [opt (:options conf)]
-                           ^{:key opt}
-                           [:option {:value opt} opt])]
+      (fn []
+        (let [ui-def (ui-schema/generate-ui-schema @preset-key schema @current-opts)]
+          [:div {:class "p-4 text-gray-300 overflow-auto h-full bg-[#1e1e1e]"}
+           [:h2 {:class "text-lg font-bold mb-4"} "UI Builder"]
+           (when inferred-schema
+             [:div {:class "mb-4 text-green-400 text-xs"}
+              "Schema inferred from loaded dataset."]
+             [:div {:class "mb-4 p-2 bg-gray-800 rounded text-xs font-mono whitespace-pre-wrap"}
+              (with-out-str (cljs.pprint/pprint schema))])
+           [:div {:class "mb-4"}
+            [:label "Preset: "]
+            [:select {:class "bg-gray-700 text-white p-1"
+                      :value @preset-key
+                      :on-change #(do (reset! preset-key (keyword (-> % .-target .-value)))
+                                      (sync!))}
+             [:option {:value "xyplot"} "XY Plot"]
+             [:option {:value "pie"} "Pie Chart"]
+             [:option {:value "bar"} "Bar Chart"]]]
 
-                        :text-input
-                        [:input {:type "text"
-                                 :class "bg-gray-800 border border-gray-600 text-xs p-1"
-                                 :value (get-in @current-opts [(:arg item) prop :field])
-                                 :on-change #(let [val (-> % .-target .-value)
-                                                  inferred-type (infer/infer-type val)]
-                                              (swap! current-opts assoc-in [(:arg item) prop :field] val)
-                                              (swap! current-opts assoc-in [(:arg item) prop :type] inferred-type))}]
+           [:div {:class "space-y-4"}
+            (for [item ui-def]
+              ^{:key (:arg item)}
+              [:div {:class "border border-gray-600 p-2 rounded"}
+               [:div {:class "font-bold text-sm mb-2 text-blue-400"}
+                (name (:arg item))
+                [:span {:class "text-gray-500 text-xs ml-2"} (name (:scope item))]]
 
-                        :number-input
-                        [:input {:type "number"
-                                 :class "bg-gray-800 border border-gray-600 text-xs p-1"
-                                 :value (get-in @current-opts [(:arg item) prop :field])
-                                 :on-change #(let [val (-> % .-target .-value)
-                                                  parsed-val (js/parseFloat val)
-                                                  inferred-type (infer/infer-type parsed-val)]
-                                              (swap! current-opts assoc-in [(:arg item) prop :field] parsed-val)
-                                              (swap! current-opts assoc-in [(:arg item) prop :type] inferred-type))}]
+               (into [:div {:class "grid grid-cols-2 gap-2"}]
+                     (for [[prop conf] (:main item)]
+                       [:div {:class "flex flex-col"}
+                        [:label {:class "text-xs mb-1"} (name prop)]
+                        (case (get-in conf [:type])
+                          :select
+                          [:select {:class "bg-gray-800 border border-gray-600 text-xs p-1"
+                                    :value (get-in @current-opts [(:arg item) prop])
+                                    :on-change #(let [val (-> % .-target .-value)]
+                                                  (swap! current-opts assoc-in [(:arg item) prop] val)
+                                                  ;; If this is a field selection, infer type
+                                                  (when (= prop :field)
+                                                    (let [inferred (infer-field-type val schema)]
+                                                      (swap! current-opts assoc-in [(:arg item) :type] inferred)))
+                                                  (sync!))}
+                           [:option {:value ""} "-"]
+                           (for [opt (:options conf)]
+                             ^{:key opt}
+                             [:option {:value opt} opt])]
 
-                        :boolean
-                        [:input {:type "checkbox"}]
+                          :text-input
+                          [:input {:type "text"
+                                   :class "bg-gray-800 border border-gray-600 text-xs p-1"
+                                   :value (get-in @current-opts [(:arg item) prop :field])
+                                   :on-change #(let [val (-> % .-target .-value)]
+                                                 (swap! current-opts assoc-in [(:arg item) prop :field] val)
+                                                 (sync!))}]
 
-                        :multi-select
-                        [:select {:multiple true :class "bg-gray-800 border border-gray-600 text-xs p-1 h-20"}
-                         (for [opt (:options conf)]
-                           ^{:key opt}
-                           [:option {:value opt} opt])]
+                          :number-input
+                          [:input {:type "number"
+                                   :class "bg-gray-800 border border-gray-600 text-xs p-1"
+                                   :value (get-in @current-opts [(:arg item) prop :field])
+                                   :on-change #(let [val (-> % .-target .-value)
+                                                     parsed-val (js/parseFloat val)]
+                                                 (swap! current-opts assoc-in [(:arg item) prop :field] parsed-val)
+                                                 (sync!))}]
 
-                        :json-editor
-                        [:textarea {:class "bg-gray-800 border border-gray-600 text-xs p-1 h-10" :placeholder "JSON..."}]
+                          :boolean
+                          [:input {:type "checkbox"
+                                   :checked (get-in @current-opts [(:arg item) prop :field])
+                                   :on-change #(let [val (-> % .-target .-checked)]
+                                                 (swap! current-opts assoc-in [(:arg item) prop :field] val)
+                                                 (sync!))}]
 
-                        [:div (str "Unknown type: " (get-in conf [:type]))])]))])]]))))
+                          :multi-select
+                          [:select {:multiple true :class "bg-gray-800 border border-gray-600 text-xs p-1 h-20"}
+                           (for [opt (:options conf)]
+                             ^{:key opt}
+                             [:option {:value opt} opt])]
 
+                          :json-editor
+                          [:textarea {:class "bg-gray-800 border border-gray-600 text-xs p-1 h-10" :placeholder "JSON..."}]
+
+                          [:div (str "Unknown type: " (get-in conf [:type]))])]))])]])))))
 (defn main-view []
   (r/with-let [view-mode (r/atom :code)]
     (let [config-input @(rf/subscribe [::config-input])
@@ -257,41 +291,46 @@
         ;; Editor or UI Builder
         [:div {:class "flex-grow relative overflow-hidden"}
          (if (= @view-mode :code)
-           [:textarea {:class "w-full h-full bg-gray-800 text-white p-2 text-sm font-mono"
-                       :value config-input
-                       :on-change #(rf/dispatch [::set-config-input (-> % .-target .-value)])}]
+           [editor/monaco-editor
+            {:value config-input
+             :language (if (= config-mode :json) "json" "clojure")
+             :options {:fontSize 15
+                       :fontFamily "monospace"
+                       :rulers [80]
+                       :minimap {:enabled false}}
+             :on-change #(rf/dispatch [::set-config-input %])}]
            [ui-builder-view])]]
 
        ;; Right Side: Visualization
-     [:div {:class "w-1/2 h-full bg-white flex flex-col"}
-      [:div {:class "p-2 bg-gray-100 border-b border-gray-300 flex items-center gap-2"}
-       [:div {:class "flex flex-col flex-grow gap-1"}
-        [:div {:class "flex gap-2"}
-         [:select {:class "border p-1 text-sm w-32"
-                   :on-change (fn [e]
-                                (let [val (-> e .-target .-value)]
-                                  (when (not-empty val)
-                                    (let [dataset (some #(when (= (:name %) val) %) @dataset-list)]
-                                      (when dataset
-                                        (let [url (str "https://cdn.jsdelivr.net/npm/vega-datasets@3.2.1/data/" (:path dataset))]
-                                          (rf/dispatch [::events/set-dataset-url-input url])
-                                          (rf/dispatch [::events/fetch-dataset url])))))))}
-          [:option {:value ""} "Select Dataset..."]
-          (for [ds (sort-by :name @dataset-list)]
-            ^{:key (:name ds)}
-            [:option {:value (:name ds)} (:name ds)])]
+       [:div {:class "w-1/2 h-full bg-white flex flex-col"}
+        [:div {:class "p-2 bg-gray-100 border-b border-gray-300 flex items-center gap-2"}
+         [:div {:class "flex flex-col flex-grow gap-1"}
+          [:div {:class "flex gap-2"}
+           [:select {:class "border p-1 text-sm w-32"
+                     :on-change (fn [e]
+                                  (let [val (-> e .-target .-value)]
+                                    (when (not-empty val)
+                                      (let [dataset (some #(when (= (:name %) val) %) @dataset-list)]
+                                        (when dataset
+                                          (let [url (str "https://cdn.jsdelivr.net/npm/vega-datasets@3.2.1/data/" (:path dataset))]
+                                            (rf/dispatch [::events/set-dataset-url-input url])
+                                            (rf/dispatch [::events/fetch-dataset url])))))))}
+            [:option {:value ""} "Select Dataset..."]
+            (for [ds (sort-by :name @dataset-list)]
+              ^{:key (:name ds)}
+              [:option {:value (:name ds)} (:name ds)])]
 
-         [:input {:type "text"
-                  :placeholder "Dataset URL"
-                  :value @url-input
-                  :on-change #(rf/dispatch [::events/set-dataset-url-input (-> % .-target .-value)])
-                  :class "border p-1 flex-grow text-sm"}]]
+           [:input {:type "text"
+                    :placeholder "Dataset URL"
+                    :value @url-input
+                    :on-change #(rf/dispatch [::events/set-dataset-url-input (-> % .-target .-value)])
+                    :class "border p-1 flex-grow text-sm"}]]
 
-        [:button {:on-click #(rf/dispatch [::events/fetch-dataset @url-input])
-                  :class "bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"}
-         "Load Data"]]]
-      [:div {:class "flex-grow overflow-auto relative"}
-       [viz/vega-lite-viz parsed-config]]]])))
+          [:button {:on-click #(rf/dispatch [::events/fetch-dataset @url-input])
+                    :class "bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"}
+           "Load Data"]]]
+        [:div {:class "flex-grow overflow-auto relative"}
+         [viz/vega-lite-viz parsed-config]]]])))
 
 
 (defonce react-root (rdomc/create-root (.getElementById js/document "app")))
