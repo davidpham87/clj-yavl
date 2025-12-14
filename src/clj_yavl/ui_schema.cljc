@@ -108,7 +108,7 @@
         transform-fields (get-transform-fields current-opts)
         all-fields (distinct (concat schema-fields transform-fields))
         preset (get presets preset-key)
-        preset-def ((:def preset) all-fields)
+        preset-def ((:def preset) all-fields current-opts)
         common (common-def all-fields)]
     (vec
       (concat

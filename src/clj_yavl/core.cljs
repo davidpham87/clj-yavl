@@ -257,14 +257,9 @@
         ;; Editor or UI Builder
         [:div {:class "flex-grow relative overflow-hidden"}
          (if (= @view-mode :code)
-           [editor/monaco-editor
-            {:value config-input
-             :language (if (= config-mode :json) "json" "clojure")
-             :options {:fontSize 15
-                       :fontFamily "monospace"
-                       :rulers [80]
-                       :minimap {:enabled false}}
-             :on-change #(rf/dispatch [::set-config-input %])}]
+           [:textarea {:class "w-full h-full bg-gray-800 text-white p-2 text-sm font-mono"
+                       :value config-input
+                       :on-change #(rf/dispatch [::set-config-input (-> % .-target .-value)])}]
            [ui-builder-view])]]
 
        ;; Right Side: Visualization
