@@ -3,9 +3,12 @@
             [clojure.edn :as edn]
             [clj-yavl.io :as io]
             [clojure.pprint :refer [pprint]]
+            [clojure.string :as str]
             [re-frame.core :as rf]
             [clj-yavl.core :as-alias core]
-            [clj-yavl.db :as db]))
+            [clj-yavl.db :as db]
+            [clj-yavl.infer :as infer]
+            ["papaparse" :as Papa]))
 
 (def default-config-json "{\n  \"$schema\": \"https://vega.github.io/schema/vega-lite/v5.json\",\n  \"mark\": \"bar\",\n  \"encoding\": {\n    \"x\": {\"field\": \"col1\", \"type\": \"ordinal\"},\n    \"y\": {\"field\": \"col2\", \"type\": \"quantitative\"}\n  }\n}")
 
@@ -14,6 +17,7 @@
   (let [user-input-exists? (get-in db [:user-input :vega-lite])
         component-state-exists? (::core/vega-lite db)
         unit-specs-exists? (get-in db [:user-input :unit-specs])
+        dataset-list-exists? (get-in db [:user-input :dataset-list])
 
         ;; Initialize DataScript
         ds-conn (db/init-db)
@@ -41,7 +45,10 @@
               ::core/active-left-tab :config})
 
       (not unit-specs-exists?)
-      (assoc-in [:user-input :unit-specs] {}))))
+      (assoc-in [:user-input :unit-specs] {})
+
+      (not dataset-list-exists?)
+      (assoc-in [:user-input :dataset-list] []))))
 
 (defn init-unit-spec
   [db [_ id type initial-input]]
@@ -199,6 +206,10 @@
 
          updated (when parsed (assoc parsed :data {:values data}))
 
+         ;; Infer schema from data
+         inferred-schema (when (and (seq data) (map? (first data)))
+                           (infer/infer-schema data))
+
          new-input (when updated
                      (if (= mode :json)
                        (io/write-json-str updated {:indent 2})
@@ -206,6 +217,7 @@
      (if new-input
        (-> db
            (assoc-in [:user-input :vega-lite :default ::core/config-input] new-input)
+           (assoc-in [::core/vega-lite ::core/inferred-schema] inferred-schema)
            (update-in [:user-input :vega-lite :default ::core/ds-db]
                       (fn [_]
                         (let [conn (db/init-db)]
@@ -223,15 +235,22 @@
 (rf/reg-fx
  :promise/fetch
  (fn [{:keys [url on-success on-failure]}]
-   (-> (js/fetch url)
-       (.then (fn [resp]
-                (if (.-ok resp)
-                  (.json resp)
-                  (js/Promise.reject (str "Error: " (.-statusText resp))))))
-       (.then (fn [json]
-                (rf/dispatch (conj on-success (js->clj json :keywordize-keys true)))))
-       (.catch (fn [err]
-                 (rf/dispatch (conj on-failure err)))))))
+   (let [is-csv (or (str/ends-with? (str/lower-case url) ".csv")
+                    (str/starts-with? url "csv:"))] ;; Handle specific prefix if needed, though url likely http
+     (-> (js/fetch url)
+         (.then (fn [resp]
+                  (if (.-ok resp)
+                    (if is-csv
+                      (.text resp)
+                      (.json resp))
+                    (js/Promise.reject (str "Error: " (.-statusText resp))))))
+         (.then (fn [result]
+                  (if is-csv
+                    (let [parsed (Papa/parse result #js {:header true :dynamicTyping true})]
+                      (rf/dispatch (conj on-success (js->clj (.-data parsed) :keywordize-keys true))))
+                    (rf/dispatch (conj on-success (js->clj result :keywordize-keys true))))))
+         (.catch (fn [err]
+                   (rf/dispatch (conj on-failure err))))))))
 
 (defn update-channel-field
   [db [_ channel field]]
@@ -273,3 +292,23 @@
     (-> db
         (assoc-in [:user-input :vega-lite :default ::core/ds-db] new-ds-db)
         (sync-config-from-db))))
+
+;; Dataset List Events
+
+(rf/reg-event-fx
+ ::fetch-dataset-list
+ (fn [{:keys [db]} _]
+   {:promise/fetch {:url "https://cdn.jsdelivr.net/npm/vega-datasets/datapackage.json"
+                    :on-success [::fetch-dataset-list-success]
+                    :on-failure [::fetch-dataset-list-failure]}}))
+
+(rf/reg-event-db
+ ::fetch-dataset-list-success
+ (fn [db [_ datapackage]]
+   (assoc-in db [:user-input :dataset-list] (:resources datapackage))))
+
+(rf/reg-event-db
+ ::fetch-dataset-list-failure
+ (fn [db [_ err]]
+   (js/console.error "Failed to fetch dataset list:" err)
+   db))

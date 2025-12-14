@@ -84,3 +84,13 @@
  ::dataset-url-input
  (fn [db _]
    (get-in db [:user-input :dataset-url-input] "")))
+
+(rf/reg-sub
+ ::dataset-list
+ (fn [db _]
+   (get-in db [:user-input :dataset-list] [])))
+
+(rf/reg-sub
+ ::inferred-schema
+ (fn [db _]
+   (get-in db [::core/vega-lite ::core/inferred-schema])))
