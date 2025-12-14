@@ -30,4 +30,6 @@
                 {:git/tag "v0.5.1" :git/sha "dfb30dd"}
                 org.clojure/test.check {:mvn/version "1.1.1"}
                 com.gfredericks/test.chuck {:mvn/version "0.2.14"}}
-   :exec-fn cognitect.test-runner.api/test}}}
+  :exec-fn cognitect.test-runner.api/test}
+  :zprint {:extra-deps {zprint/zprint {:mvn/version "1.2.1"}}}
+}

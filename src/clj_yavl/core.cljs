@@ -8,7 +8,8 @@
             [clj-yavl.events :as events]
             [clj-yavl.subs :as subs]
             [clj-yavl.viz :as viz]
-            [clj-yavl.ui-schema :as ui-schema]))
+            [clj-yavl.ui-schema :as ui-schema]
+            [clj-yavl.infer :as infer]))
 
 ;; --- State ---
 
@@ -191,11 +192,22 @@
 
                         :text-input
                         [:input {:type "text"
-                                 :class "bg-gray-800 border border-gray-600 text-xs p-1"}]
+                                 :class "bg-gray-800 border border-gray-600 text-xs p-1"
+                                 :value (get-in @current-opts [(:arg item) prop :field])
+                                 :on-change #(let [val (-> % .-target .-value)
+                                                  inferred-type (infer/infer-type val)]
+                                              (swap! current-opts assoc-in [(:arg item) prop :field] val)
+                                              (swap! current-opts assoc-in [(:arg item) prop :type] inferred-type))}]
 
                         :number-input
                         [:input {:type "number"
-                                 :class "bg-gray-800 border border-gray-600 text-xs p-1"}]
+                                 :class "bg-gray-800 border border-gray-600 text-xs p-1"
+                                 :value (get-in @current-opts [(:arg item) prop :field])
+                                 :on-change #(let [val (-> % .-target .-value)
+                                                  parsed-val (js/parseFloat val)
+                                                  inferred-type (infer/infer-type parsed-val)]
+                                              (swap! current-opts assoc-in [(:arg item) prop :field] parsed-val)
+                                              (swap! current-opts assoc-in [(:arg item) prop :type] inferred-type))}]
 
                         :boolean
                         [:input {:type "checkbox"}]
@@ -293,4 +305,7 @@
 (defn ^:export init []
   (rf/dispatch-sync [::initialize])
   (rf/dispatch [::events/fetch-dataset-list])
+  (run))
+
+(defn ^:dev/after-load reload! []
   (run))

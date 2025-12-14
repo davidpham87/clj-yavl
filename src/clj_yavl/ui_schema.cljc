@@ -1,6 +1,7 @@
 (ns clj-yavl.ui-schema
   (:require [malli.core :as m]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clj-yavl.infer :as infer]))
 
 (defn- get-fields [data-schema]
   (let [schema (m/schema data-schema)
@@ -43,32 +44,34 @@
 (defn- field-select [fields]
   {:property :field :type :select :options fields})
 
-(defn- type-select []
-  {:property :type :type :select :options ["quantitative" "nominal" "temporal" "ordinal"]})
+(defn- type-select [current-type]
+  {:property :type :type :select
+   :options ["quantitative" "nominal" "temporal" "ordinal"]
+   :default (or current-type "nominal")})
 
-(defn- encoding-def [fields]
+(defn- encoding-def [fields current-field-opts]
   {:field (field-select fields)
-   :type (type-select)
+   :type (type-select (get current-field-opts :type))
    :title {:property :title :type :text-input}})
 
 (def presets
   {:xyplot {:args [:x :y :mark :color :size]
-            :def (fn [fields]
-                   {:x (encoding-def fields)
-                    :y (encoding-def fields)
+            :def (fn [fields current-opts]
+                   {:x (encoding-def fields (get current-opts :x))
+                    :y (encoding-def fields (get current-opts :y))
                     :mark {:value {:property :value :type :select :options ["point" "line" "area" "bar" "circle" "square" "tick" "rect"]}}
-                    :color (encoding-def fields)
-                    :size (encoding-def fields)})}
+                    :color (encoding-def fields (get current-opts :color))
+                    :size (encoding-def fields (get current-opts :size))})}
    :pie {:args [:category :value :inner-radius]
-         :def (fn [fields]
-                {:category (encoding-def fields)
-                 :value (encoding-def fields)
+         :def (fn [fields current-opts]
+                {:category (encoding-def fields (get current-opts :category))
+                 :value (encoding-def fields (get current-opts :value))
                  :inner-radius {:value {:property :value :type :number-input}}})}
    :bar {:args [:x :y :color :group :grouped? :orientation]
          :def (fn [fields]
-                {:x (encoding-def fields)
-                 :y (encoding-def fields)
-                 :color (encoding-def fields)
+                {:x (encoding-def fields (get current-opts :x))
+                 :y (encoding-def fields (get current-opts :y))
+                 :color (encoding-def fields (get current-opts :color))
                  :group (field-select fields)
                  :grouped? {:value {:property :value :type :boolean}}
                  :orientation {:value {:property :value :type :select :options [:vertical :horizontal]}}})}})
@@ -93,13 +96,4 @@
         common (common-def all-fields)]
     (vec
      (concat
-      (for [arg (:args preset)]
-        {:scope :preset
-         :arg arg
-         :main (get preset-def arg)
-         :advanced {}})
-      (for [arg common-args]
-        {:scope :common
-         :arg arg
-         :main (get common arg)
-         :advanced {}})))))
+      (for [arg (:args preset)]        (let [arg-opts (get current-opts arg)]          {:scope :preset           :arg arg           :main (-> (get preset-def arg) (update :field assoc :current-val (get arg-opts :field))                                         (update :type (fn [type-map] (assoc type-map :current-type (get arg-opts :type)))))           :advanced {}}))      (for [arg common-args]        (let [arg-opts (get current-opts arg)]          {:scope :common           :arg arg           :main (-> (get common arg) (update :field assoc :current-val (get arg-opts :field))                                        (update :type (fn [type-map] (assoc type-map :current-type (get arg-opts :type)))))           :advanced {}}))))))
