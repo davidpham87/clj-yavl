@@ -2,10 +2,10 @@ goog.provide('clj_yavl.subs');
 clj_yavl.subs.unit_spec_ids = (function clj_yavl$subs$unit_spec_ids(db,_){
 return cljs.core.keys(cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(db,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"unit-specs","unit-specs",-530655085)], null)));
 });
-clj_yavl.subs.unit_spec = (function clj_yavl$subs$unit_spec(db,p__31248){
-var vec__31249 = p__31248;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31249,(0),null);
-var id = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31249,(1),null);
+clj_yavl.subs.unit_spec = (function clj_yavl$subs$unit_spec(db,p__28443){
+var vec__28444 = p__28443;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__28444,(0),null);
+var id = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__28444,(1),null);
 return cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(db,new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"unit-specs","unit-specs",-530655085),id], null));
 });
 clj_yavl.subs.all_unit_specs = (function clj_yavl$subs$all_unit_specs(db,_){
@@ -13,12 +13,12 @@ return cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(db,new cljs.core.Persisten
 });
 clj_yavl.subs.compiled_unit_spec_fn = (function clj_yavl$subs$compiled_unit_spec_fn(spec,_){
 if(cljs.core.truth_(spec)){
-var map__31256 = spec;
-var map__31256__$1 = cljs.core.__destructure_map(map__31256);
-var type = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__31256__$1,new cljs.core.Keyword(null,"type","type",1174270348));
-var input = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__31256__$1,new cljs.core.Keyword(null,"input","input",556931961));
+var map__28447 = spec;
+var map__28447__$1 = cljs.core.__destructure_map(map__28447);
+var type = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__28447__$1,new cljs.core.Keyword(null,"type","type",1174270348));
+var input = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__28447__$1,new cljs.core.Keyword(null,"input","input",556931961));
 try{return clj_yavl.presets.unit_spec.cljs$core$IFn$_invoke$arity$1(cljs.core.assoc.cljs$core$IFn$_invoke$arity$3(input,new cljs.core.Keyword(null,"type","type",1174270348),type));
-}catch (e31257){var e = e31257;
+}catch (e28448){var e = e28448;
 return new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"error","error",-978969032),["Error compiling spec: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(e)].join('')], null);
 }} else {
 return null;
@@ -33,22 +33,22 @@ return new cljs.core.Keyword("clj-yavl.core","config-input","clj-yavl.core/confi
 clj_yavl.subs.config_mode = (function clj_yavl$subs$config_mode(root){
 return new cljs.core.Keyword("clj-yavl.core","config-mode","clj-yavl.core/config-mode",-1919291340).cljs$core$IFn$_invoke$arity$1(root);
 });
-clj_yavl.subs.parsed_config = (function clj_yavl$subs$parsed_config(p__31259,_){
-var vec__31260 = p__31259;
-var input = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31260,(0),null);
-var mode = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31260,(1),null);
+clj_yavl.subs.parsed_config = (function clj_yavl$subs$parsed_config(p__28449,_){
+var vec__28450 = p__28449;
+var input = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__28450,(0),null);
+var mode = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__28450,(1),null);
 try{if(cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(mode,new cljs.core.Keyword(null,"json","json",1279968570))){
 return clj_yavl.io.read_json_str.cljs$core$IFn$_invoke$arity$2(input,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key-fn","key-fn",-636154479),cljs.core.keyword], null));
 } else {
 return clojure.edn.read_string.cljs$core$IFn$_invoke$arity$1(input);
 }
-}catch (e31263){var ___$1 = e31263;
+}catch (e28453){var ___$1 = e28453;
 return null;
 }});
-clj_yavl.subs.top_level_prop = (function clj_yavl$subs$top_level_prop(config,p__31264){
-var vec__31265 = p__31264;
-var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31265,(0),null);
-var prop_key = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__31265,(1),null);
+clj_yavl.subs.top_level_prop = (function clj_yavl$subs$top_level_prop(config,p__28454){
+var vec__28455 = p__28454;
+var _ = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__28455,(0),null);
+var prop_key = cljs.core.nth.cljs$core$IFn$_invoke$arity$3(vec__28455,(1),null);
 return cljs.core.get.cljs$core$IFn$_invoke$arity$2(config,prop_key);
 });
 clj_yavl.subs.ds_db = (function clj_yavl$subs$ds_db(db,_){
@@ -82,6 +82,12 @@ return null;
 });
 re_frame.core.reg_sub.cljs$core$IFn$_invoke$arity$variadic(new cljs.core.Keyword("clj-yavl.subs","dataset-url-input","clj-yavl.subs/dataset-url-input",2129631621),cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2([(function (db,_){
 return cljs.core.get_in.cljs$core$IFn$_invoke$arity$3(db,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"dataset-url-input","dataset-url-input",-505073218)], null),"");
+})], 0));
+re_frame.core.reg_sub.cljs$core$IFn$_invoke$arity$variadic(new cljs.core.Keyword("clj-yavl.subs","dataset-list","clj-yavl.subs/dataset-list",-2014516045),cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2([(function (db,_){
+return cljs.core.get_in.cljs$core$IFn$_invoke$arity$3(db,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"user-input","user-input",-504242422),new cljs.core.Keyword(null,"dataset-list","dataset-list",683219302)], null),cljs.core.PersistentVector.EMPTY);
+})], 0));
+re_frame.core.reg_sub.cljs$core$IFn$_invoke$arity$variadic(new cljs.core.Keyword("clj-yavl.subs","inferred-schema","clj-yavl.subs/inferred-schema",-1109459864),cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2([(function (db,_){
+return cljs.core.get_in.cljs$core$IFn$_invoke$arity$2(db,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("clj-yavl.core","vega-lite","clj-yavl.core/vega-lite",943809627),new cljs.core.Keyword("clj-yavl.core","inferred-schema","clj-yavl.core/inferred-schema",-1109150020)], null));
 })], 0));
 
 //# sourceMappingURL=clj_yavl.subs.js.map
