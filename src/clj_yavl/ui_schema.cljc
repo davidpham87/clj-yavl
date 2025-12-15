@@ -1,7 +1,5 @@
 (ns clj-yavl.ui-schema
-  (:require [malli.core :as m]
-            [clojure.string :as str]
-            [clj-yavl.infer :as infer]))
+  (:require [malli.core :as m]))
 
 (defn- get-fields
   [data-schema]

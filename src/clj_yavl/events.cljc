@@ -7,7 +7,6 @@
             [re-frame.core :as rf]
             [clj-yavl.core :as-alias core]
             [clj-yavl.db :as db]
-            [clj-yavl.infer :as infer]
             [bb-web-ds-tools.components.malli :as bb-malli]
             [malli.core :as m]
             ["papaparse" :as Papa]))

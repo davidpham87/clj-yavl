@@ -2,14 +2,12 @@
   (:require
    [bb-web-ds-tools.components.editor :as editor]
    [clj-yavl.events :as events]
-   [clj-yavl.infer :as infer]
    [clj-yavl.presets :as presets]
    [clj-yavl.subs :as subs]
    [clj-yavl.ui-schema :as ui-schema]
    [clj-yavl.viz :as viz]
    [cljs.pprint :refer [pprint]]
    [clojure.edn :as edn]
-   [malli.core :as m]
    [re-frame.core :as rf]
    [reagent.core :as r]
    [reagent.dom.client :as rdomc]))
