@@ -8,7 +8,15 @@
  {:app {:target :browser
         :output-dir "public/js"
         :asset-path "/js"
-        :modules {:main {:entries [clj-yavl.core]}}}
+        :modules {:main {:entries [clj-yavl.core]}}
+
+        :dev {:compiler-options {:source-map true
+                                 :pretty-print true
+                                 :pseudo-names true}}
+
+        :devtools {:autobuild true
+                   :preload [devtools.preload]}}
+
   :test {:target :node-test
          :output-to "out/node-tests.js"
          :autorun true}}}
