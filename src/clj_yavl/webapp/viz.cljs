@@ -1,4 +1,4 @@
-(ns clj-yavl.viz
+(ns clj-yavl.webapp.viz
   (:require [reagent.core :as r]
             ["vega-embed" :as vega-embed]))
 

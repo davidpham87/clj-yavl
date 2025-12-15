@@ -1,11 +1,11 @@
-(ns clj-yavl.core
+(ns clj-yavl.webapp.core
   (:require
    [bb-web-ds-tools.components.editor :as editor]
-   [clj-yavl.events :as events]
+   [clj-yavl.webapp.events :as events]
    [clj-yavl.presets :as presets]
-   [clj-yavl.subs :as subs]
-   [clj-yavl.ui-schema :as ui-schema]
-   [clj-yavl.viz :as viz]
+   [clj-yavl.webapp.subs :as subs]
+   [clj-yavl.webapp.ui-schema :as ui-schema]
+   [clj-yavl.webapp.viz :as viz]
    [cljs.pprint :refer [pprint]]
    [clojure.edn :as edn]
    [re-frame.core :as rf]
@@ -76,22 +76,25 @@
        nil)
      (catch js/Error _ nil))))
 
+(defn- update-transform-raw [input mode new-transform]
+   (try
+     (case mode
+       :edn (let [data (edn/read-string input)
+                  updated (assoc data :transform new-transform)]
+              (with-out-str (pprint updated)))
+       :json (let [data (js->clj (js/JSON.parse input) :keywordize-keys true)
+                   updated (assoc data :transform new-transform)]
+               (js/JSON.stringify (clj->js updated) nil 2))
+       input)
+     (catch js/Error _ input)))
+
 (rf/reg-event-db
  ::set-config-transform-raw
  (fn [db [_ new-transform]]
    (let [user-input (get-in db [:user-input :vega-lite :default])
          mode (::config-mode user-input)
          input (::config-input user-input)
-         new-input (try
-                     (case mode
-                       :edn (let [data (edn/read-string input)
-                                  updated (assoc data :transform new-transform)]
-                              (with-out-str (pprint updated)))
-                       :json (let [data (js->clj (js/JSON.parse input) :keywordize-keys true)
-                                   updated (assoc data :transform new-transform)]
-                               (js/JSON.stringify (clj->js updated) nil 2))
-                       input)
-                     (catch js/Error _ input))]
+         new-input (update-transform-raw input mode new-transform)]
      (assoc-in db [:user-input :vega-lite :default ::config-input] new-input))))
 
 ;; --- Transform Ops Events & Subs ---
@@ -158,8 +161,8 @@
   [{:keys [arg prop current-opts]}]
   [:input {:type "text"
            :class "bg-gray-800 border border-gray-600 text-xs p-1"
-           :value (get-in current-opts [arg prop :field])
-           :on-change #(rf/dispatch [::events/update-ui-option arg prop {:field (-> % .-target .-value)}])}])
+           :value (get-in current-opts [arg prop])
+           :on-change #(rf/dispatch [::events/update-ui-option arg prop (-> % .-target .-value)])}])
 
 (defmethod render-input :number-input
   [{:keys [arg prop current-opts]}]
@@ -189,12 +192,27 @@
   [_]
   nil)
 
+(defn- render-ui-builder-item [item current-opts]
+  [:div {:class "border border-gray-600 p-2 rounded"}
+    [:div {:class "font-bold text-sm mb-2 text-blue-400"}
+    (name (:arg item))
+    [:span {:class "text-gray-500 text-xs ml-2"} (name (:scope item))]]
+
+    (into [:div {:class "grid grid-cols-2 gap-2"}]
+          (for [[prop conf] (:main item)]
+            [:div {:class "flex flex-col"}
+            [:label {:class "text-xs mb-1"} (name prop)]
+            (render-input {:arg (:arg item)
+                            :item item
+                            :prop prop
+                            :conf conf
+                            :current-opts current-opts})]))])
+
 (defn ui-builder-view []
   (let [preset-key @(rf/subscribe [::subs/ui-builder-preset])
         current-opts @(rf/subscribe [::subs/ui-builder-opts])
         inferred-schema @(rf/subscribe [::subs/inferred-schema])
-        default-mock-schema [:map [:Name :string]]
-        schema (or inferred-schema default-mock-schema)
+        schema (or inferred-schema [:map [:Name :string]])
         ui-def (ui-schema/generate-ui-schema preset-key schema current-opts)]
     [:div {:class "p-4 text-gray-300 overflow-auto h-full bg-[#1e1e1e]"}
      [:h2 {:class "text-lg font-bold mb-4"} "UI Builder"]
@@ -216,20 +234,71 @@
       (into [:<>]
             (for [item ui-def]
               ^{:key (:arg item)}
-              [:div {:class "border border-gray-600 p-2 rounded"}
-               [:div {:class "font-bold text-sm mb-2 text-blue-400"}
-                (name (:arg item))
-                [:span {:class "text-gray-500 text-xs ml-2"} (name (:scope item))]]
+              (render-ui-builder-item item current-opts)))]]))
 
-               (into [:div {:class "grid grid-cols-2 gap-2"}]
-                     (for [[prop conf] (:main item)]
-                       [:div {:class "flex flex-col"}
-                        [:label {:class "text-xs mb-1"} (name prop)]
-                        (render-input {:arg (:arg item)
-                                       :item item
-                                       :prop prop
-                                       :conf conf
-                                       :current-opts current-opts})]))]))]]))
+(defn- toolbar [view-mode config-mode]
+  [:div {:class "flex items-center justify-between p-2 bg-[#2d2d2d] border-b border-gray-700 text-gray-300"}
+   [:div {:class "flex space-x-4"}
+    [:span "Vega-Lite Configuration"]
+    [:div {:class "flex bg-gray-700 rounded p-0.5"}
+      [:button {:class (str "px-2 py-0.5 text-xs rounded " (if (= @view-mode :code) "bg-blue-600 text-white" "text-gray-300"))
+                :on-click #(reset! view-mode :code)} "Code"]
+      [:button {:class (str "px-2 py-0.5 text-xs rounded " (if (= @view-mode :ui) "bg-blue-600 text-white" "text-gray-300"))
+                :on-click #(reset! view-mode :ui)} "UI Builder"]]]
+
+   (when (= @view-mode :code)
+      [:div {:class "flex space-x-2 text-xs"}
+      [:label {:class "cursor-pointer flex items-center space-x-1"}
+        [:input {:type "radio" :name "mode" :checked (= config-mode :json)
+                :on-change #(rf/dispatch [::set-config-mode :json])}]
+        [:span "JSON"]]
+      [:label {:class "cursor-pointer flex items-center space-x-1"}
+        [:input {:type "radio" :name "mode" :checked (= config-mode :edn)
+                :on-change #(rf/dispatch [::set-config-mode :edn])}]
+        [:span "EDN"]]])])
+
+(defn- left-panel [view-mode config-mode config-input]
+  [:div {:class "w-1/2 h-full border-r border-gray-700 flex flex-col bg-[#1e1e1e]"}
+   (toolbar view-mode config-mode)
+   [:div {:class "flex-grow relative overflow-hidden"}
+    (if (= @view-mode :code)
+      [editor/monaco-editor
+      {:value config-input
+        :language (if (= config-mode :json) "json" "clojure")
+        :options {:fontSize 15
+                  :fontFamily "monospace"
+                  :rulers [80]
+                  :minimap {:enabled false}}
+        :on-change #(rf/dispatch [::set-config-input %])}]
+      [ui-builder-view])]])
+
+(defn- dataset-controls [url-input dataset-list]
+  [:div {:class "p-2 bg-gray-100 border-b border-gray-300 flex items-center gap-2"}
+   [:div {:class "flex flex-col flex-grow gap-1"}
+    [:div {:class "flex gap-2"}
+      [:select {:class "border p-1 text-sm w-32"
+                :on-change (fn [e]
+                            (let [val (-> e .-target .-value)]
+                              (when (not-empty val)
+                                (let [dataset (some #(when (= (:name %) val) %) @dataset-list)]
+                                  (when dataset
+                                    (let [url (str "https://cdn.jsdelivr.net/npm/vega-datasets@3.2.1/data/" (:path dataset))]
+                                      (rf/dispatch [::events/set-dataset-url-input url])
+                                      (rf/dispatch [::events/fetch-dataset url])))))))}
+      [:option {:value ""} "Select Dataset..."]
+      (for [ds (sort-by :name @dataset-list)]
+        ^{:key (:name ds)}
+        [:option {:value (:name ds)} (:name ds)])]
+
+      [:input {:type "text"
+              :placeholder "Dataset URL"
+              :value @url-input
+              :on-change #(rf/dispatch [::events/set-dataset-url-input (-> % .-target .-value)])
+              :class "border p-1 flex-grow text-sm"}]]
+
+    [:button {:on-click #(rf/dispatch [::events/fetch-dataset @url-input])
+              :class "bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"}
+      "Load Data"]]])
 
 (defn main-view []
   (r/with-let [view-mode (r/atom :code)]
@@ -239,70 +308,9 @@
           url-input (rf/subscribe [::subs/dataset-url-input])
           dataset-list (rf/subscribe [::subs/dataset-list])]
       [:div {:class "flex h-screen w-screen overflow-hidden"}
-       ;; Left Side: Editor
-       [:div {:class "w-1/2 h-full border-r border-gray-700 flex flex-col bg-[#1e1e1e]"}
-        ;; Toolbar
-        [:div {:class "flex items-center justify-between p-2 bg-[#2d2d2d] border-b border-gray-700 text-gray-300"}
-         [:div {:class "flex space-x-4"}
-          [:span "Vega-Lite Configuration"]
-          [:div {:class "flex bg-gray-700 rounded p-0.5"}
-           [:button {:class (str "px-2 py-0.5 text-xs rounded " (if (= @view-mode :code) "bg-blue-600 text-white" "text-gray-300"))
-                     :on-click #(reset! view-mode :code)} "Code"]
-           [:button {:class (str "px-2 py-0.5 text-xs rounded " (if (= @view-mode :ui) "bg-blue-600 text-white" "text-gray-300"))
-                     :on-click #(reset! view-mode :ui)} "UI Builder"]]]
-
-         (when (= @view-mode :code)
-           [:div {:class "flex space-x-2 text-xs"}
-            [:label {:class "cursor-pointer flex items-center space-x-1"}
-             [:input {:type "radio" :name "mode" :checked (= config-mode :json)
-                      :on-change #(rf/dispatch [::set-config-mode :json])}]
-             [:span "JSON"]]
-            [:label {:class "cursor-pointer flex items-center space-x-1"}
-             [:input {:type "radio" :name "mode" :checked (= config-mode :edn)
-                      :on-change #(rf/dispatch [::set-config-mode :edn])}]
-             [:span "EDN"]]])]
-
-        ;; Editor or UI Builder
-        [:div {:class "flex-grow relative overflow-hidden"}
-         (if (= @view-mode :code)
-           [editor/monaco-editor
-            {:value config-input
-             :language (if (= config-mode :json) "json" "clojure")
-             :options {:fontSize 15
-                       :fontFamily "monospace"
-                       :rulers [80]
-                       :minimap {:enabled false}}
-             :on-change #(rf/dispatch [::set-config-input %])}]
-           [ui-builder-view])]]
-
-       ;; Right Side: Visualization
+       (left-panel view-mode config-mode config-input)
        [:div {:class "w-1/2 h-full bg-white flex flex-col"}
-        [:div {:class "p-2 bg-gray-100 border-b border-gray-300 flex items-center gap-2"}
-         [:div {:class "flex flex-col flex-grow gap-1"}
-          [:div {:class "flex gap-2"}
-           [:select {:class "border p-1 text-sm w-32"
-                     :on-change (fn [e]
-                                  (let [val (-> e .-target .-value)]
-                                    (when (not-empty val)
-                                      (let [dataset (some #(when (= (:name %) val) %) @dataset-list)]
-                                        (when dataset
-                                          (let [url (str "https://cdn.jsdelivr.net/npm/vega-datasets@3.2.1/data/" (:path dataset))]
-                                            (rf/dispatch [::events/set-dataset-url-input url])
-                                            (rf/dispatch [::events/fetch-dataset url])))))))}
-            [:option {:value ""} "Select Dataset..."]
-            (for [ds (sort-by :name @dataset-list)]
-              ^{:key (:name ds)}
-              [:option {:value (:name ds)} (:name ds)])]
-
-           [:input {:type "text"
-                    :placeholder "Dataset URL"
-                    :value @url-input
-                    :on-change #(rf/dispatch [::events/set-dataset-url-input (-> % .-target .-value)])
-                    :class "border p-1 flex-grow text-sm"}]]
-
-          [:button {:on-click #(rf/dispatch [::events/fetch-dataset @url-input])
-                    :class "bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"}
-           "Load Data"]]]
+        (dataset-controls url-input dataset-list)
         [:div {:class "flex-grow overflow-auto relative"}
          [viz/vega-lite-viz parsed-config]]]])))
 

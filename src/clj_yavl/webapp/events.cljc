@@ -1,11 +1,11 @@
-(ns clj-yavl.events
+(ns clj-yavl.webapp.events
   (:require [clj-yavl.presets :as presets]
             [clojure.edn :as edn]
             [clj-yavl.io :as io]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [re-frame.core :as rf]
-            [clj-yavl.core :as-alias core]
+            [clj-yavl.webapp.core :as-alias core]
             [clj-yavl.db :as db]
             [bb-web-ds-tools.components.malli :as bb-malli]
             [malli.core :as m]
@@ -13,49 +13,41 @@
 
 (def default-config-json "{\n  \"$schema\": \"https://vega.github.io/schema/vega-lite/v5.json\",\n  \"mark\": \"bar\",\n  \"encoding\": {\n    \"x\": {\"field\": \"col1\", \"type\": \"ordinal\"},\n    \"y\": {\"field\": \"col2\", \"type\": \"quantitative\"}\n  }\n}")
 
+(defn- init-default-state [ds-db]
+  {:user-input {:vega-lite {:saved-configs {}
+                            :default {::core/data-input ""
+                                      ::core/config-input default-config-json
+                                      ::core/config-mode :json
+                                      ::core/active-config-name nil
+                                      ::core/ds-db ds-db}}
+                :ui-builder {:preset-key :xyplot :opts {}}
+                :unit-specs {}
+                :dataset-list []}
+   ::core/vega-lite {::core/format :csv
+                     ::core/structure :columnar
+                     ::core/parsed-data nil
+                     ::core/inferred-schema nil
+                     ::core/active-left-tab :config}})
+
 (defn initialize-db
   [db _]
-  (let [user-input-exists? (get-in db [:user-input :vega-lite])
-        component-state-exists? (::core/vega-lite db)
-        unit-specs-exists? (get-in db [:user-input :unit-specs])
-        dataset-list-exists? (get-in db [:user-input :dataset-list])
-
-        ;; Initialize DataScript
-        ds-conn (db/init-db)
-        ;; Load default config into DS
+  (let [ds-conn (db/init-db)
         default-config (io/read-json-str default-config-json {:key-fn keyword})
         _ (db/transact ds-conn (db/config->tx-data "default" default-config))
         ds-db @ds-conn]
-
-    (cond-> db
-      (not user-input-exists?)
-      (assoc-in [:user-input :vega-lite]
-                {:saved-configs {}
-                 :default {::core/data-input ""
-                           ::core/config-input default-config-json
-                           ::core/config-mode :json
-                           ::core/active-config-name nil
-                           ::core/ds-db ds-db}}) ;; Store DB value
-
-      ;; Initialize UI Builder state
-      true
-      (assoc-in [:user-input :ui-builder]
-                {:preset-key :xyplot
-                 :opts {}})
-
-      (not component-state-exists?)
-      (assoc ::core/vega-lite
-             {::core/format :csv
-              ::core/structure :columnar
-              ::core/parsed-data nil
-              ::core/inferred-schema nil
-              ::core/active-left-tab :config})
-
-      (not unit-specs-exists?)
-      (assoc-in [:user-input :unit-specs] {})
-
-      (not dataset-list-exists?)
-      (assoc-in [:user-input :dataset-list] []))))
+    (if (empty? db)
+      (init-default-state ds-db)
+      (cond-> db
+        (not (get-in db [:user-input :vega-lite]))
+        (assoc-in [:user-input :vega-lite] (get-in (init-default-state ds-db) [:user-input :vega-lite]))
+        (not (get-in db [:user-input :ui-builder]))
+        (assoc-in [:user-input :ui-builder] {:preset-key :xyplot :opts {}})
+        (not (::core/vega-lite db))
+        (assoc ::core/vega-lite {::core/format :csv ::core/structure :columnar ::core/parsed-data nil ::core/inferred-schema nil ::core/active-left-tab :config})
+        (not (get-in db [:user-input :unit-specs]))
+        (assoc-in [:user-input :unit-specs] {})
+        (not (get-in db [:user-input :dataset-list]))
+        (assoc-in [:user-input :dataset-list] [])))))
 
 (defn- sync-config!
   [db]
@@ -89,6 +81,16 @@
           (m/type (first (m/children entry-type)))
           field-type))))
 
+(defn- get-vega-type [m-type]
+  (case m-type
+    :int "quantitative"
+    :double "quantitative"
+    :string "nominal"
+    :boolean "nominal"
+    :inst "temporal"
+    :enum "nominal"
+    "nominal"))
+
 (defn- to-title-case [s]
   (when s
     (-> s
@@ -107,19 +109,12 @@
                                                   (m/children (m/schema schema))))]
                     (swap! debug-atom assoc :field-spec field-spec)
                     (entry-def->type field-spec)))
-         vega-type (case m-type
-                     :int "quantitative"
-                     :double "quantitative"
-                     :string "nominal"
-                     :boolean "nominal"
-                     :inst "temporal"
-                     :enum "nominal"
-                     "nominal")
+         vega-type (get-vega-type m-type)
 
          current-opts (get-in db [:user-input :ui-builder :opts])
          current-arg-opts (get current-opts arg)
          current-field (:field current-arg-opts)
-         current-title (get-in current-arg-opts [:title :field])
+         current-title (get-in current-arg-opts [:title])
 
          new-title-candidate (to-title-case value)
          old-default-title (when current-field (to-title-case current-field))
@@ -131,7 +126,7 @@
          (assoc-in [:user-input :ui-builder :opts arg prop] value)
          (assoc-in [:user-input :ui-builder :opts arg :type] vega-type)
          (cond-> should-update-title?
-           (assoc-in [:user-input :ui-builder :opts arg :title :field] new-title-candidate))
+           (assoc-in [:user-input :ui-builder :opts arg :title] new-title-candidate))
          (sync-config!)))))
 
 (defn init-unit-spec
@@ -152,80 +147,67 @@
   [db [_ id input]]
   (assoc-in db [:user-input :unit-specs id :input] input))
 
+(defn- parse-input [val mode]
+  (try
+    (if (= mode :json)
+      (io/read-json-str val {:key-fn keyword})
+      (edn/read-string val))
+    (catch #?(:clj Exception :cljs :default) _ nil)))
+
+(defn- update-ds-with-config [db config]
+   (update-in db [:user-input :vega-lite :default ::core/ds-db]
+                 (fn [old-db]
+                   (let [conn (db/init-db)]
+                     (db/transact conn (db/config->tx-data "default" config))
+                     @conn))))
+
 (defn set-config-input
   [db [_ val]]
-  ;; When text changes, update DS
-  ;; Note: This is a heavy operation for every keystroke.
-  ;; Ideally we debounce or only do it on blur/valid JSON.
-  ;; For now, we attempt to parse and if valid, update DS.
   (let [mode (get-in db [:user-input :vega-lite :default ::core/config-mode])
-        parsed (try
-                 (if (= mode :json)
-                   (io/read-json-str val {:key-fn keyword})
-                   (edn/read-string val))
-                 (catch #?(:clj Exception :cljs :default) _ nil))]
+        parsed (parse-input val mode)]
     (cond-> (assoc-in db [:user-input :vega-lite :default ::core/config-input] val)
       parsed
-      (update-in [:user-input :vega-lite :default ::core/ds-db]
-                 (fn [old-db]
-                   ;; We need to re-create or update.
-                   ;; Since we don't have a smart diff yet, let's create a new DB for simplicity
-                   ;; or retract everything for "default" and re-insert.
-                   ;; Retracting recursively is hard without helper.
-                   ;; Let's just create a new DB for now to ensure consistency.
-                   (let [conn (db/init-db)]
-                     (db/transact conn (db/config->tx-data "default" parsed))
-                     @conn))))))
+      (update-ds-with-config parsed))))
+
+(defn- convert-input [input current-mode new-mode]
+  (cond
+    (and (= current-mode :json) (= new-mode :edn))
+    (try
+      (with-out-str (pprint (io/read-json-str input {:key-fn keyword})))
+      (catch #?(:clj Exception :cljs :default) _ input))
+
+    (and (= current-mode :edn) (= new-mode :json))
+    (try
+      (io/write-json-str (edn/read-string input) {:indent 2})
+      (catch #?(:clj Exception :cljs :default) _ input))
+
+    :else input))
 
 (defn set-config-mode
   [db [_ new-mode]]
   (let [user-input (get-in db [:user-input :vega-lite :default])
         current-mode (::core/config-mode user-input)
         current-input (::core/config-input user-input)
-        new-input (cond
-                    (and (= current-mode :json) (= new-mode :edn))
-                    (try
-                      (let [obj (io/read-json-str current-input {:key-fn keyword})
-                            edn-data obj]
-                        (with-out-str (pprint edn-data)))
-                      (catch #?(:clj Exception :cljs :default) _ current-input))
-
-                    (and (= current-mode :edn) (= new-mode :json))
-                    (try
-                      (let [edn-data (edn/read-string current-input)]
-                        (io/write-json-str edn-data {:indent 2}))
-                      (catch #?(:clj Exception :cljs :default) _ current-input))
-
-                    :else current-input)]
+        new-input (convert-input current-input current-mode new-mode)]
     (-> db
         (assoc-in [:user-input :vega-lite :default ::core/config-mode] new-mode)
         (assoc-in [:user-input :vega-lite :default ::core/config-input] new-input))))
 
 (defn set-top-level-prop
   [db [_ prop-key value]]
-  ;; When setting a prop via UI (old way), we should probably use the new DS way.
-  ;; But to maintain backward compatibility or migrate, let's keep this but also update DS.
   (let [user-input (get-in db [:user-input :vega-lite :default])
         mode (::core/config-mode user-input)
         input (::core/config-input user-input)]
     (try
-      (let [parsed (if (= mode :json)
-                     (io/read-json-str input {:key-fn keyword})
-                     (edn/read-string input))
+      (let [parsed (parse-input input mode)
             updated (assoc parsed prop-key value)
             new-input (if (= mode :json)
                         (io/write-json-str updated {:indent 2})
                         (with-out-str (pprint updated)))]
         (-> db
             (assoc-in [:user-input :vega-lite :default ::core/config-input] new-input)
-            (update-in [:user-input :vega-lite :default ::core/ds-db]
-                       (fn [_]
-                         (let [conn (db/init-db)]
-                           (db/transact conn (db/config->tx-data "default" updated))
-                           @conn)))))
+            (update-ds-with-config updated)))
       (catch #?(:clj Exception :cljs :default) _ db))))
-
-;; New Events for Granular Editing via DataScript
 
 (defn- sync-config-from-db
   "Helper to update text config from DS."
@@ -240,26 +222,14 @@
 
 (defn update-mark
   [db [_ mark-type]]
-  ;; We need to transact into the DS DB stored in app-db.
-  ;; Since app-db stores the value, we need to 'edit' it.
-  ;; d/with works on db values.
   (let [ds-db (get-in db [:user-input :vega-lite :default ::core/ds-db])
-        ;; We need to know the entity ID for the mark or create it.
-        ;; Since we don't have easy entity lookup here without query, let's use a standard query or assumption.
-        ;; Or better, re-transact the mark part using the same "default" id logic.
-        ;; But config->tx-data regenerates everything.
-
-        ;; Let's try to query for the mark entity.
         mark-eid (ffirst (db/q '[:find ?e :where [?root :vl/mark ?e] [?root :vl/id "default"]] ds-db))
-
         tx-data (if mark-eid
                   [{:db/id mark-eid :mark/type mark-type}]
                   (let [new-mark-id -1]
                     [{:db/id [:vl/id "default"] :vl/mark new-mark-id}
                      {:db/id new-mark-id :mark/type mark-type}]))
-
         new-ds-db (db/with ds-db tx-data)]
-
     (-> db
         (assoc-in [:user-input :vega-lite :default ::core/ds-db] new-ds-db)
         (sync-config-from-db))))
@@ -276,39 +246,31 @@
                     :on-success [::fetch-dataset-success]
                     :on-failure [::fetch-dataset-failure]}}))
 
+(defn- process-fetched-data [parsed data mode]
+   (let [updated (when parsed (assoc parsed :data {:values data}))
+         inferred-schema (when (and (seq data) (map? (first data)))
+                           (let [result (bb-malli/infer-schema data)]
+                             (when (:success result)
+                               (edn/read-string (:schema-str result)))))
+         new-input (when updated
+                     (if (= mode :json)
+                       (io/write-json-str updated {:indent 2})
+                       (with-out-str (pprint updated))))]
+     {:new-input new-input :inferred-schema inferred-schema :updated updated}))
+
 (rf/reg-event-db
  ::fetch-dataset-success
  (fn [db [_ data]]
    (let [user-input (get-in db [:user-input :vega-lite :default])
          mode (::core/config-mode user-input)
          input (::core/config-input user-input)
-         parsed (try
-                  (if (= mode :json)
-                    (io/read-json-str input {:key-fn keyword})
-                    (edn/read-string input))
-                  (catch #?(:clj Exception :cljs :default) _ nil))
-
-         updated (when parsed (assoc parsed :data {:values data}))
-
-         ;; Infer schema from data
-         inferred-schema (when (and (seq data) (map? (first data)))
-                           (let [result (bb-malli/infer-schema data)]
-                             (when (:success result)
-                               (edn/read-string (:schema-str result)))))
-
-         new-input (when updated
-                     (if (= mode :json)
-                       (io/write-json-str updated {:indent 2})
-                       (with-out-str (pprint updated))))]
+         parsed (parse-input input mode)
+         {:keys [new-input inferred-schema updated]} (process-fetched-data parsed data mode)]
      (if new-input
        (-> db
            (assoc-in [:user-input :vega-lite :default ::core/config-input] new-input)
            (assoc-in [::core/vega-lite ::core/inferred-schema] inferred-schema)
-           (update-in [:user-input :vega-lite :default ::core/ds-db]
-                      (fn [_]
-                        (let [conn (db/init-db)]
-                          (db/transact conn (db/config->tx-data "default" updated))
-                          @conn))))
+           (update-ds-with-config updated))
        db))))
 
 (rf/reg-event-db
@@ -323,13 +285,11 @@
  (fn [{:keys [url on-success on-failure]}]
    #?(:cljs
       (let [is-csv (or (str/ends-with? (str/lower-case url) ".csv")
-                       (str/starts-with? url "csv:"))] ;; Handle specific prefix if needed, though url likely http
+                       (str/starts-with? url "csv:"))]
         (-> (js/fetch url)
             (.then (fn [resp]
                      (if (.-ok resp)
-                       (if is-csv
-                         (.text resp)
-                         (.json resp))
+                       (if is-csv (.text resp) (.json resp))
                        (js/Promise.reject (str "Error: " (.-statusText resp))))))
             (.then (fn [result]
                      (if is-csv
@@ -339,33 +299,28 @@
             (.catch (fn [err]
                       (rf/dispatch (conj on-failure err)))))))))
 
+(defn- create-channel-tx [ds-db channel field]
+  (let [channel-eid (ffirst (db/q '[:find ?c
+                                    :in $ ?channel-name
+                                    :where [?root :vl/encoding ?enc] [?root :vl/id "default"]
+                                           [?enc :encoding/channels ?c] [?c :channel/name ?channel-name]]
+                                  ds-db (name channel)))]
+    (if channel-eid
+      [{:db/id channel-eid :channel/field field}]
+      (let [enc-eid (ffirst (db/q '[:find ?e :where [?root :vl/encoding ?e] [?root :vl/id "default"]] ds-db))
+            new-chan-id -1]
+        (if enc-eid
+          [{:db/id enc-eid :encoding/channels new-chan-id}
+           {:db/id new-chan-id :channel/name (name channel) :channel/field field}]
+          (let [new-enc-id -2]
+            [{:db/id [:vl/id "default"] :vl/encoding new-enc-id}
+             {:db/id new-enc-id :encoding/channels new-chan-id}
+             {:db/id new-chan-id :channel/name (name channel) :channel/field field}]))))))
+
 (defn update-channel-field
   [db [_ channel field]]
   (let [ds-db (get-in db [:user-input :vega-lite :default ::core/ds-db])
-        ;; Find channel entity
-        channel-eid (ffirst (db/q '[:find ?c
-                                    :in $ ?channel-name
-                                    :where
-                                    [?root :vl/encoding ?enc]
-                                    [?root :vl/id "default"]
-                                    [?enc :encoding/channels ?c]
-                                    [?c :channel/name ?channel-name]]
-                                  ds-db (name channel)))
-
-        tx-data (if channel-eid
-                  [{:db/id channel-eid :channel/field field}]
-                  ;; If channel doesn't exist, we must create it and link to encoding
-                  (let [enc-eid (ffirst (db/q '[:find ?e :where [?root :vl/encoding ?e] [?root :vl/id "default"]] ds-db))
-                        new-chan-id -1]
-                     (if enc-eid
-                       [{:db/id enc-eid :encoding/channels new-chan-id}
-                        {:db/id new-chan-id :channel/name (name channel) :channel/field field}]
-                       ;; If encoding doesn't exist either
-                       (let [new-enc-id -2]
-                         [{:db/id [:vl/id "default"] :vl/encoding new-enc-id}
-                          {:db/id new-enc-id :encoding/channels new-chan-id}
-                          {:db/id new-chan-id :channel/name (name channel) :channel/field field}]))))
-
+        tx-data (create-channel-tx ds-db channel field)
         new-ds-db (db/with ds-db tx-data)]
     (-> db
         (assoc-in [:user-input :vega-lite :default ::core/ds-db] new-ds-db)
@@ -379,8 +334,6 @@
     (-> db
         (assoc-in [:user-input :vega-lite :default ::core/ds-db] new-ds-db)
         (sync-config-from-db))))
-
-;; Dataset List Events
 
 (rf/reg-event-fx
  ::fetch-dataset-list

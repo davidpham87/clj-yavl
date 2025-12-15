@@ -13,10 +13,11 @@
   <script src="js/main.js"></script>
   <script>
     // Ensure the namespace exists before calling init
-    if (typeof clj_yavl !== 'undefined' && clj_yavl.core) {
-      clj_yavl.core.init();
+    // Changed to clj_yavl.webapp.core due to refactor
+    if (typeof clj_yavl !== 'undefined' && clj_yavl.webapp && clj_yavl.webapp.core) {
+      clj_yavl.webapp.core.init();
     } else {
-      console.warn("clj_yavl.core not found. shadow-cljs loader might be async or namespace name is different.");
+      console.warn("clj_yavl.webapp.core not found. shadow-cljs loader might be async or namespace name is different.");
       // Fallback or retry logic if needed, but for now just log.
       // With shadow-cljs :browser target, it should be available if main.js is loaded.
     }

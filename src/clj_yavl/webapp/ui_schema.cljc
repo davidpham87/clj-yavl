@@ -1,4 +1,4 @@
-(ns clj-yavl.ui-schema
+(ns clj-yavl.webapp.ui-schema
   (:require [malli.core :as m]))
 
 (defn- get-fields
