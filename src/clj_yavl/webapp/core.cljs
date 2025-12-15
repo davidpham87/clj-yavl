@@ -161,8 +161,8 @@
   [{:keys [arg prop current-opts]}]
   [:input {:type "text"
            :class "bg-gray-800 border border-gray-600 text-xs p-1"
-           :value (get-in current-opts [arg prop :field])
-           :on-change #(rf/dispatch [::events/update-ui-option arg prop {:field (-> % .-target .-value)}])}])
+           :value (get-in current-opts [arg prop])
+           :on-change #(rf/dispatch [::events/update-ui-option arg prop (-> % .-target .-value)])}])
 
 (defmethod render-input :number-input
   [{:keys [arg prop current-opts]}]
@@ -189,8 +189,8 @@
   [:textarea {:class "bg-gray-800 border border-gray-600 text-xs p-1 h-10" :placeholder "JSON..."}])
 
 (defmethod render-input :default
-  [{:keys [conf]}]
-  [:div (str "Unknown type: " (get-in conf [:type]))])
+  [_]
+  nil)
 
 (defn- render-ui-builder-item [item current-opts]
   [:div {:class "border border-gray-600 p-2 rounded"}
