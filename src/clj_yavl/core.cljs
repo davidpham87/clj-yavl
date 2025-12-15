@@ -186,8 +186,8 @@
   [:textarea {:class "bg-gray-800 border border-gray-600 text-xs p-1 h-10" :placeholder "JSON..."}])
 
 (defmethod render-input :default
-  [{:keys [conf]}]
-  [:div (str "Unknown type: " (get-in conf [:type]))])
+  [_]
+  nil)
 
 (defn ui-builder-view []
   (let [preset-key @(rf/subscribe [::subs/ui-builder-preset])

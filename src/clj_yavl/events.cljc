@@ -9,7 +9,7 @@
             [clj-yavl.db :as db]
             [bb-web-ds-tools.components.malli :as bb-malli]
             [malli.core :as m]
-            ["papaparse" :as Papa]))
+            #?(:cljs ["papaparse" :as Papa])))
 
 (def default-config-json "{\n  \"$schema\": \"https://vega.github.io/schema/vega-lite/v5.json\",\n  \"mark\": \"bar\",\n  \"encoding\": {\n    \"x\": {\"field\": \"col1\", \"type\": \"ordinal\"},\n    \"y\": {\"field\": \"col2\", \"type\": \"quantitative\"}\n  }\n}")
 
@@ -89,6 +89,15 @@
           (m/type (first (m/children entry-type)))
           field-type))))
 
+(defn- to-title-case [s]
+  (when s
+    (-> s
+        (str/replace #"[_.\-]" " ")
+        (str/replace #"([a-z])([A-Z])" "$1 $2")
+        (str/split #"\s+")
+        (->> (map str/capitalize)
+             (str/join " ")))))
+
 (rf/reg-event-db
  ::update-field-selection
  (fn [db [_ arg prop value]]
@@ -105,11 +114,24 @@
                      :boolean "nominal"
                      :inst "temporal"
                      :enum "nominal"
-                     "nominal")]
+                     "nominal")
+
+         current-opts (get-in db [:user-input :ui-builder :opts])
+         current-arg-opts (get current-opts arg)
+         current-field (:field current-arg-opts)
+         current-title (get-in current-arg-opts [:title :field])
+
+         new-title-candidate (to-title-case value)
+         old-default-title (when current-field (to-title-case current-field))
+
+         should-update-title? (or (str/blank? current-title)
+                                  (= current-title old-default-title))]
 
      (-> db
          (assoc-in [:user-input :ui-builder :opts arg prop] value)
          (assoc-in [:user-input :ui-builder :opts arg :type] vega-type)
+         (cond-> should-update-title?
+           (assoc-in [:user-input :ui-builder :opts arg :title :field] new-title-candidate))
          (sync-config!)))))
 
 (defn init-unit-spec
@@ -292,29 +314,30 @@
 (rf/reg-event-db
  ::fetch-dataset-failure
  (fn [db [_ err]]
-   (js/console.error "Failed to fetch dataset:" err)
+   #?(:cljs (js/console.error "Failed to fetch dataset:" err))
    db))
 
 ;; Custom Effect for Fetching
 (rf/reg-fx
  :promise/fetch
  (fn [{:keys [url on-success on-failure]}]
-   (let [is-csv (or (str/ends-with? (str/lower-case url) ".csv")
-                    (str/starts-with? url "csv:"))] ;; Handle specific prefix if needed, though url likely http
-     (-> (js/fetch url)
-         (.then (fn [resp]
-                  (if (.-ok resp)
-                    (if is-csv
-                      (.text resp)
-                      (.json resp))
-                    (js/Promise.reject (str "Error: " (.-statusText resp))))))
-         (.then (fn [result]
-                  (if is-csv
-                    (let [parsed (Papa/parse result #js {:header true :dynamicTyping true})]
-                      (rf/dispatch (conj on-success (js->clj (.-data parsed) :keywordize-keys true))))
-                    (rf/dispatch (conj on-success (js->clj result :keywordize-keys true))))))
-         (.catch (fn [err]
-                   (rf/dispatch (conj on-failure err))))))))
+   #?(:cljs
+      (let [is-csv (or (str/ends-with? (str/lower-case url) ".csv")
+                       (str/starts-with? url "csv:"))] ;; Handle specific prefix if needed, though url likely http
+        (-> (js/fetch url)
+            (.then (fn [resp]
+                     (if (.-ok resp)
+                       (if is-csv
+                         (.text resp)
+                         (.json resp))
+                       (js/Promise.reject (str "Error: " (.-statusText resp))))))
+            (.then (fn [result]
+                     (if is-csv
+                       (let [parsed (Papa/parse result #js {:header true :dynamicTyping true})]
+                         (rf/dispatch (conj on-success (js->clj (.-data parsed) :keywordize-keys true))))
+                       (rf/dispatch (conj on-success (js->clj result :keywordize-keys true))))))
+            (.catch (fn [err]
+                      (rf/dispatch (conj on-failure err)))))))))
 
 (defn update-channel-field
   [db [_ channel field]]
@@ -374,5 +397,5 @@
 (rf/reg-event-db
  ::fetch-dataset-list-failure
  (fn [db [_ err]]
-   (js/console.error "Failed to fetch dataset list:" err)
+   #?(:cljs (js/console.error "Failed to fetch dataset list:" err))
    db))
