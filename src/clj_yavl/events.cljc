@@ -9,6 +9,7 @@
             [clj-yavl.db :as db]
             [clj-yavl.infer :as infer]
             [bb-web-ds-tools.components.malli :as bb-malli]
+            [malli.core :as m]
             ["papaparse" :as Papa]))
 
 (def default-config-json "{\n  \"$schema\": \"https://vega.github.io/schema/vega-lite/v5.json\",\n  \"mark\": \"bar\",\n  \"encoding\": {\n    \"x\": {\"field\": \"col1\", \"type\": \"ordinal\"},\n    \"y\": {\"field\": \"col2\", \"type\": \"quantitative\"}\n  }\n}")
@@ -37,6 +38,12 @@
                            ::core/active-config-name nil
                            ::core/ds-db ds-db}}) ;; Store DB value
 
+      ;; Initialize UI Builder state
+      true
+      (assoc-in [:user-input :ui-builder]
+                {:preset-key :xyplot
+                 :opts {}})
+
       (not component-state-exists?)
       (assoc ::core/vega-lite
              {::core/format :csv
@@ -50,6 +57,61 @@
 
       (not dataset-list-exists?)
       (assoc-in [:user-input :dataset-list] []))))
+
+(defn- sync-config!
+  [db]
+  (let [opts (get-in db [:user-input :ui-builder :opts])
+        preset-key (get-in db [:user-input :ui-builder :preset-key])
+        schema (get-in db [::core/vega-lite ::core/inferred-schema])
+        spec (presets/unit-spec (assoc opts :type preset-key :data-schema schema))
+        json-str (io/write-json-str spec {:indent 2})]
+    (assoc-in db [:user-input :vega-lite :default ::core/config-input] json-str)))
+
+(rf/reg-event-db
+ ::set-ui-preset
+ (fn [db [_ preset]]
+   (-> db
+       (assoc-in [:user-input :ui-builder :preset-key] preset)
+       (sync-config!))))
+
+(rf/reg-event-db
+ ::update-ui-option
+ (fn [db [_ arg prop value]]
+   (-> db
+       (assoc-in [:user-input :ui-builder :opts arg prop] value)
+       (sync-config!))))
+
+(defonce debug-atom (atom {}))
+
+(defn entry-def->type [x]
+  (let [entry-type (last x)
+        field-type (m/type entry-type)]
+    (-> (if (= field-type :maybe)
+          (m/type (first (m/children entry-type)))
+          field-type))))
+
+(rf/reg-event-db
+ ::update-field-selection
+ (fn [db [_ arg prop value]]
+   (let [schema (get-in db [::core/vega-lite ::core/inferred-schema])
+         m-type (when schema
+                  (let [field-spec (first (filter #(= (name (first %)) value)
+                                                  (m/children (m/schema schema))))]
+                    (swap! debug-atom assoc :field-spec field-spec)
+                    (entry-def->type field-spec)))
+         vega-type (case m-type
+                     :int "quantitative"
+                     :double "quantitative"
+                     :string "nominal"
+                     :boolean "nominal"
+                     :inst "temporal"
+                     :enum "nominal"
+                     "nominal")]
+
+     (-> db
+         (assoc-in [:user-input :ui-builder :opts arg prop] value)
+         (assoc-in [:user-input :ui-builder :opts arg :type] vega-type)
+         (sync-config!)))))
 
 (defn init-unit-spec
   [db [_ id type initial-input]]

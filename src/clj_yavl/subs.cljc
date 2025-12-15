@@ -94,3 +94,13 @@
  ::inferred-schema
  (fn [db _]
    (get-in db [::core/vega-lite ::core/inferred-schema])))
+
+(rf/reg-sub
+ ::ui-builder-preset
+ (fn [db _]
+   (get-in db [:user-input :ui-builder :preset-key] :xyplot)))
+
+(rf/reg-sub
+ ::ui-builder-opts
+ (fn [db _]
+   (get-in db [:user-input :ui-builder :opts] {})))
