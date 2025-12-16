@@ -166,12 +166,12 @@
 
 (defn- left-panel [view-mode config-mode config-input]
   [:div {:class "w-1/2 h-full border-r border-gray-700 flex flex-col bg-[#1e1e1e]"}
-   (toolbar view-mode config-mode)
+   [toolbar view-mode config-mode]
    [:div {:class "flex-grow relative overflow-hidden"}
     (if (= @view-mode :code)
       [editor/monaco-editor
-      {:value config-input
-        :language (if (= config-mode :json) "json" "clojure")
+       {:value config-input
+        :language (if (= config-mode :edn) "clojure" "json")
         :options {:fontSize 15
                   :fontFamily "monospace"
                   :rulers [80]
@@ -179,45 +179,48 @@
         :on-change #(rf/dispatch [::set-config-input %])}]
       [ui-builder/ui-builder-view])]])
 
-(defn- dataset-controls [url-input dataset-list]
-  [:div {:class "p-2 bg-gray-100 border-b border-gray-300 flex items-center gap-2"}
-   [:div {:class "flex flex-col flex-grow gap-1"}
-    [:div {:class "flex gap-2"}
-      [:select {:class "border p-1 text-sm w-32"
-                :on-change (fn [e]
-                            (let [val (-> e .-target .-value)]
-                              (when (not-empty val)
-                                (let [dataset (some #(when (= (:name %) val) %) @dataset-list)]
-                                  (when dataset
-                                    (let [url (str "https://cdn.jsdelivr.net/npm/vega-datasets@3.2.1/data/" (:path dataset))]
-                                      (rf/dispatch [::events/set-dataset-url-input url])
-                                      (rf/dispatch [::events/fetch-dataset url])))))))}
-      [:option {:value ""} "Select Dataset..."]
-      (for [ds (sort-by :name @dataset-list)]
-        ^{:key (:name ds)}
-        [:option {:value (:name ds)} (:name ds)])]
+(defn- dataset-controls []
+  (r/with-let [url-input (rf/subscribe [::subs/dataset-url-input])
+               dataset-list (rf/subscribe [::subs/dataset-list])]
+    [:div {:class "p-2 bg-gray-100 border-b border-gray-300 flex items-center gap-2"}
+     [:div {:class "flex flex-col flex-grow gap-1"}
+      [:div {:class "flex gap-2"}
+       [:select
+        {:class "border p-1 text-sm w-32"
+         :on-change
+         (fn [e]
+           (let [val (-> e .-target .-value)]
+             (when (not-empty val)
+               (let [dataset (some #(when (= (:name %) val) %) @dataset-list)]
+                 (when dataset
+                   (let [url (str "https://cdn.jsdelivr.net/npm/vega-datasets@3.2.1/data/" (:path dataset))]
+                     (rf/dispatch [::events/set-dataset-url-input url])
+                     (rf/dispatch [::events/fetch-dataset url])))))))}
+        [:option {:value ""} "Select Dataset..."]
+        (for [ds (sort-by :name @dataset-list)]
+          ^{:key (:name ds)}
+          [:option {:value (:name ds)} (:name ds)])]
 
-      [:input {:type "text"
-              :placeholder "Dataset URL"
-              :value @url-input
-              :on-change #(rf/dispatch [::events/set-dataset-url-input (-> % .-target .-value)])
-              :class "border p-1 flex-grow text-sm"}]]
+       [:input {:type "text"
+                :placeholder "Dataset URL"
+                :value @url-input
+                :on-change #(do (rf/dispatch [::events/set-dataset-url-input (-> % .-target .-value)])
+                                (rf/dispatch [::events/fetch-dataset @url-input]))
+                :class "border p-1 flex-grow text-sm"}]]
 
-    [:button {:on-click #(rf/dispatch [::events/fetch-dataset @url-input])
-              :class "bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"}
-      "Load Data"]]])
+      [:button {:on-click #(rf/dispatch [::events/fetch-dataset @url-input])
+                :class "bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"}
+       "Load Data"]]]))
 
 (defn main-view []
   (r/with-let [view-mode (r/atom :code)]
     (let [config-input @(rf/subscribe [::config-input])
           parsed-config @(rf/subscribe [::parsed-config])
-          config-mode @(rf/subscribe [::config-mode])
-          url-input (rf/subscribe [::subs/dataset-url-input])
-          dataset-list (rf/subscribe [::subs/dataset-list])]
+          config-mode @(rf/subscribe [::config-mode])]
       [:div {:class "flex h-screen w-screen overflow-hidden"}
-       (left-panel view-mode config-mode config-input)
+       [left-panel view-mode config-mode config-input]
        [:div {:class "w-1/2 h-full bg-white flex flex-col"}
-        (dataset-controls url-input dataset-list)
+        [dataset-controls]
         [:div {:class "flex-grow overflow-auto relative"}
          [viz/vega-lite-viz parsed-config]]]])))
 

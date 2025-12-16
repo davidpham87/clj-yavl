@@ -10,18 +10,21 @@
       :component-did-mount
       (fn [_]
         (when (and @container-ref spec)
-          (-> (vega-embed/default @container-ref (clj->js spec) (clj->js {:actions true}))
+          (-> @container-ref
+              (vega-embed/default (clj->js spec) (clj->js {:actions true}))
               (.then (fn [res]
                        (reset! view-ref (.-view res))))
               (.catch js/console.error))))
       :component-did-update
       (fn [this]
         (let [new-spec (second (r/argv this))]
-           (when @container-ref
-             (-> (vega-embed/default @container-ref (clj->js new-spec) (clj->js {:actions true}))
-                 (.then (fn [res]
-                          (reset! view-ref (.-view res))))
-                 (.catch js/console.error)))))
+          (when @container-ref
+            (println (clj->js new-spec) (clj->js {:actions true}))
+            (-> @container-ref
+                (vega-embed/default (clj->js new-spec) (clj->js {:actions true}))
+                (.then (fn [res]
+                         (reset! view-ref (.-view res))))
+                (.catch js/console.error)))))
       :component-will-unmount
       (fn [_]
         (when @view-ref
