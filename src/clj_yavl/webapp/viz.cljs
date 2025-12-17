@@ -1,6 +1,6 @@
 (ns clj-yavl.webapp.viz
   (:require [reagent.core :as r]
-            ["vega-embed" :as vega-embed]))
+            ["vega-embed" :default vegaEmbed]))
 
 (defn vega-lite-viz [spec]
   (let [container-ref (r/atom nil)
@@ -11,20 +11,21 @@
       (fn [_]
         (when (and @container-ref spec)
           (-> @container-ref
-              (vega-embed/default (clj->js spec) (clj->js {:actions true}))
+              (vegaEmbed (clj->js spec) (clj->js {:actions true}))
               (.then (fn [res]
                        (reset! view-ref (.-view res))))
-              (.catch js/console.error))))
+              (.catch (fn [err]
+                        (js/console.error "Vega Embed Error (mount):" err))))))
       :component-did-update
       (fn [this]
         (let [new-spec (second (r/argv this))]
-          (when @container-ref
-            (println (clj->js new-spec) (clj->js {:actions true}))
+          (when (and @container-ref new-spec)
             (-> @container-ref
-                (vega-embed/default (clj->js new-spec) (clj->js {:actions true}))
+                (vegaEmbed (clj->js new-spec) (clj->js {:actions true}))
                 (.then (fn [res]
                          (reset! view-ref (.-view res))))
-                (.catch js/console.error)))))
+                (.catch (fn [err]
+                          (js/console.error "Vega Embed Error (update):" err)))))))
       :component-will-unmount
       (fn [_]
         (when @view-ref
