@@ -12,3 +12,6 @@ share/
 clojure-tools*
 test-results/
 playwright-report/
+gemini/
+.clj-kondo
+.lsp

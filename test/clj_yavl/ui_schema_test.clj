@@ -1,6 +1,6 @@
 (ns clj-yavl.ui-schema-test
   (:require [clojure.test :refer [deftest is testing]]
-            [clj-yavl.ui-schema :as sut]))
+            [clj-yavl.webapp.ui-schema :as sut]))
 
 (deftest generate-ui-schema-test
   (testing "extracts fields from malli schema"

@@ -1,9 +1,9 @@
-(ns clj-yavl.subs
+(ns clj-yavl.webapp.subs
   (:require [clj-yavl.presets :as presets]
             [clojure.edn :as edn]
             [clj-yavl.io :as io]
             [re-frame.core :as rf]
-            [clj-yavl.core :as-alias core]
+            [clj-yavl.webapp.core :as-alias core]
             [clj-yavl.db :as db]))
 
 (defn unit-spec-ids
@@ -94,3 +94,13 @@
  ::inferred-schema
  (fn [db _]
    (get-in db [::core/vega-lite ::core/inferred-schema])))
+
+(rf/reg-sub
+ ::ui-builder-preset
+ (fn [db _]
+   (get-in db [:user-input :ui-builder :preset-key] :xyplot)))
+
+(rf/reg-sub
+ ::ui-builder-opts
+ (fn [db _]
+   (get-in db [:user-input :ui-builder :opts] {})))
