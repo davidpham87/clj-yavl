@@ -7,8 +7,8 @@ goog.provide('clj_yavl.io');
  * CLJS: uses js/JSON.parse and js->clj
  */
 clj_yavl.io.read_json_str = (function clj_yavl$io$read_json_str(var_args){
-var G__25546 = arguments.length;
-switch (G__25546) {
+var G__33552 = arguments.length;
+switch (G__33552) {
 case 1:
 return clj_yavl.io.read_json_str.cljs$core$IFn$_invoke$arity$1((arguments[(0)]));
 
@@ -27,11 +27,11 @@ throw (new Error(["Invalid arity: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(
 return clj_yavl.io.read_json_str.cljs$core$IFn$_invoke$arity$2(s,null);
 }));
 
-(clj_yavl.io.read_json_str.cljs$core$IFn$_invoke$arity$2 = (function (s,p__25547){
-var map__25548 = p__25547;
-var map__25548__$1 = cljs.core.__destructure_map(map__25548);
-var _opts = map__25548__$1;
-var key_fn = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__25548__$1,new cljs.core.Keyword(null,"key-fn","key-fn",-636154479));
+(clj_yavl.io.read_json_str.cljs$core$IFn$_invoke$arity$2 = (function (s,p__33553){
+var map__33554 = p__33553;
+var map__33554__$1 = cljs.core.__destructure_map(map__33554);
+var _opts = map__33554__$1;
+var key_fn = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__33554__$1,new cljs.core.Keyword(null,"key-fn","key-fn",-636154479));
 var js_obj = JSON.parse(s);
 return cljs.core.js__GT_clj.cljs$core$IFn$_invoke$arity$variadic(js_obj,cljs.core.prim_seq.cljs$core$IFn$_invoke$arity$2([new cljs.core.Keyword(null,"keywordize-keys","keywordize-keys",1310784252),cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(key_fn,cljs.core.keyword)], 0));
 }));
@@ -46,8 +46,8 @@ return cljs.core.js__GT_clj.cljs$core$IFn$_invoke$arity$variadic(js_obj,cljs.cor
  * CLJS: uses js/JSON.stringify
  */
 clj_yavl.io.write_json_str = (function clj_yavl$io$write_json_str(var_args){
-var G__25550 = arguments.length;
-switch (G__25550) {
+var G__33556 = arguments.length;
+switch (G__33556) {
 case 1:
 return clj_yavl.io.write_json_str.cljs$core$IFn$_invoke$arity$1((arguments[(0)]));
 
@@ -66,11 +66,11 @@ throw (new Error(["Invalid arity: ",cljs.core.str.cljs$core$IFn$_invoke$arity$1(
 return clj_yavl.io.write_json_str.cljs$core$IFn$_invoke$arity$2(data,null);
 }));
 
-(clj_yavl.io.write_json_str.cljs$core$IFn$_invoke$arity$2 = (function (data,p__25551){
-var map__25552 = p__25551;
-var map__25552__$1 = cljs.core.__destructure_map(map__25552);
-var _opts = map__25552__$1;
-var indent = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__25552__$1,new cljs.core.Keyword(null,"indent","indent",-148200125));
+(clj_yavl.io.write_json_str.cljs$core$IFn$_invoke$arity$2 = (function (data,p__33557){
+var map__33558 = p__33557;
+var map__33558__$1 = cljs.core.__destructure_map(map__33558);
+var _opts = map__33558__$1;
+var indent = cljs.core.get.cljs$core$IFn$_invoke$arity$2(map__33558__$1,new cljs.core.Keyword(null,"indent","indent",-148200125));
 if(cljs.core.truth_(indent)){
 return JSON.stringify(cljs.core.clj__GT_js(data),null,((typeof indent === 'number')?indent:(2)));
 } else {
